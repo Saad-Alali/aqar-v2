@@ -1,35 +1,42 @@
-// Initialize Cordova features
-document.addEventListener('deviceready', function() {
-    // Handle back button
-    document.addEventListener('backbutton', function(e) {
-        // Navigate back if possible, otherwise exit app
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            navigator.app.exitApp();
-        }
-    }, false);
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize app
+    if (typeof cordova !== 'undefined') {
+        document.addEventListener('deviceready', onDeviceReady, false);
+    } else {
+        // If cordova is not available (browser environment), 
+        // proceed with normal initialization
+        onDeviceReady();
+    }
+});
 
-    // Handle network status
-    document.addEventListener('online', function() {
-        // App is online
-        console.log('App is online');
-    }, false);
+function onDeviceReady() {
+    // Hide the native splash screen if it exists
+    if (navigator.splashscreen) {
+        navigator.splashscreen.hide();
+    }
     
-    document.addEventListener('offline', function() {
-        // App is offline
-        console.log('App is offline');
-        showToast('أنت غير متصل بالإنترنت', 'warning');
-    }, false);
+    // Continue with app initialization
+    console.log('Device is ready');
+    
+    // Check if the app is opening for the first time
+    const firstLaunch = !localStorage.getItem('app_initialized');
+    
+    // If first launch, redirect to HTML splash screen
+    if (firstLaunch) {
+        localStorage.setItem('app_initialized', 'true');
+        window.location.href = 'splash-screen.html';
+    }
+    
+    // Initialize app services
+    initApp();
+}
 
-    // Initialize statusbar
+function initApp() {
+    // Initialize your application services here
+    console.log('App initialized');
+    
+    // Configure StatusBar if available
     if (window.StatusBar) {
         StatusBar.styleDefault();
     }
-}, false);
-
-// Replace localStorage with Cordova file storage for larger data
-function initializeStorage() {
-    // Implementation depends on your storage needs
-    // Use cordova-plugin-file for file-based storage
 }

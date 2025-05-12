@@ -80,8 +80,26 @@
 
         .splash-logo {
             width: 150px;
-            height: auto;
+            height: 150px;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
+        }
+
+        .splash-logo i {
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        .splash-logo-text {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
         }
 
         .splash-tagline {
@@ -122,6 +140,23 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(37, 99, 235, 0.4);
+            }
+
+            70% {
+                transform: scale(1.05);
+                text-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+            }
+
+            100% {
+                transform: scale(1);
+                text-shadow: 0 0 0 rgba(37, 99, 235, 0);
             }
         }
 
@@ -171,23 +206,6 @@
             color: var(--primary-color);
             font-size: 5rem;
             animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
-            }
-
-            70% {
-                transform: scale(1.05);
-                box-shadow: 0 0 0 15px rgba(37, 99, 235, 0);
-            }
-
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
-            }
         }
 
         .onboarding-title {
@@ -331,7 +349,10 @@
 <body>
     <div class="splash-container" id="splashScreen">
         <div class="splash-logo-container">
-            <img src="img/logo.png" alt="عقار" class="splash-logo">
+            <div class="splash-logo">
+                <i class="fas fa-home"></i>
+                <span class="splash-logo-text">عقار</span>
+            </div>
             <div class="splash-tagline">شريكك في العثور على المنزل المثالي</div>
         </div>
         <div class="splash-loader"></div>
