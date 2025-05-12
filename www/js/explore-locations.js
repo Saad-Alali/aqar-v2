@@ -1,4 +1,3 @@
-// www/js/explore-locations.js
 import { getCities, getNeighborhoods } from './locations-service.js';
 
 let map;
@@ -7,7 +6,7 @@ let currentCity = null;
 let currentNeighborhood = null;
 const googleApiKey = 'AIzaSyDzluJAdmR0E6C6S4fu7MH9eL7JFtxr9wo';
 
-window.initMap = function() {
+function initializeMap() {
     const saudiArabia = { lat: 24.7136, lng: 46.6753 };
     map = new google.maps.Map(document.getElementById('map'), {
         center: saudiArabia,
@@ -25,7 +24,9 @@ window.initMap = function() {
     });
     
     loadCities();
-};
+}
+
+window.initMap = initializeMap;
 
 async function loadCities() {
     try {
