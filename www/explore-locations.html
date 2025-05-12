@@ -36,9 +36,16 @@
             </div>
 
             <div class="explore-cities">
-                <h2 class="explore-section-title">المدن</h2>
+                <h2 class="explore-section-title">
+                    <i class="fas fa-city"></i>
+                    المدن
+                </h2>
                 <div class="city-grid" id="cityGrid">
-                    <!-- Cities will be dynamically loaded here -->
+                    <!-- Loading indicator -->
+                    <div style="grid-column: span 2; text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        <p style="margin-top: 10px;">جاري تحميل المدن...</p>
+                    </div>
                 </div>
             </div>
 
@@ -51,7 +58,11 @@
                     <h2 class="explore-section-title" id="selectedCityTitle">الأحياء</h2>
                 </div>
                 <div class="neighborhood-grid" id="neighborhoodGrid">
-                    <!-- Neighborhoods will be dynamically loaded here -->
+                    <!-- Loading indicator -->
+                    <div style="grid-column: span 2; text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        <p style="margin-top: 10px;">جاري تحميل الأحياء...</p>
+                    </div>
                 </div>
             </div>
 

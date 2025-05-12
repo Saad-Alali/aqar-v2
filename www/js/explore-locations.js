@@ -1,6 +1,8 @@
+// www/js/explore-locations.js
+import { getCities, getNeighborhoods } from './locations-service.js';
+
 let map;
 let markers = [];
-let locationsData = null;
 let currentCity = null;
 let currentNeighborhood = null;
 const googleApiKey = 'AIzaSyDzluJAdmR0E6C6S4fu7MH9eL7JFtxr9wo';
@@ -22,30 +24,28 @@ window.initMap = function() {
         ]
     });
     
-    loadLocationsData();
+    loadCities();
 };
 
-async function loadLocationsData() {
+async function loadCities() {
     try {
-        const response = await fetch('data/locations.json');
-        locationsData = await response.json();
-        
-        renderCities();
-        addCityMarkers();
+        const cities = await getCities();
+        renderCities(cities);
+        addCityMarkers(cities);
     } catch (error) {
-        console.error('Error loading locations data:', error);
-        showToast('حدث خطأ في تحميل بيانات المواقع', 'error');
+        console.error('Error loading cities:', error);
+        showToast('حدث خطأ في تحميل بيانات المدن', 'error');
     }
 }
 
-function renderCities() {
+function renderCities(cities) {
     const cityGrid = document.getElementById('cityGrid');
     
-    if (!cityGrid || !locationsData || !locationsData.cities) return;
+    if (!cityGrid || !cities) return;
     
     cityGrid.innerHTML = '';
     
-    locationsData.cities.forEach(city => {
+    cities.forEach(city => {
         const cityCard = createCityCard(city);
         cityGrid.appendChild(cityCard);
     });
@@ -56,10 +56,8 @@ function createCityCard(city) {
     card.className = 'city-card';
     card.dataset.cityId = city.id;
     
-    const imageUrl = `https://source.unsplash.com/300x200/?${city.nameEn.toLowerCase()},city`;
-    
     card.innerHTML = `
-        <img src="${imageUrl}" alt="${city.name}" class="city-card__image">
+        <img src="${city.imageUrl}" alt="${city.name}" class="city-card__image">
         <div class="city-card__overlay">
             <div class="city-card__name">${city.name}</div>
         </div>
@@ -85,19 +83,28 @@ function selectCity(city) {
     map.setZoom(12);
     
     clearMarkers();
-    addNeighborhoodMarkers(city);
-    
-    renderNeighborhoods(city);
+    loadNeighborhoods(city.id);
 }
 
-function renderNeighborhoods(city) {
+async function loadNeighborhoods(cityId) {
+    try {
+        const neighborhoods = await getNeighborhoods(cityId);
+        renderNeighborhoods(neighborhoods);
+        addNeighborhoodMarkers(neighborhoods);
+    } catch (error) {
+        console.error('Error loading neighborhoods:', error);
+        showToast('حدث خطأ في تحميل بيانات الأحياء', 'error');
+    }
+}
+
+function renderNeighborhoods(neighborhoods) {
     const neighborhoodGrid = document.getElementById('neighborhoodGrid');
     
-    if (!neighborhoodGrid || !city.neighborhoods) return;
+    if (!neighborhoodGrid || !neighborhoods) return;
     
     neighborhoodGrid.innerHTML = '';
     
-    city.neighborhoods.forEach(neighborhood => {
+    neighborhoods.forEach(neighborhood => {
         const neighborhoodCard = createNeighborhoodCard(neighborhood);
         neighborhoodGrid.appendChild(neighborhoodCard);
     });
@@ -108,12 +115,16 @@ function createNeighborhoodCard(neighborhood) {
     card.className = 'neighborhood-card';
     card.dataset.neighborhoodId = neighborhood.id;
     
-    const imageUrl = `https://source.unsplash.com/300x200/?${neighborhood.nameEn.toLowerCase()},neighborhood`;
-    
     card.innerHTML = `
-        <img src="${imageUrl}" alt="${neighborhood.name}" class="neighborhood-card__image">
-        <div class="neighborhood-card__overlay">
-            <div class="neighborhood-card__name">${neighborhood.name}</div>
+        <div class="neighborhood-card__image-container">
+            <img src="${neighborhood.imageUrl}" alt="${neighborhood.name}" class="neighborhood-card__image">
+            <div class="neighborhood-card__overlay">
+                <div class="neighborhood-card__name">${neighborhood.name}</div>
+                <div class="neighborhood-card__info">
+                    <i class="fas fa-info-circle"></i>
+                    عرض المعلومات
+                </div>
+            </div>
         </div>
     `;
     
@@ -140,10 +151,10 @@ function selectNeighborhood(neighborhood) {
     getNearbyPlaces(neighborhood);
 }
 
-function addCityMarkers() {
-    if (!locationsData || !locationsData.cities) return;
+function addCityMarkers(cities) {
+    if (!cities) return;
     
-    locationsData.cities.forEach(city => {
+    cities.forEach(city => {
         const markerPosition = { lat: city.lat, lng: city.lng };
         
         const marker = new google.maps.Marker({
@@ -185,10 +196,10 @@ function addCityMarkers() {
     });
 }
 
-function addNeighborhoodMarkers(city) {
-    if (!city || !city.neighborhoods) return;
+function addNeighborhoodMarkers(neighborhoods) {
+    if (!neighborhoods) return;
     
-    city.neighborhoods.forEach(neighborhood => {
+    neighborhoods.forEach(neighborhood => {
         const markerPosition = { lat: neighborhood.lat, lng: neighborhood.lng };
         
         const marker = new google.maps.Marker({
@@ -209,7 +220,7 @@ function addNeighborhoodMarkers(city) {
             content: `
                 <div class="map-info-window">
                     <div class="map-info-title">${neighborhood.name}</div>
-                    <div class="map-info-subtitle">${city.name}</div>
+                    <div class="map-info-subtitle">${currentCity ? currentCity.name : ''}</div>
                 </div>
             `
         });
@@ -467,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
             map.setZoom(6);
             
             clearMarkers();
-            addCityMarkers();
+            loadCities();
             
             currentCity = null;
         });
@@ -486,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 map.setZoom(12);
                 
                 clearMarkers();
-                addNeighborhoodMarkers(currentCity);
+                loadNeighborhoods(currentCity.id);
             }
             
             currentNeighborhood = null;

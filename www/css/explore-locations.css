@@ -1,3 +1,4 @@
+/* www/css/explore-locations.css */
 .explore-container {
     padding-bottom: 70px;
 }
@@ -7,14 +8,15 @@
     height: 250px;
     position: relative;
     margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
 }
 
 #map {
     width: 100%;
     height: 100%;
     border-radius: var(--border-radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
 }
 
 .explore-section-title {
@@ -22,6 +24,13 @@
     font-weight: 600;
     margin-bottom: var(--spacing-md);
     color: var(--dark-color);
+    display: flex;
+    align-items: center;
+}
+
+.explore-section-title i {
+    margin-left: 8px;
+    color: var(--primary-color);
 }
 
 .city-grid, 
@@ -35,12 +44,12 @@
 .city-card, 
 .neighborhood-card {
     position: relative;
-    height: 120px;
+    height: 140px;
     border-radius: var(--border-radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .city-card:active, 
@@ -49,11 +58,23 @@
     box-shadow: var(--shadow-lg);
 }
 
+.city-card:hover, 
+.neighborhood-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
 .city-card__image, 
 .neighborhood-card__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.city-card:hover .city-card__image,
+.neighborhood-card:hover .neighborhood-card__image {
+    transform: scale(1.05);
 }
 
 .city-card__overlay, 
@@ -63,17 +84,45 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 70%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    justify-content: flex-end;
     padding: var(--spacing-sm);
+    transition: background 0.3s;
+}
+
+.city-card:hover .city-card__overlay,
+.neighborhood-card:hover .neighborhood-card__overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.2) 100%);
 }
 
 .city-card__name, 
 .neighborhood-card__name {
     color: var(--white-color);
     font-weight: 600;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    font-size: 1.1rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    margin-bottom: 6px;
+}
+
+.neighborhood-card__info {
+    color: var(--primary-light);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.neighborhood-card:hover .neighborhood-card__info {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.neighborhood-card__info i {
+    margin-left: 5px;
 }
 
 .section-header {
@@ -81,6 +130,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid var(--light-gray);
 }
 
 .back-link {
@@ -89,6 +140,11 @@
     color: var(--primary-color);
     font-weight: 500;
     text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: var(--primary-dark);
 }
 
 .back-link i {
@@ -96,8 +152,8 @@
 }
 
 .neighborhood-details {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: var(--spacing-md);
 }
 
@@ -106,6 +162,12 @@
     border-radius: var(--border-radius-md);
     padding: var(--spacing-md);
     box-shadow: var(--shadow-sm);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .info-card-title {
@@ -114,11 +176,13 @@
     margin-bottom: var(--spacing-sm);
     display: flex;
     align-items: center;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 8px;
 }
 
 .info-card-title i {
     margin-left: var(--spacing-xs);
-    color: var(--primary-color);
 }
 
 .weather-info {
@@ -132,11 +196,16 @@
     text-align: center;
     color: var(--gray-color);
     padding: var(--spacing-md) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .weather-loading i,
 .nearby-loading i {
-    margin-left: var(--spacing-xs);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
 }
 
 .weather-main {
@@ -153,8 +222,8 @@
 }
 
 .weather-icon {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     margin-left: var(--spacing-sm);
 }
 
@@ -162,6 +231,7 @@
     font-size: 1rem;
     color: var(--gray-color);
     margin-bottom: var(--spacing-sm);
+    text-align: center;
 }
 
 .weather-details {
@@ -169,6 +239,9 @@
     justify-content: space-around;
     width: 100%;
     margin-top: var(--spacing-sm);
+    background-color: var(--lighter-gray);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm);
 }
 
 .weather-detail {
@@ -180,6 +253,7 @@
 .weather-detail-label {
     font-size: 0.75rem;
     color: var(--gray-color);
+    margin-bottom: 4px;
 }
 
 .weather-detail-value {
@@ -198,6 +272,12 @@
     align-items: center;
     padding: var(--spacing-xs) 0;
     border-bottom: 1px solid var(--light-gray);
+    transition: background-color 0.2s;
+}
+
+.nearby-place:hover {
+    background-color: var(--lighter-gray);
+    border-radius: var(--border-radius-sm);
 }
 
 .nearby-place:last-child {
@@ -205,15 +285,15 @@
 }
 
 .nearby-place-icon {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background-color: var(--lighter-gray);
+    background-color: var(--primary-light);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-left: var(--spacing-sm);
-    color: var(--primary-color);
+    color: var(--white-color);
 }
 
 .nearby-place-details {
@@ -238,11 +318,26 @@
 .map-info-title {
     font-weight: 600;
     margin-bottom: 4px;
+    color: var(--primary-color);
 }
 
 .map-info-subtitle {
     font-size: 0.85rem;
     color: var(--gray-color);
+}
+
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    pointer-events: none;
 }
 
 @media (min-width: 768px) {
@@ -254,20 +349,19 @@
     .explore-map-container {
         height: 350px;
     }
+    
+    .neighborhood-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .weather-card {
+        grid-column: span 2;
+    }
 }
 
 @media (min-width: 992px) {
     .city-grid, 
     .neighborhood-grid {
         grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .neighborhood-details {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .weather-card {
-        grid-column: span 2;
     }
 }
