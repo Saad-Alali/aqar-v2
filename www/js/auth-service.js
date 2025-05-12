@@ -4,42 +4,59 @@ import { dataCache, saveToLocalStorage } from './json-service.js';
 const LOCAL_STORAGE_USER_KEY = 'aqar_current_user';
 let currentUserCache = null;
 let firebaseInitialized = false;
+let firebaseInitPromise = null;
 
 /**
- * Initialize Firebase authentication
+ * Initialize Firebase authentication - improved implementation
  */
 export async function initializeFirebase() {
-  if (firebaseInitialized) {
-    return true;
+  // Return existing promise if already initializing
+  if (firebaseInitPromise) {
+    return firebaseInitPromise;
   }
   
-  return new Promise((resolve) => {
-    document.addEventListener('deviceready', function() {
+  // Return immediately if already initialized
+  if (firebaseInitialized) {
+    return Promise.resolve(true);
+  }
+  
+  // Create a new promise for initialization
+  firebaseInitPromise = new Promise((resolve) => {
+    const checkFirebase = () => {
       if (typeof cordova !== 'undefined' && cordova.plugins && cordova.plugins.firebase) {
         console.log("Firebase plugin is available");
         firebaseInitialized = true;
         resolve(true);
-      } else {
-        console.warn("Firebase plugin is not available, falling back to local auth");
-        resolve(false);
+        return true;
       }
-    }, false);
+      return false;
+    };
     
-    // If already past deviceready, check now
-    if (typeof cordova !== 'undefined' && cordova.plugins && cordova.plugins.firebase) {
-      console.log("Firebase plugin is available (already ready)");
-      firebaseInitialized = true;
-      resolve(true);
+    // Check immediately if Cordova is already loaded
+    if (checkFirebase()) {
+      return;
     }
     
-    // Timeout after 3 seconds to prevent hanging
+    // Otherwise wait for deviceready event
+    document.addEventListener('deviceready', () => {
+      if (checkFirebase()) {
+        return;
+      }
+      
+      console.warn("Firebase plugin not available after deviceready, falling back to local auth");
+      resolve(false);
+    }, false);
+    
+    // Timeout after 5 seconds to prevent hanging
     setTimeout(() => {
       if (!firebaseInitialized) {
         console.warn("Firebase initialization timed out, falling back to local auth");
         resolve(false);
       }
-    }, 3000);
+    }, 5000);
   });
+  
+  return firebaseInitPromise;
 }
 
 /**
@@ -47,9 +64,9 @@ export async function initializeFirebase() {
  */
 export async function registerUser(email, password, fullName, phone) {
   try {
-    await initializeFirebase();
+    const firebaseAvailable = await initializeFirebase();
     
-    if (firebaseInitialized) {
+    if (firebaseAvailable) {
       // Using Firebase Auth
       return new Promise((resolve, reject) => {
         cordova.plugins.firebase.auth.createUserWithEmailAndPassword(email, password)
@@ -126,9 +143,9 @@ export async function registerUser(email, password, fullName, phone) {
  */
 export async function loginUser(email, password) {
   try {
-    await initializeFirebase();
+    const firebaseAvailable = await initializeFirebase();
     
-    if (firebaseInitialized) {
+    if (firebaseAvailable) {
       // Using Firebase Auth
       return new Promise((resolve, reject) => {
         cordova.plugins.firebase.auth.signInWithEmailAndPassword(email, password)
@@ -202,9 +219,9 @@ export async function loginUser(email, password) {
  */
 export async function logoutUser() {
   try {
-    await initializeFirebase();
+    const firebaseAvailable = await initializeFirebase();
     
-    if (firebaseInitialized) {
+    if (firebaseAvailable) {
       // Using Firebase Auth
       return new Promise((resolve, reject) => {
         cordova.plugins.firebase.auth.signOut()
@@ -239,9 +256,9 @@ export async function getCurrentUser() {
   }
   
   try {
-    await initializeFirebase();
+    const firebaseAvailable = await initializeFirebase();
     
-    if (firebaseInitialized) {
+    if (firebaseAvailable) {
       // Using Firebase Auth
       return new Promise((resolve) => {
         cordova.plugins.firebase.auth.getCurrentUser()
@@ -308,7 +325,7 @@ export async function getCurrentUser() {
  */
 export async function updateUserProfile(userId, updatedData) {
   try {
-    await initializeFirebase();
+    const firebaseAvailable = await initializeFirebase();
     
     // Always update local cache
     if (dataCache && dataCache.users) {
@@ -333,7 +350,7 @@ export async function updateUserProfile(userId, updatedData) {
       }
     }
     
-    if (firebaseInitialized) {
+    if (firebaseAvailable) {
       // For now, we only update the user display name
       // Firebase has more limited profile data
       if (updatedData.fullName) {
@@ -403,6 +420,50 @@ export async function toggleFavorite(userId, propertyId) {
     throw new Error('نظام المفضلة غير متوفر حالياً');
   } catch (error) {
     console.error('Error toggling favorite:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a user account
+ */
+export async function deleteUserAccount(userId) {
+  try {
+    const firebaseAvailable = await initializeFirebase();
+    
+    if (firebaseAvailable) {
+      // Using Firebase Auth
+      return new Promise((resolve, reject) => {
+        cordova.plugins.firebase.auth.deleteUser()
+          .then(() => {
+            // Also delete from local cache
+            if (dataCache && dataCache.users) {
+              dataCache.users = dataCache.users.filter(u => u.id !== userId);
+              saveToLocalStorage();
+            }
+            
+            currentUserCache = null;
+            localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+            resolve(true);
+          })
+          .catch((error) => {
+            console.error("Firebase delete user error:", error);
+            reject(new Error('حدث خطأ أثناء حذف الحساب'));
+          });
+      });
+    } else {
+      // Fallback to local auth
+      if (dataCache && dataCache.users) {
+        dataCache.users = dataCache.users.filter(u => u.id !== userId);
+        saveToLocalStorage();
+      }
+      
+      currentUserCache = null;
+      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+      return true;
+    }
+  } catch (error) {
+    console.error('Error deleting user account:', error);
     throw error;
   }
 }
