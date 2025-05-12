@@ -1,0 +1,36 @@
+/* profile.css */
+.profile-container {
+    padding-bottom: 80px;
+}
+
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--light-gray);
+    text-decoration: none;
+    color: var(--dark-color);
+}
+
+.profile-menu-icon {
+    width: 24px;
+    margin-left: var(--spacing-md);
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.profile-menu-text {
+    flex: 1;
+}
+
+.profile-menu-arrow {
+    color: var(--gray-color);
+}
+
+.profile-menu-item--danger {
+    color: var(--danger-color);
+}
+
+.profile-menu-icon--danger {
+    color: var(--danger-color);
+}

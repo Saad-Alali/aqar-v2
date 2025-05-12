@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "820649708688",
+    "firebase_url": "https://real-estate-app2-b5a0e-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "real-estate-app2-b5a0e",
+    "storage_bucket": "real-estate-app2-b5a0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820649708688:android:7e513f3ab0a3dc78c2dc15",
+        "android_client_info": {
+          "package_name": "com.example.aqar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdQbW-i50b8ZOksN1NbN573EDjiY0a_zY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

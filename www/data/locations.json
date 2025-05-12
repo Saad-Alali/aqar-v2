@@ -1,0 +1,203 @@
+{
+  "cities": [
+    {
+      "id": "riyadh",
+      "name": "الرياض",
+      "nameEn": "Riyadh",
+      "lat": 24.7136,
+      "lng": 46.6753,
+      "neighborhoods": [
+        {
+          "id": "olaya",
+          "name": "العليا",
+          "nameEn": "Olaya",
+          "lat": 24.6911,
+          "lng": 46.6833
+        },
+        {
+          "id": "almalaz",
+          "name": "الملز",
+          "nameEn": "Al Malaz",
+          "lat": 24.6699,
+          "lng": 46.7093
+        },
+        {
+          "id": "alwazarat",
+          "name": "الوزارات",
+          "nameEn": "Al Wazarat",
+          "lat": 24.6830,
+          "lng": 46.7144
+        },
+        {
+          "id": "alworood",
+          "name": "الورود",
+          "nameEn": "Al Worood",
+          "lat": 24.7553,
+          "lng": 46.6948
+        },
+        {
+          "id": "alnaseem",
+          "name": "النسيم",
+          "nameEn": "Al Naseem",
+          "lat": 24.7680,
+          "lng": 46.8062
+        },
+        {
+          "id": "alrabiea",
+          "name": "الربيع",
+          "nameEn": "Al Rabiea",
+          "lat": 24.7978,
+          "lng": 46.6610
+        }
+      ]
+    },
+    {
+      "id": "jeddah",
+      "name": "جدة",
+      "nameEn": "Jeddah",
+      "lat": 21.4858,
+      "lng": 39.1925,
+      "neighborhoods": [
+        {
+          "id": "albalad",
+          "name": "البلد",
+          "nameEn": "Al Balad",
+          "lat": 21.4858,
+          "lng": 39.1925
+        },
+        {
+          "id": "alhamra",
+          "name": "الحمراء",
+          "nameEn": "Al Hamra",
+          "lat": 21.5169,
+          "lng": 39.1693
+        },
+        {
+          "id": "alsalamah",
+          "name": "السلامة",
+          "nameEn": "Al Salamah",
+          "lat": 21.6047,
+          "lng": 39.1213
+        },
+        {
+          "id": "alrawdah",
+          "name": "الروضة",
+          "nameEn": "Al Rawdah",
+          "lat": 21.5565,
+          "lng": 39.1465
+        },
+        {
+          "id": "alkhalidiyyah",
+          "name": "الخالدية",
+          "nameEn": "Al Khalidiyyah",
+          "lat": 21.5830,
+          "lng": 39.1099
+        }
+      ]
+    },
+    {
+      "id": "dammam",
+      "name": "الدمام",
+      "nameEn": "Dammam",
+      "lat": 26.4207,
+      "lng": 50.0888,
+      "neighborhoods": [
+        {
+          "id": "alaziziyah",
+          "name": "العزيزية",
+          "nameEn": "Al Aziziyah",
+          "lat": 26.4297,
+          "lng": 50.0916
+        },
+        {
+          "id": "alfaisaliyah",
+          "name": "الفيصلية",
+          "nameEn": "Al Faisaliyah",
+          "lat": 26.4392,
+          "lng": 50.1039
+        },
+        {
+          "id": "abdullah",
+          "name": "حي الملك عبدالله",
+          "nameEn": "King Abdullah",
+          "lat": 26.3932,
+          "lng": 50.1863
+        },
+        {
+          "id": "alqadisiyah",
+          "name": "القادسية",
+          "nameEn": "Al Qadisiyah",
+          "lat": 26.4499,
+          "lng": 50.1098
+        }
+      ]
+    },
+    {
+      "id": "makkah",
+      "name": "مكة المكرمة",
+      "nameEn": "Makkah",
+      "lat": 21.3891,
+      "lng": 39.8579,
+      "neighborhoods": [
+        {
+          "id": "alaziziyah-makkah",
+          "name": "العزيزية",
+          "nameEn": "Al Aziziyah",
+          "lat": 21.3735,
+          "lng": 39.9327
+        },
+        {
+          "id": "alshshawqiyyah",
+          "name": "الشوقية",
+          "nameEn": "Al Shawqiyyah",
+          "lat": 21.3702,
+          "lng": 39.8131
+        },
+        {
+          "id": "alnuzahah",
+          "name": "النزهة",
+          "nameEn": "Al Nuzahah",
+          "lat": 21.4011,
+          "lng": 39.8349
+        },
+        {
+          "id": "alazizia",
+          "name": "العزيزية",
+          "nameEn": "Al Azizia",
+          "lat": 21.3587,
+          "lng": 39.9540
+        }
+      ]
+    },
+    {
+      "id": "medinah",
+      "name": "المدينة المنورة",
+      "nameEn": "Medinah",
+      "lat": 24.5247,
+      "lng": 39.5692,
+      "neighborhoods": [
+        {
+          "id": "quba",
+          "name": "قباء",
+          "nameEn": "Quba",
+          "lat": 24.4836,
+          "lng": 39.6143
+        },
+        {
+          "id": "alawali",
+          "name": "العوالي",
+          "nameEn": "Al Awali",
+          "lat": 24.5469,
+          "lng": 39.5406
+        },
+        {
+          "id": "alshuhada",
+          "name": "الشهداء",
+          "nameEn": "Al Shuhada",
+          "lat": 24.4823,
+          "lng": 39.5723
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>عقار - تطبيق البحث عن العقارات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Color Scheme */
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary-color: #059669;
+            --secondary-dark: #047857;
+            --secondary-light: #10b981;
+            --dark-color: #1f2937;
+            --gray-color: #6b7280;
+            --light-gray: #e5e7eb;
+            --lighter-gray: #f3f4f6;
+            --white-color: #ffffff;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --success-color: #10b981;
+            
+            /* Typography */
+            --body-font: 'Tajawal', sans-serif;
+            --heading-font: 'Tajawal', sans-serif;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border radius */
+            --border-radius-sm: 0.25rem;
+            --border-radius-md: 0.5rem;
+            --border-radius-lg: 1rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--body-font);
+            overflow: hidden;
+            background-color: var(--white-color);
+            color: var(--dark-color);
+        }
+        
+        /* Splash Screen */
+        .splash-container {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e1f5fe 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        
+        .splash-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+        
+        .splash-logo {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .splash-tagline {
+            font-size: 1.2rem;
+            color: var(--gray-color);
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        .splash-loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(37, 99, 235, 0.1);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite, fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Onboarding */
+        .onboarding-container {
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--white-color);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+            overflow: hidden;
+        }
+        
+        .onboarding-slide {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+        
+        .onboarding-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .onboarding-image {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(37, 99, 235, 0.1);
+            border-radius: 50%;
+            color: var(--primary-color);
+            font-size: 5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 15px rgba(37, 99, 235, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+            }
+        }
+        
+        .onboarding-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+            text-align: center;
+        }
+        
+        .onboarding-description {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--gray-color);
+            max-width: 400px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .onboarding-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .onboarding-feature {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .onboarding-feature-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(5, 150, 105, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .onboarding-feature-text {
+            font-size: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .onboarding-pagination {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .onboarding-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            margin: 0 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .onboarding-dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        .onboarding-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .onboarding-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border: none;
+        }
+        
+        .onboarding-button.primary {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+        
+        .onboarding-button.primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
+        }
+        
+        .onboarding-button.primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+        
+        .onboarding-button.secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+        }
+        
+        .onboarding-button.secondary:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+        
+        .onboarding-button.hidden {
+            visibility: hidden;
+        }
+        
+        .skip-button {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--gray-color);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .skip-button:hover {
+            background-color: rgba(107, 114, 128, 0.1);
+            color: var(--dark-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-container" id="splashScreen">
+        <div class="splash-logo-container">
+            <div class="splash-logo">عقار</div>
+            <div class="splash-tagline">شريكك في العثور على المنزل المثالي</div>
+        </div>
+        <div class="splash-loader"></div>
+    </div>
+    
+    <!-- Onboarding Slides -->
+    <div class="onboarding-container" id="onboardingContainer">
+        <button class="skip-button" onclick="goToLogin()">تخطي</button>
+        
+        <!-- Slide 1: Search Features -->
+        <div class="onboarding-slide active" id="slide1">
+            <div class="onboarding-image">
+                <i class="fas fa-search-location"></i>
+            </div>
+            <h2 class="onboarding-title">ابحث بذكاء عن أفضل العقارات</h2>
+            <p class="onboarding-description">تصفح آلاف العقارات واستخدم خيارات البحث المتقدمة للعثور على العقار المناسب لك</p>
+            
+            <div class="onboarding-features">
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <div class="onboarding-feature-text">فلترة متقدمة حسب السعر، المساحة، غرف النوم، وأكثر</div>
+                </div>
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div class="onboarding-feature-text">البحث المباشر على الخريطة للمواقع المفضلة لديك</div>
+                </div>
+            </div>
+            
+            <div class="onboarding-pagination">
+                <div class="onboarding-dot active"></div>
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot"></div>
+            </div>
+            <div class="onboarding-buttons">
+                <button class="onboarding-button secondary hidden">السابق</button>
+                <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Favorites & Comparison -->
+        <div class="onboarding-slide" id="slide2">
+            <div class="onboarding-image">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h2 class="onboarding-title">حفظ ومقارنة العقارات المفضلة</h2>
+            <p class="onboarding-description">قم بحفظ العقارات المفضلة لديك والمقارنة بينها لاتخاذ القرار الأفضل</p>
+            
+            <div class="onboarding-features">
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                    <div class="onboarding-feature-text">وصول سريع لقائمة العقارات المفضلة من أي جهاز</div>
+                </div>
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="onboarding-feature-text">مقارنة تفصيلية للخصائص والأسعار لاتخاذ القرار المناسب</div>
+                </div>
+            </div>
+            
+            <div class="onboarding-pagination">
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot active"></div>
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot"></div>
+            </div>
+            <div class="onboarding-buttons">
+                <button class="onboarding-button secondary" onclick="previousSlide()">السابق</button>
+                <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Exploring & Virtual Tours -->
+        <div class="onboarding-slide" id="slide3">
+            <div class="onboarding-image">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <h2 class="onboarding-title">استكشف الأحياء والمناطق</h2>
+            <p class="onboarding-description">تعرف على تفاصيل المناطق والأحياء والخدمات القريبة ومعلومات مفصلة عن كل منطقة</p>
+            
+            <div class="onboarding-features">
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="onboarding-feature-text">معلومات شاملة عن المدارس، المستشفيات، المتاجر، والمواصلات</div>
+                </div>
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="onboarding-feature-text">مؤشرات عن متوسط أسعار العقارات في كل منطقة</div>
+                </div>
+            </div>
+            
+            <div class="onboarding-pagination">
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot active"></div>
+                <div class="onboarding-dot"></div>
+            </div>
+            <div class="onboarding-buttons">
+                <button class="onboarding-button secondary" onclick="previousSlide()">السابق</button>
+                <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Start -->
+        <div class="onboarding-slide" id="slide4">
+            <div class="onboarding-image">
+                <i class="fas fa-home"></i>
+            </div>
+            <h2 class="onboarding-title">ابدأ رحلتك العقارية الآن</h2>
+            <p class="onboarding-description">سجل دخول الآن واستمتع بتجربة فريدة في البحث عن العقارات المناسبة بكل سهولة</p>
+            
+            <div class="onboarding-features">
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="onboarding-feature-text">إشعارات فورية بالعقارات الجديدة حسب اهتماماتك</div>
+                </div>
+                <div class="onboarding-feature">
+                    <div class="onboarding-feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="onboarding-feature-text">تواصل مباشر مع الملاك والوكلاء العقاريين</div>
+                </div>
+            </div>
+            
+            <div class="onboarding-pagination">
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot"></div>
+                <div class="onboarding-dot active"></div>
+            </div>
+            <div class="onboarding-buttons">
+                <button class="onboarding-button secondary" onclick="previousSlide()">السابق</button>
+                <button class="onboarding-button primary" onclick="goToLogin()">ابدأ الآن</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Variables for slides control
+        let currentSlide = 1;
+        const totalSlides = 4;
+        
+        // Show splash screen for 3 seconds
+        setTimeout(() => {
+            const splashScreen = document.getElementById('splashScreen');
+            const onboardingContainer = document.getElementById('onboardingContainer');
+            
+            // Fade out splash screen
+            splashScreen.style.opacity = '0';
+            splashScreen.style.transform = 'scale(1.1)';
+            
+            // Show onboarding screen
+            onboardingContainer.style.opacity = '1';
+            
+            // Remove splash screen after animation completes
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 500);
+        }, 3000);
+        
+        // Function to go to next slide
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                // Hide current slide
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                
+                // Increment current slide
+                currentSlide++;
+                
+                // Show new slide
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+            }
+        }
+        
+        // Function to go to previous slide
+        function previousSlide() {
+            if (currentSlide > 1) {
+                // Hide current slide
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                
+                // Decrement current slide
+                currentSlide--;
+                
+                // Show new slide
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+            }
+        }
+        
+        // Function to go to login page
+        function goToLogin() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

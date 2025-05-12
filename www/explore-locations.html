@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>استكشاف المواقع - عقار</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/explore-locations.css">
+    <script type="module" src="js/language-handler.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="app-header-action">
+                <a href="index.html" class="back-button">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <h1 class="app-title">استكشاف المواقع</h1>
+            <div class="app-header-action"></div>
+        </header>
+
+        <div class="app-content explore-container">
+            <div class="explore-map-container">
+                <div id="map"></div>
+            </div>
+            
+            <div class="explore-cities">
+                <h2 class="explore-section-title">المدن</h2>
+                <div class="city-grid" id="cityGrid">
+                    <!-- Cities will be dynamically loaded here -->
+                </div>
+            </div>
+            
+            <div class="explore-neighborhoods" id="neighborhoodsSection" style="display: none;">
+                <div class="section-header">
+                    <a href="#" class="back-link" id="backToCities">
+                        <i class="fas fa-arrow-right"></i>
+                        العودة للمدن
+                    </a>
+                    <h2 class="explore-section-title" id="selectedCityTitle">الأحياء</h2>
+                </div>
+                <div class="neighborhood-grid" id="neighborhoodGrid">
+                    <!-- Neighborhoods will be dynamically loaded here -->
+                </div>
+            </div>
+            
+            <div class="neighborhood-info" id="neighborhoodInfo" style="display: none;">
+                <div class="section-header">
+                    <a href="#" class="back-link" id="backToNeighborhoods">
+                        <i class="fas fa-arrow-right"></i>
+                        العودة للأحياء
+                    </a>
+                    <h2 class="explore-section-title" id="selectedNeighborhoodTitle">معلومات الحي</h2>
+                </div>
+                <div class="neighborhood-details">
+                    <div class="info-card weather-card">
+                        <h3 class="info-card-title">
+                            <i class="fas fa-sun"></i>
+                            الطقس
+                        </h3>
+                        <div class="weather-info" id="weatherInfo">
+                            <div class="weather-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                جاري تحميل معلومات الطقس...
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card properties-card">
+                        <h3 class="info-card-title">
+                            <i class="fas fa-home"></i>
+                            العقارات
+                        </h3>
+                        <div class="properties-info" id="propertiesInfo">
+                            <a href="#" class="btn btn--primary btn--block">استعراض العقارات في المنطقة</a>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card nearby-card">
+                        <h3 class="info-card-title">
+                            <i class="fas fa-map-marker-alt"></i>
+                            المرافق القريبة
+                        </h3>
+                        <div class="nearby-info" id="nearbyInfo">
+                            <div class="nearby-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                جاري تحميل المرافق القريبة...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <a href="index.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-home"></i></div>
+                <div class="tab-bar__label">الرئيسية</div>
+            </a>
+            <a href="search.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-search"></i></div>
+                <div class="tab-bar__label">بحث</div>
+            </a>
+            <a href="explore-locations.html" class="tab-bar__item tab-bar__item--active">
+                <div class="tab-bar__icon"><i class="fas fa-map-marked-alt"></i></div>
+                <div class="tab-bar__label">استكشاف</div>
+            </a>
+            <a href="profile.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-user"></i></div>
+                <div class="tab-bar__label">حسابي</div>
+            </a>
+        </div>
+    </div>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzluJAdmR0E6C6S4fu7MH9eL7JFtxr9wo&v=weekly&callback=initMap&loading=async"></script>
+    <script type="module" src="js/explore-locations.js"></script>
+</body>
+</html>

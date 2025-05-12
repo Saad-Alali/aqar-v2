@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>تعديل الملف الشخصي - عقار</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script type="module" src="js/language-handler.js"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+        .edit-profile-container {
+            padding-bottom: 70px;
+        }
+        .form__error {
+            display: none;
+        }
+        .form__input--error + .form__error {
+            display: block;
+        }
+        .blurred-content {
+            filter: blur(5px);
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="app-header-action">
+                <a href="profile.html" class="back-button">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <h1 class="app-title">تعديل الملف الشخصي</h1>
+            <div class="app-header-action"></div>
+        </header>
+
+        <div class="app-content edit-profile-container" id="editProfileContent">
+            <div id="formAlerts"></div>
+            
+            <form class="form" id="editProfileForm">
+                <div class="form__group">
+                    <label for="fullName" class="form__label">الاسم الكامل</label>
+                    <input type="text" id="fullName" name="fullName" class="form__input" placeholder="أدخل اسمك الكامل" required>
+                    <small class="form__error" id="fullNameError">يجب أن يكون الاسم الكامل 3 أحرف على الأقل</small>
+                </div>
+                
+                <div class="form__group">
+                    <label for="email" class="form__label">البريد الإلكتروني</label>
+                    <input type="email" id="email" name="email" class="form__input" placeholder="أدخل بريدك الإلكتروني" required disabled>
+                    <small class="form__error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</small>
+                </div>
+                
+                <div class="form__group">
+                    <label for="phone" class="form__label">رقم الجوال</label>
+                    <input type="tel" id="phone" name="phone" class="form__input" placeholder="أدخل رقم الجوال">
+                    <small class="form__error" id="phoneError">يرجى إدخال رقم جوال صحيح</small>
+                </div>
+                
+                <div class="form__group">
+                    <label for="address" class="form__label">العنوان</label>
+                    <input type="text" id="address" name="address" class="form__input" placeholder="أدخل عنوانك">
+                    <small class="form__error" id="addressError">يرجى إدخال عنوان صحيح</small>
+                </div>
+                
+                <div class="form__group">
+                    <button type="submit" class="btn btn--primary btn--block" id="saveBtn">حفظ التغييرات</button>
+                    <a href="profile.html" class="btn btn--outline-primary btn--block mt-2">إلغاء</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="tab-bar">
+            <a href="index.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-home"></i></div>
+                <div class="tab-bar__label">الرئيسية</div>
+            </a>
+            <a href="search.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-search"></i></div>
+                <div class="tab-bar__label">بحث</div>
+            </a>
+            <a href="favorites.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-heart"></i></div>
+                <div class="tab-bar__label">المفضلة</div>
+            </a>
+            <a href="profile.html" class="tab-bar__item tab-bar__item--active">
+                <div class="tab-bar__icon"><i class="fas fa-user"></i></div>
+                <div class="tab-bar__label">حسابي</div>
+            </a>
+        </div>
+        
+        <div class="auth-overlay" id="authOverlay" style="display: none;">
+            <div class="auth-overlay__icon">
+                <i class="fas fa-user-lock"></i>
+            </div>
+            <h2 class="auth-overlay__title">تسجيل الدخول مطلوب</h2>
+            <p class="auth-overlay__description">
+                يجب تسجيل الدخول أو إنشاء حساب جديد للوصول إلى تعديل الملف الشخصي.
+            </p>
+            <div class="auth-overlay__buttons">
+                <a href="login.html" class="btn btn--primary">تسجيل الدخول</a>
+                <a href="register.html" class="btn btn--outline-primary">إنشاء حساب جديد</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeJsonService } from './js/json-service.js';
+        import { getCurrentUser, updateUserProfile } from './js/auth-service.js';
+        import { showToast } from './js/app.js';
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await initializeJsonService();
+                
+                const user = await getCurrentUser();
+                
+                if (!user) {
+                    showAuthOverlay();
+                    return;
+                }
+                
+                populateForm(user);
+                initializeForm(user);
+                
+            } catch (error) {
+                console.error("Error initializing edit profile page:", error);
+                showToast("حدث خطأ في تهيئة الصفحة", "error");
+            }
+        });
+        
+        function showAuthOverlay() {
+            const authOverlay = document.getElementById('authOverlay');
+            const content = document.getElementById('editProfileContent');
+            
+            if (authOverlay) {
+                authOverlay.style.display = 'flex';
+            }
+            
+            if (content) {
+                content.classList.add('blurred-content');
+            }
+        }
+        
+        function populateForm(user) {
+            const fullNameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const addressInput = document.getElementById('address');
+            
+            if (fullNameInput) fullNameInput.value = user.fullName || '';
+            if (emailInput) emailInput.value = user.email || '';
+            if (phoneInput) phoneInput.value = user.phone || '';
+            if (addressInput) addressInput.value = user.address || '';
+        }
+        
+        function initializeForm(user) {
+            const editProfileForm = document.getElementById('editProfileForm');
+            if (!editProfileForm) return;
+            
+            const fullNameInput = document.getElementById('fullName');
+            const phoneInput = document.getElementById('phone');
+            const addressInput = document.getElementById('address');
+            
+            fullNameInput.addEventListener('blur', function() {
+                validateFullName(this);
+            });
+            
+            phoneInput.addEventListener('blur', function() {
+                validatePhone(this);
+            });
+            
+            editProfileForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const isFullNameValid = validateFullName(fullNameInput);
+                const isPhoneValid = validatePhone(phoneInput);
+                
+                if (!isFullNameValid || !isPhoneValid) {
+                    return;
+                }
+                
+                try {
+                    const saveBtn = document.getElementById('saveBtn');
+                    saveBtn.textContent = 'جارٍ الحفظ...';
+                    saveBtn.disabled = true;
+                    
+                    const updatedUser = await updateUserProfile(user.id, {
+                        fullName: fullNameInput.value,
+                        phone: phoneInput.value,
+                        address: addressInput.value,
+                        avatarUrl: user.avatarUrl,
+                        favorites: user.favorites
+                    });
+                    
+                    const alertsContainer = document.getElementById('formAlerts');
+                    alertsContainer.innerHTML = '<div class="alert alert--success">تم تحديث الملف الشخصي بنجاح!</div>';
+                    
+                    saveBtn.textContent = 'حفظ التغييرات';
+                    saveBtn.disabled = false;
+                    
+                    setTimeout(() => {
+                        window.location.href = 'profile.html';
+                    }, 1500);
+                } catch (error) {
+                    console.error("Error updating profile:", error);
+                    
+                    const alertsContainer = document.getElementById('formAlerts');
+                    alertsContainer.innerHTML = '<div class="alert alert--danger">فشل تحديث الملف الشخصي. يرجى المحاولة مرة أخرى.</div>';
+                    
+                    const saveBtn = document.getElementById('saveBtn');
+                    saveBtn.textContent = 'حفظ التغييرات';
+                    saveBtn.disabled = false;
+                }
+            });
+        }
+        
+        function validateFullName(input) {
+            const isValid = input.value.trim().length >= 3;
+            toggleError(input, isValid, 'fullNameError');
+            return isValid;
+        }
+        
+        function validatePhone(input) {
+            if (input.value.trim() === '') {
+                toggleError(input, true, 'phoneError');
+                return true;
+            }
+            
+            const phoneRegex = /^[\d\s\+\-\(\)]{8,15}$/;
+            const isValid = phoneRegex.test(input.value);
+            toggleError(input, isValid, 'phoneError');
+            return isValid;
+        }
+        
+        function toggleError(input, isValid, errorId) {
+            if (isValid) {
+                input.classList.remove('form__input--error');
+                document.getElementById(errorId).style.display = 'none';
+            } else {
+                input.classList.add('form__input--error');
+                document.getElementById(errorId).style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

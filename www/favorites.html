@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>المفضلة - عقار</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/favorites.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script type="module" src="js/language-handler.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="app-header-action">
+                <a href="index.html" class="back-button">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <h1 class="app-title">المفضلة</h1>
+            <div class="app-header-action">
+                <i class="fas fa-ellipsis-v" id="moreOptionsBtn"></i>
+            </div>
+        </header>
+
+        <div class="app-content favorites-container" id="favoritesContent">
+            <div class="favorites-tabs">
+                <div class="favorites-tab favorites-tab--active" data-filter="all">الكل</div>
+                <div class="favorites-tab" data-filter="للبيع">للبيع</div>
+                <div class="favorites-tab" data-filter="للإيجار">للإيجار</div>
+                <div class="favorites-tab" data-filter="apartment">شقق</div>
+                <div class="favorites-tab" data-filter="villa">فلل</div>
+                <div class="favorites-tab" data-filter="house">منازل</div>
+                <div class="favorites-tab" data-filter="commercial">مباني تجارية</div>
+            </div>
+
+            <div class="container">
+                <div id="favoritesWithItems" style="display: none;">
+                    <!-- Favorite property items will be dynamically added here -->
+                </div>
+
+                <div id="favoritesEmpty" class="empty-state">
+                    <div class="empty-state__icon">
+                        <i class="far fa-heart"></i>
+                    </div>
+                    <h3 class="empty-state__title">لا توجد عقارات في المفضلة</h3>
+                    <p class="empty-state__description">قم بإضافة العقارات التي تعجبك إلى المفضلة للوصول إليها لاحقًا
+                        بسهولة</p>
+                    <a href="index.html" class="btn btn--primary">استعرض العقارات</a>
+                </div>
+            </div>
+
+            <!-- Clear All Button -->
+            <div class="container" style="text-align: center; margin-top: 20px;">
+                <button id="clearAllFavoritesBtn" class="btn btn--danger" style="display: none;">
+                    <i class="fas fa-trash-alt"></i> حذف جميع المفضلات
+                </button>
+            </div>
+        </div>
+
+        <!-- Updated Tab Bar -->
+        <div class="tab-bar">
+            <a href="index.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-home"></i></div>
+                <div class="tab-bar__label">الرئيسية</div>
+            </a>
+            <a href="search.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-search"></i></div>
+                <div class="tab-bar__label">بحث</div>
+            </a>
+            <a href="favorites.html" class="tab-bar__item tab-bar__item--active">
+                <div class="tab-bar__icon"><i class="fas fa-heart"></i></div>
+                <div class="tab-bar__label">المفضلة</div>
+            </a>
+            <a href="profile.html" class="tab-bar__item">
+                <div class="tab-bar__icon"><i class="fas fa-user"></i></div>
+                <div class="tab-bar__label">حسابي</div>
+            </a>
+        </div>
+
+        <div class="auth-overlay" id="authOverlay" style="display: none;">
+            <div class="auth-overlay__icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h2 class="auth-overlay__title">تسجيل الدخول مطلوب</h2>
+            <p class="auth-overlay__description">
+                يجب تسجيل الدخول أو إنشاء حساب جديد للوصول إلى قائمة المفضلة الخاصة بك.
+            </p>
+            <div class="auth-overlay__buttons">
+                <a href="login.html" class="btn btn--primary">تسجيل الدخول</a>
+                <a href="register.html" class="btn btn--outline-primary">إنشاء حساب جديد</a>
+            </div>
+        </div>
+
+        <!-- More Options Menu -->
+        <div class="dropdown-menu" id="optionsMenu"
+            style="display: none; position: fixed; top: 60px; right: 10px; background-color: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000;">
+            <div class="dropdown-menu__item" id="clearAllBtn"
+                style="padding: 10px 15px; display: flex; align-items: center; cursor: pointer;">
+                <i class="fas fa-trash-alt" style="margin-left: 8px; color: #ef4444;"></i>
+                <span>حذف جميع المفضلات</span>
+            </div>
+            <div class="dropdown-menu__item" id="sortByNewestBtn"
+                style="padding: 10px 15px; display: flex; align-items: center; cursor: pointer;">
+                <i class="fas fa-sort-amount-down" style="margin-left: 8px;"></i>
+                <span>ترتيب حسب الأحدث</span>
+            </div>
+            <div class="dropdown-menu__item" id="sortByPriceBtn"
+                style="padding: 10px 15px; display: flex; align-items: center; cursor: pointer;">
+                <i class="fas fa-sort-numeric-down" style="margin-left: 8px;"></i>
+                <span>ترتيب حسب السعر</span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeJsonService } from './js/json-service.js';
+        import { getCurrentUser } from './js/auth-service.js';
+        import { getUserFavorites, removeFromFavorites, clearAllFavorites } from './js/favorites-service.js';
+        import { showToast } from './js/app.js';
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                await initializeJsonService();
+
+                const user = await getCurrentUser();
+
+                if (!user) {
+                    showAuthOverlay();
+                    return;
+                }
+
+                await loadFavorites(user);
+                initTabs();
+                initOptionsMenu(user);
+                initClearAllButton(user);
+
+            } catch (error) {
+                console.error("Error initializing favorites page:", error);
+                showToast("حدث خطأ في تهيئة الصفحة", "error");
+            }
+        });
+
+        function showAuthOverlay() {
+            const authOverlay = document.getElementById('authOverlay');
+            const content = document.getElementById('favoritesContent');
+
+            if (authOverlay) {
+                authOverlay.style.display = 'flex';
+            }
+
+            if (content) {
+                content.classList.add('blurred-content');
+            }
+        }
+
+        async function loadFavorites(user) {
+            try {
+                const favorites = await getUserFavorites(user.id);
+
+                const favoritesContainer = document.getElementById('favoritesWithItems');
+                const emptyState = document.getElementById('favoritesEmpty');
+                const clearAllBtn = document.getElementById('clearAllFavoritesBtn');
+
+                if (!favoritesContainer || !emptyState) return;
+
+                if (!favorites || favorites.length === 0) {
+                    favoritesContainer.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    if (clearAllBtn) clearAllBtn.style.display = 'none';
+                    return;
+                }
+
+                favoritesContainer.innerHTML = '';
+                favoritesContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+                if (clearAllBtn) clearAllBtn.style.display = 'inline-block';
+
+                favorites.forEach(property => {
+                    const favoriteItem = createFavoriteItem(property);
+                    favoritesContainer.appendChild(favoriteItem);
+                });
+
+                attachDeleteButtons(user.id);
+            } catch (error) {
+                console.error("Error loading favorites:", error);
+                showToast("حدث خطأ في تحميل المفضلة", "error");
+            }
+        }
+
+        function createFavoriteItem(property) {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'favorite-property';
+            itemElement.dataset.id = property.id;
+            itemElement.dataset.type = property.transactionType || 'للبيع';
+            itemElement.dataset.category = property.propertyType || 'apartment';
+
+            itemElement.innerHTML = `
+                <div class="favorite-property__content">
+                    <div class="favorite-property__image">
+                        <img src="${property.imageUrl}" alt="${property.title}">
+                    </div>
+                    <div class="favorite-property__details">
+                        <h3 class="favorite-property__title">${property.title}</h3>
+                        <div class="favorite-property__location">
+                            <i class="fas fa-map-marker-alt"></i> ${property.location}
+                        </div>
+                        <div class="favorite-property__price">${property.priceFormatted}</div>
+                        <div class="favorite-property__features">
+                            <div class="favorite-property__feature">
+                                <i class="fas fa-bed"></i> ${property.features.bedrooms}
+                            </div>
+                            <div class="favorite-property__feature">
+                                <i class="fas fa-bath"></i> ${property.features.bathrooms}
+                            </div>
+                            <div class="favorite-property__feature">
+                                <i class="fas fa-ruler-combined"></i> ${property.features.area} قدم²
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="favorite-property__actions">
+                    <a href="#" class="favorite-property__action favorite-property__action--delete" title="إزالة من المفضلة" data-id="${property.id}">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                    <a href="#" class="favorite-property__action" title="مشاركة">
+                        <i class="fas fa-share-alt"></i>
+                    </a>
+                </div>
+            `;
+
+            itemElement.addEventListener('click', function (e) {
+                if (e.target.closest('.favorite-property__action')) {
+                    return;
+                }
+
+                window.location.href = `property-details.html?id=${property.id}`;
+            });
+
+            return itemElement;
+        }
+
+        function attachDeleteButtons(userId) {
+            const deleteButtons = document.querySelectorAll('.favorite-property__action--delete');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const propertyId = this.dataset.id;
+                    const propertyItem = this.closest('.favorite-property');
+
+                    if (!propertyId || !propertyItem) return;
+
+                    try {
+                        await removeFromFavorites(userId, propertyId);
+                        propertyItem.style.transition = 'all 0.3s ease';
+                        propertyItem.style.opacity = '0';
+                        propertyItem.style.height = '0';
+                        propertyItem.style.marginBottom = '0';
+                        propertyItem.style.overflow = 'hidden';
+
+                        setTimeout(() => {
+                            propertyItem.remove();
+                            const remainingProperties = document.querySelectorAll('.favorite-property');
+                            if (remainingProperties.length === 0) {
+                                document.getElementById('favoritesWithItems').style.display = 'none';
+                                document.getElementById('favoritesEmpty').style.display = 'block';
+                                document.getElementById('clearAllFavoritesBtn').style.display = 'none';
+                            }
+                        }, 300);
+
+                        showToast('تمت إزالة العقار من المفضلة', 'info');
+                    } catch (error) {
+                        console.error("Error removing from favorites:", error);
+                        showToast('حدث خطأ في إزالة العقار من المفضلة', 'error');
+                    }
+                });
+            });
+        }
+
+        function initTabs() {
+            const tabs = document.querySelectorAll('.favorites-tab');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    tabs.forEach(t => t.classList.remove('favorites-tab--active'));
+                    this.classList.add('favorites-tab--active');
+
+                    const filter = this.dataset.filter;
+                    filterFavorites(filter);
+                });
+            });
+        }
+
+        function filterFavorites(filter) {
+            const favoriteItems = document.querySelectorAll('.favorite-property');
+            const favoritesContainer = document.getElementById('favoritesWithItems');
+            const emptyState = document.getElementById('favoritesEmpty');
+
+            if (!favoriteItems.length) {
+                if (favoritesContainer) favoritesContainer.style.display = 'none';
+                if (emptyState) emptyState.style.display = 'block';
+                return;
+            }
+
+            let hasVisibleItems = false;
+
+            favoriteItems.forEach(item => {
+                if (filter === 'all') {
+                    item.style.display = 'block';
+                    hasVisibleItems = true;
+                } else if (item.dataset.type === filter || item.dataset.category === filter) {
+                    item.style.display = 'block';
+                    hasVisibleItems = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            if (hasVisibleItems) {
+                if (favoritesContainer) favoritesContainer.style.display = 'block';
+                if (emptyState) emptyState.style.display = 'none';
+            } else {
+                if (favoritesContainer) favoritesContainer.style.display = 'none';
+                if (emptyState) emptyState.style.display = 'block';
+            }
+        }
+
+        function initOptionsMenu(user) {
+            const optionsBtn = document.getElementById('moreOptionsBtn');
+            const optionsMenu = document.getElementById('optionsMenu');
+
+            if (!optionsBtn || !optionsMenu) return;
+
+            optionsBtn.addEventListener('click', function () {
+                const isVisible = optionsMenu.style.display === 'block';
+                optionsMenu.style.display = isVisible ? 'none' : 'block';
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!optionsBtn.contains(e.target) && !optionsMenu.contains(e.target)) {
+                    optionsMenu.style.display = 'none';
+                }
+            });
+
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            if (clearAllBtn) {
+                clearAllBtn.addEventListener('click', async function () {
+                    if (confirm('هل أنت متأكد من حذف جميع المفضلات؟')) {
+                        try {
+                            await clearAllFavorites(user.id);
+                            document.getElementById('favoritesWithItems').style.display = 'none';
+                            document.getElementById('favoritesEmpty').style.display = 'block';
+                            document.getElementById('clearAllFavoritesBtn').style.display = 'none';
+                            showToast('تم حذف جميع المفضلات', 'success');
+                            optionsMenu.style.display = 'none';
+                        } catch (error) {
+                            console.error("Error clearing favorites:", error);
+                            showToast('حدث خطأ في حذف المفضلات', 'error');
+                        }
+                    }
+                });
+            }
+
+            const sortByNewestBtn = document.getElementById('sortByNewestBtn');
+            const sortByPriceBtn = document.getElementById('sortByPriceBtn');
+
+            if (sortByNewestBtn) {
+                sortByNewestBtn.addEventListener('click', function () {
+                    sortFavorites('newest');
+                    optionsMenu.style.display = 'none';
+                });
+            }
+
+            if (sortByPriceBtn) {
+                sortByPriceBtn.addEventListener('click', function () {
+                    sortFavorites('price');
+                    optionsMenu.style.display = 'none';
+                });
+            }
+        }
+
+        function sortFavorites(sortType) {
+            const favoritesContainer = document.getElementById('favoritesWithItems');
+            const items = Array.from(document.querySelectorAll('.favorite-property'));
+
+            if (items.length <= 1) return;
+
+            items.sort((a, b) => {
+                if (sortType === 'price') {
+                    const priceA = a.querySelector('.favorite-property__price').textContent
+                        .replace(/[^\d]/g, '');
+                    const priceB = b.querySelector('.favorite-property__price').textContent
+                        .replace(/[^\d]/g, '');
+
+                    return parseInt(priceA) - parseInt(priceB);
+                } else if (sortType === 'newest') {
+                    return -1;
+                }
+
+                return 0;
+            });
+
+            items.forEach(item => {
+                favoritesContainer.appendChild(item);
+            });
+
+            showToast('تم ترتيب العقارات', 'success');
+        }
+
+        function initClearAllButton(user) {
+            const clearAllBtn = document.getElementById('clearAllFavoritesBtn');
+
+            if (!clearAllBtn) return;
+
+            clearAllBtn.addEventListener('click', async function () {
+                if (confirm('هل أنت متأكد من حذف جميع المفضلات؟')) {
+                    try {
+                        await clearAllFavorites(user.id);
+                        document.getElementById('favoritesWithItems').style.display = 'none';
+                        document.getElementById('favoritesEmpty').style.display = 'block';
+                        clearAllBtn.style.display = 'none';
+                        showToast('تم حذف جميع المفضلات', 'success');
+                    } catch (error) {
+                        console.error("Error clearing favorites:", error);
+                        showToast('حدث خطأ في حذف المفضلات', 'error');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

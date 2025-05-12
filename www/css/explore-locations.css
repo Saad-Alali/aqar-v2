@@ -1,0 +1,273 @@
+.explore-container {
+    padding-bottom: 70px;
+}
+
+.explore-map-container {
+    width: 100%;
+    height: 250px;
+    position: relative;
+    margin-bottom: var(--spacing-md);
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.explore-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    color: var(--dark-color);
+}
+
+.city-grid, 
+.neighborhood-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.city-card, 
+.neighborhood-card {
+    position: relative;
+    height: 120px;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.city-card:active, 
+.neighborhood-card:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-lg);
+}
+
+.city-card__image, 
+.neighborhood-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.city-card__overlay, 
+.neighborhood-card__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 70%);
+    display: flex;
+    align-items: flex-end;
+    padding: var(--spacing-sm);
+}
+
+.city-card__name, 
+.neighborhood-card__name {
+    color: var(--white-color);
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.back-link i {
+    margin-left: var(--spacing-xs);
+}
+
+.neighborhood-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.info-card {
+    background-color: var(--white-color);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.info-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+}
+
+.info-card-title i {
+    margin-left: var(--spacing-xs);
+    color: var(--primary-color);
+}
+
+.weather-info {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.weather-loading,
+.nearby-loading {
+    text-align: center;
+    color: var(--gray-color);
+    padding: var(--spacing-md) 0;
+}
+
+.weather-loading i,
+.nearby-loading i {
+    margin-left: var(--spacing-xs);
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.weather-temp {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.weather-icon {
+    width: 50px;
+    height: 50px;
+    margin-left: var(--spacing-sm);
+}
+
+.weather-description {
+    font-size: 1rem;
+    color: var(--gray-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.weather-details {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: var(--spacing-sm);
+}
+
+.weather-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weather-detail-label {
+    font-size: 0.75rem;
+    color: var(--gray-color);
+}
+
+.weather-detail-value {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.nearby-places {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.nearby-place {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.nearby-place:last-child {
+    border-bottom: none;
+}
+
+.nearby-place-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--lighter-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: var(--spacing-sm);
+    color: var(--primary-color);
+}
+
+.nearby-place-details {
+    flex: 1;
+}
+
+.nearby-place-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.nearby-place-distance {
+    font-size: 0.75rem;
+    color: var(--gray-color);
+}
+
+.map-info-window {
+    padding: var(--spacing-xs);
+    max-width: 250px;
+}
+
+.map-info-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.map-info-subtitle {
+    font-size: 0.85rem;
+    color: var(--gray-color);
+}
+
+@media (min-width: 768px) {
+    .city-grid, 
+    .neighborhood-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .explore-map-container {
+        height: 350px;
+    }
+}
+
+@media (min-width: 992px) {
+    .city-grid, 
+    .neighborhood-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .neighborhood-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .weather-card {
+        grid-column: span 2;
+    }
+}

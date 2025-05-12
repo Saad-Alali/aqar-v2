@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>إنشاء حساب - عقار</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script type="module" src="js/language-handler.js"></script>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+        }
+        .register-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+        .register-form {
+            width: 100%;
+            max-width: 400px;
+        }
+        .form__error {
+            display: none;
+        }
+        .form__input--error + .form__error {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="app-header-action">
+                <a href="login.html" class="back-button">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <h1 class="app-title">إنشاء حساب</h1>
+            <div class="app-header-action"></div>
+        </header>
+
+        <div class="app-content register-container">
+            <div class="register-logo">عقار</div>
+            
+            <div class="register-form">
+                <form class="form" id="registerForm">
+                    <div id="formAlerts"></div>
+                    
+                    <div class="form__group">
+                        <label for="fullName" class="form__label">الاسم الكامل</label>
+                        <input type="text" id="fullName" name="fullName" class="form__input" placeholder="أدخل اسمك الكامل" required>
+                        <small class="form__error" id="fullNameError">يجب أن يكون الاسم الكامل 3 أحرف على الأقل</small>
+                    </div>
+                    
+                    <div class="form__group">
+                        <label for="email" class="form__label">البريد الإلكتروني</label>
+                        <input type="email" id="email" name="email" class="form__input" placeholder="أدخل بريدك الإلكتروني" required>
+                        <small class="form__error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</small>
+                    </div>
+                    
+                    <div class="form__group">
+                        <label for="phone" class="form__label">رقم الجوال</label>
+                        <input type="tel" id="phone" name="phone" class="form__input" placeholder="أدخل رقم الجوال" required>
+                        <small class="form__error" id="phoneError">يرجى إدخال رقم جوال صحيح</small>
+                    </div>
+                    
+                    <div class="form__group">
+                        <label for="password" class="form__label">كلمة المرور</label>
+                        <input type="password" id="password" name="password" class="form__input" placeholder="أنشئ كلمة مرور" required>
+                        <small class="form__error" id="passwordError">يجب أن تكون كلمة المرور 6 أحرف على الأقل</small>
+                    </div>
+                    
+                    <div class="form__group">
+                        <label for="confirmPassword" class="form__label">تأكيد كلمة المرور</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form__input" placeholder="أكد كلمة المرور" required>
+                        <small class="form__error" id="confirmPasswordError">كلمات المرور غير متطابقة</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn--primary btn--block mt-4" id="registerBtn">إنشاء حساب</button>
+                    
+                    <div class="form__footer text-center mt-4">
+                        <p>لديك حساب بالفعل؟ <a href="login.html" class="form__footer-link">تسجيل الدخول</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeJsonService } from './js/json-service.js';
+        import { registerUser } from './js/auth-service.js';
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await initializeJsonService();
+                
+                const registerForm = document.getElementById('registerForm');
+                
+                if (registerForm) {
+                    const inputs = {
+                        fullName: document.getElementById('fullName'),
+                        email: document.getElementById('email'),
+                        phone: document.getElementById('phone'),
+                        password: document.getElementById('password'),
+                        confirmPassword: document.getElementById('confirmPassword')
+                    };
+                    
+                    inputs.fullName.addEventListener('blur', () => validateFullName(inputs.fullName));
+                    inputs.email.addEventListener('blur', () => validateEmail(inputs.email));
+                    inputs.phone.addEventListener('blur', () => validatePhone(inputs.phone));
+                    inputs.password.addEventListener('blur', () => validatePassword(inputs.password));
+                    inputs.confirmPassword.addEventListener('blur', () => validateConfirmPassword(inputs.confirmPassword, inputs.password));
+                    
+                    registerForm.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        
+                        const isFullNameValid = validateFullName(inputs.fullName);
+                        const isEmailValid = validateEmail(inputs.email);
+                        const isPhoneValid = validatePhone(inputs.phone);
+                        const isPasswordValid = validatePassword(inputs.password);
+                        const isConfirmPasswordValid = validateConfirmPassword(inputs.confirmPassword, inputs.password);
+                        
+                        if (isFullNameValid && isEmailValid && isPhoneValid && 
+                            isPasswordValid && isConfirmPasswordValid) {
+                            try {
+                                const registerBtn = document.getElementById('registerBtn');
+                                const alertsContainer = document.getElementById('formAlerts');
+                                
+                                registerBtn.textContent = 'جارٍ إنشاء الحساب...';
+                                registerBtn.disabled = true;
+                                
+                                alertsContainer.innerHTML = '';
+                                
+                                await registerUser(
+                                    inputs.email.value,
+                                    inputs.password.value,
+                                    inputs.fullName.value,
+                                    inputs.phone.value
+                                );
+                                
+                                alertsContainer.innerHTML = '<div class="alert alert--success">تم إنشاء الحساب بنجاح! جاري التحويل...</div>';
+                                
+                                setTimeout(() => {
+                                    window.location.href = 'index.html';
+                                }, 1000);
+                            } catch (error) {
+                                console.error("Registration error:", error);
+                                
+                                const alertsContainer = document.getElementById('formAlerts');
+                                const registerBtn = document.getElementById('registerBtn');
+                                
+                                let errorMessage = 'فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.';
+                                
+                                if (error.code === 'auth/email-already-in-use') {
+                                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل.';
+                                } else if (error.code === 'auth/weak-password') {
+                                    errorMessage = 'كلمة المرور ضعيفة جدًا.';
+                                } else if (error.code === 'auth/invalid-email') {
+                                    errorMessage = 'البريد الإلكتروني غير صالح.';
+                                }
+                                
+                                alertsContainer.innerHTML = `<div class="alert alert--danger">${errorMessage}</div>`;
+                                registerBtn.textContent = 'إنشاء حساب';
+                                registerBtn.disabled = false;
+                            }
+                        }
+                    });
+                }
+                
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                
+                const alertsContainer = document.getElementById('formAlerts');
+                if (alertsContainer) {
+                    alertsContainer.innerHTML = '<div class="alert alert--danger">حدث خطأ في تهيئة التطبيق. يرجى المحاولة مرة أخرى لاحقاً.</div>';
+                }
+            }
+        });
+        
+        function validateFullName(input) {
+            const isValid = input.value.trim().length >= 3;
+            toggleError(input, isValid);
+            return isValid;
+        }
+        
+        function validateEmail(input) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = emailRegex.test(input.value);
+            toggleError(input, isValid);
+            return isValid;
+        }
+        
+        function validatePhone(input) {
+            const phoneRegex = /^[\d\s\+\-\(\)]{8,15}$/;
+            const isValid = phoneRegex.test(input.value);
+            toggleError(input, isValid);
+            return isValid;
+        }
+        
+        function validatePassword(input) {
+            const isValid = input.value.length >= 6;
+            toggleError(input, isValid);
+            return isValid;
+        }
+        
+        function validateConfirmPassword(input, passwordInput) {
+            const isValid = input.value === passwordInput.value && input.value.length > 0;
+            toggleError(input, isValid);
+            return isValid;
+        }
+        
+        function toggleError(input, isValid) {
+            if (isValid) {
+                input.classList.remove('form__input--error');
+            } else {
+                input.classList.add('form__input--error');
+            }
+        }
+    </script>
+</body>
+</html>
