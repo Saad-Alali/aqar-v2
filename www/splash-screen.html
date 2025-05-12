@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -28,11 +29,11 @@
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
             --success-color: #10b981;
-            
+
             /* Typography */
             --body-font: 'Tajawal', sans-serif;
             --heading-font: 'Tajawal', sans-serif;
-            
+
             /* Spacing */
             --spacing-xs: 0.25rem;
             --spacing-sm: 0.5rem;
@@ -40,26 +41,26 @@
             --spacing-lg: 1.5rem;
             --spacing-xl: 2rem;
             --spacing-xxl: 3rem;
-            
+
             /* Border radius */
             --border-radius-sm: 0.25rem;
             --border-radius-md: 0.5rem;
             --border-radius-lg: 1rem;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: var(--body-font);
             overflow: hidden;
             background-color: var(--white-color);
             color: var(--dark-color);
         }
-        
+
         /* Splash Screen */
         .splash-container {
             height: 100vh;
@@ -75,7 +76,7 @@
             z-index: 1000;
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
-        
+
         .splash-logo-container {
             display: flex;
             flex-direction: column;
@@ -84,7 +85,7 @@
             margin-bottom: 2rem;
             animation: fadeInUp 1s ease-out forwards;
         }
-        
+
         .splash-logo {
             font-size: 4.5rem;
             font-weight: 700;
@@ -92,14 +93,14 @@
             margin-bottom: 0.5rem;
             text-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        
+
         .splash-tagline {
             font-size: 1.2rem;
             color: var(--gray-color);
             font-weight: 500;
             text-align: center;
         }
-        
+
         .splash-loader {
             width: 50px;
             height: 50px;
@@ -109,26 +110,31 @@
             animation: spin 1s linear infinite, fadeIn 0.5s ease-out forwards;
             opacity: 0;
         }
-        
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
+
         @keyframes fadeIn {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+            }
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         /* Onboarding */
         .onboarding-container {
             height: 100vh;
@@ -142,7 +148,7 @@
             transition: opacity 0.5s ease-in;
             overflow: hidden;
         }
-        
+
         .onboarding-slide {
             height: 100%;
             width: 100%;
@@ -158,12 +164,12 @@
             transform: translateX(100%);
             transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
         }
-        
+
         .onboarding-slide.active {
             opacity: 1;
             transform: translateX(0);
         }
-        
+
         .onboarding-image {
             width: 200px;
             height: 200px;
@@ -177,22 +183,24 @@
             font-size: 5rem;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0% {
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
             }
+
             70% {
                 transform: scale(1.05);
                 box-shadow: 0 0 0 15px rgba(37, 99, 235, 0);
             }
+
             100% {
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
             }
         }
-        
+
         .onboarding-title {
             font-size: 1.8rem;
             font-weight: 700;
@@ -200,7 +208,7 @@
             color: var(--dark-color);
             text-align: center;
         }
-        
+
         .onboarding-description {
             text-align: center;
             margin-bottom: 2rem;
@@ -209,7 +217,7 @@
             font-size: 1.1rem;
             line-height: 1.6;
         }
-        
+
         .onboarding-features {
             display: flex;
             flex-direction: column;
@@ -218,13 +226,13 @@
             width: 100%;
             max-width: 400px;
         }
-        
+
         .onboarding-feature {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
-        
+
         .onboarding-feature-icon {
             width: 36px;
             height: 36px;
@@ -237,18 +245,18 @@
             font-size: 1rem;
             flex-shrink: 0;
         }
-        
+
         .onboarding-feature-text {
             font-size: 1rem;
             color: var(--dark-color);
         }
-        
+
         .onboarding-pagination {
             display: flex;
             justify-content: center;
             margin-bottom: 2rem;
         }
-        
+
         .onboarding-dot {
             width: 12px;
             height: 12px;
@@ -257,19 +265,19 @@
             margin: 0 6px;
             transition: all 0.3s ease;
         }
-        
+
         .onboarding-dot.active {
             background-color: var(--primary-color);
             transform: scale(1.2);
         }
-        
+
         .onboarding-buttons {
             display: flex;
             justify-content: space-between;
             width: 100%;
             max-width: 400px;
         }
-        
+
         .onboarding-button {
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
@@ -279,37 +287,37 @@
             font-size: 1rem;
             border: none;
         }
-        
+
         .onboarding-button.primary {
             background-color: var(--primary-color);
             color: var(--white-color);
             box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
         }
-        
+
         .onboarding-button.primary:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
         }
-        
+
         .onboarding-button.primary:active {
             transform: translateY(0);
             box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
         }
-        
+
         .onboarding-button.secondary {
             background-color: transparent;
             color: var(--primary-color);
         }
-        
+
         .onboarding-button.secondary:hover {
             background-color: rgba(37, 99, 235, 0.05);
         }
-        
+
         .onboarding-button.hidden {
             visibility: hidden;
         }
-        
+
         .skip-button {
             position: absolute;
             top: 1.5rem;
@@ -323,13 +331,14 @@
             border-radius: 16px;
             transition: all 0.3s ease;
         }
-        
+
         .skip-button:hover {
             background-color: rgba(107, 114, 128, 0.1);
             color: var(--dark-color);
         }
     </style>
 </head>
+
 <body>
     <!-- Splash Screen -->
     <div class="splash-container" id="splashScreen">
@@ -339,19 +348,20 @@
         </div>
         <div class="splash-loader"></div>
     </div>
-    
+
     <!-- Onboarding Slides -->
     <div class="onboarding-container" id="onboardingContainer">
         <button class="skip-button" onclick="goToLogin()">تخطي</button>
-        
+
         <!-- Slide 1: Search Features -->
         <div class="onboarding-slide active" id="slide1">
             <div class="onboarding-image">
                 <i class="fas fa-search-location"></i>
             </div>
             <h2 class="onboarding-title">ابحث بذكاء عن أفضل العقارات</h2>
-            <p class="onboarding-description">تصفح آلاف العقارات واستخدم خيارات البحث المتقدمة للعثور على العقار المناسب لك</p>
-            
+            <p class="onboarding-description">تصفح آلاف العقارات واستخدم خيارات البحث المتقدمة للعثور على العقار المناسب
+                لك</p>
+
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -366,7 +376,7 @@
                     <div class="onboarding-feature-text">البحث المباشر على الخريطة للمواقع المفضلة لديك</div>
                 </div>
             </div>
-            
+
             <div class="onboarding-pagination">
                 <div class="onboarding-dot active"></div>
                 <div class="onboarding-dot"></div>
@@ -378,7 +388,7 @@
                 <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
             </div>
         </div>
-        
+
         <!-- Slide 2: Favorites & Comparison -->
         <div class="onboarding-slide" id="slide2">
             <div class="onboarding-image">
@@ -386,7 +396,7 @@
             </div>
             <h2 class="onboarding-title">حفظ ومقارنة العقارات المفضلة</h2>
             <p class="onboarding-description">قم بحفظ العقارات المفضلة لديك والمقارنة بينها لاتخاذ القرار الأفضل</p>
-            
+
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -401,7 +411,7 @@
                     <div class="onboarding-feature-text">مقارنة تفصيلية للخصائص والأسعار لاتخاذ القرار المناسب</div>
                 </div>
             </div>
-            
+
             <div class="onboarding-pagination">
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot active"></div>
@@ -413,15 +423,16 @@
                 <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
             </div>
         </div>
-        
+
         <!-- Slide 3: Exploring & Virtual Tours -->
         <div class="onboarding-slide" id="slide3">
             <div class="onboarding-image">
                 <i class="fas fa-map-marked-alt"></i>
             </div>
             <h2 class="onboarding-title">استكشف الأحياء والمناطق</h2>
-            <p class="onboarding-description">تعرف على تفاصيل المناطق والأحياء والخدمات القريبة ومعلومات مفصلة عن كل منطقة</p>
-            
+            <p class="onboarding-description">تعرف على تفاصيل المناطق والأحياء والخدمات القريبة ومعلومات مفصلة عن كل
+                منطقة</p>
+
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -436,7 +447,7 @@
                     <div class="onboarding-feature-text">مؤشرات عن متوسط أسعار العقارات في كل منطقة</div>
                 </div>
             </div>
-            
+
             <div class="onboarding-pagination">
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
@@ -448,15 +459,16 @@
                 <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
             </div>
         </div>
-        
+
         <!-- Slide 4: Start -->
         <div class="onboarding-slide" id="slide4">
             <div class="onboarding-image">
                 <i class="fas fa-home"></i>
             </div>
             <h2 class="onboarding-title">ابدأ رحلتك العقارية الآن</h2>
-            <p class="onboarding-description">سجل دخول الآن واستمتع بتجربة فريدة في البحث عن العقارات المناسبة بكل سهولة</p>
-            
+            <p class="onboarding-description">سجل دخول الآن واستمتع بتجربة فريدة في البحث عن العقارات المناسبة بكل سهولة
+            </p>
+
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -471,7 +483,7 @@
                     <div class="onboarding-feature-text">تواصل مباشر مع الملاك والوكلاء العقاريين</div>
                 </div>
             </div>
-            
+
             <div class="onboarding-pagination">
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
@@ -484,62 +496,69 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         // Variables for slides control
         let currentSlide = 1;
         const totalSlides = 4;
-        
+
         // Show splash screen for 3 seconds
         setTimeout(() => {
             const splashScreen = document.getElementById('splashScreen');
             const onboardingContainer = document.getElementById('onboardingContainer');
-            
+
             // Fade out splash screen
             splashScreen.style.opacity = '0';
             splashScreen.style.transform = 'scale(1.1)';
-            
+
             // Show onboarding screen
             onboardingContainer.style.opacity = '1';
-            
+
             // Remove splash screen after animation completes
             setTimeout(() => {
                 splashScreen.style.display = 'none';
             }, 500);
         }, 3000);
-        
+
         // Function to go to next slide
         function nextSlide() {
             if (currentSlide < totalSlides) {
                 // Hide current slide
                 document.getElementById(`slide${currentSlide}`).classList.remove('active');
-                
+
                 // Increment current slide
                 currentSlide++;
-                
+
                 // Show new slide
                 document.getElementById(`slide${currentSlide}`).classList.add('active');
             }
         }
-        
+
         // Function to go to previous slide
         function previousSlide() {
             if (currentSlide > 1) {
                 // Hide current slide
                 document.getElementById(`slide${currentSlide}`).classList.remove('active');
-                
+
                 // Decrement current slide
                 currentSlide--;
-                
+
                 // Show new slide
                 document.getElementById(`slide${currentSlide}`).classList.add('active');
             }
         }
-        
+
         // Function to go to login page
         function goToLogin() {
             window.location.href = 'login.html';
         }
+        function goToLogin() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectUrl = urlParams.get('redirect') || 'login.html';
+            window.location.href = redirectUrl;
+        }
     </script>
+
 </body>
+
 </html>

@@ -3,7 +3,7 @@
     <name>Aqar</name>
     <description>A real estate application</description>
     <author email="dev@example.com" href="http://example.com">Your Name</author>
-    <content src="splash-screen.html" />
+    <content src="index.html" />
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -12,7 +12,6 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-        <!-- Add specific domains for Firebase -->
     <allow-navigation href="https://*.firebaseio.com/*" />
     <allow-navigation href="https://*.googleapis.com/*" />
     
@@ -22,16 +21,15 @@
     <preference name="AutoHideSplashScreen" value="true" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <preference name="StatusBarStyle" value="lightcontent" />
-    
+    <preference name="SplashScreen" value="none" />
+<preference name="SplashScreenDelay" value="0" />
     <platform name="android"> 
     <preference name="android-minSdkVersion" value="23" />
     <preference name="android-targetSdkVersion" value="35" />
-        <!-- Android icon and splash screen configurations -->
     </platform>
     
     <platform name="ios">
         <preference name="scheme" value="app" />
         <preference name="WKWebViewOnly" value="true" />
-        <!-- iOS icon and splash screen configurations -->
     </platform>
 </widget>
