@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: content:;">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="mobile-web-app-capable" content="yes">
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/search.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script type="module" src="js/language-handler.js"></script>
+    <script type="text/javascript" src="js/language-handler.js"></script>
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
@@ -91,34 +91,8 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeJsonService } from './js/json-service.js';
-        import { getCurrentUser, toggleFavorite } from './js/auth-service.js';
-        import { showToast, updateAuthUI, showLoginModal } from './js/app.js';
-        
+    <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                await initializeJsonService();
-                
-                const user = await getCurrentUser();
-                updateAuthUI(user);
-                
-                await loadProperties();
-                
-                const sortDropdown = document.getElementById('sortProperties');
-                if (sortDropdown) {
-                    sortDropdown.addEventListener('change', async function() {
-                        await loadProperties(this.value);
-                    });
-                }
-                
-            } catch (error) {
-                console.error("Error initializing home page:", error);
-                showToast("حدث خطأ في تهيئة الصفحة", "error");
-            }
-        });
-        
-        async function loadProperties(sortBy = 'default') {
             try {
                 const propertiesGrid = document.getElementById('propertiesGrid');
                 if (!propertiesGrid) return;
@@ -131,10 +105,6 @@
                 
                 const response = await fetch('data/properties.json');
                 let properties = await response.json();
-                
-                if (sortBy !== 'default') {
-                    properties = sortProperties(properties, sortBy);
-                }
                 
                 propertiesGrid.innerHTML = '';
                 
@@ -168,22 +138,7 @@
                     propertiesGrid.innerHTML = `<div class="text-center py-5"><i class="fas fa-exclamation-circle fa-2x" style="color: var(--danger-color);"></i><p class="mt-3">${errorMessage}</p></div>`;
                 }
             }
-        }
-        
-        function sortProperties(properties, sortBy) {
-            switch (sortBy) {
-                case 'price-asc':
-                    return properties.sort((a, b) => a.price - b.price);
-                case 'price-desc':
-                    return properties.sort((a, b) => b.price - a.price);
-                case 'date-newest':
-                    return properties.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
-                case 'date-oldest':
-                    return properties.sort((a, b) => new Date(a.dateAdded) - new Date(b.dateAdded));
-                default:
-                    return properties;
-            }
-        }
+        });
         
         function createPropertyCard(property) {
             const cardElement = document.createElement('div');
@@ -234,51 +189,16 @@
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    const propertyId = this.dataset.propertyId;
-                    const user = await getCurrentUser();
-                    
-                    if (!user) {
-                        const message = document.documentElement.lang === 'ar' ? 
-                            'يجب تسجيل الدخول أولاً لإضافة العقار إلى المفضلة' : 
-                            'You must login first to add this property to favorites';
-                        
-                        showLoginModal(message);
-                        return;
-                    }
-                    
-                    try {
-                        const isAdded = await toggleFavorite(user.id, propertyId);
-                        
-                        const heartIcon = this.querySelector('i');
-                        if (isAdded) {
-                            heartIcon.classList.remove('far');
-                            heartIcon.classList.add('fas');
-                            heartIcon.style.color = '#ef4444';
-                            
-                            const successMessage = document.documentElement.lang === 'ar' ? 
-                                'تمت إضافة العقار إلى المفضلة' : 
-                                'Property added to favorites';
-                            
-                            showToast(successMessage, 'success');
-                        } else {
-                            heartIcon.classList.remove('fas');
-                            heartIcon.classList.add('far');
-                            heartIcon.style.color = '';
-                            
-                            const infoMessage = document.documentElement.lang === 'ar' ? 
-                                'تمت إزالة العقار من المفضلة' : 
-                                'Property removed from favorites';
-                            
-                            showToast(infoMessage, 'info');
-                        }
-                    } catch (error) {
-                        console.error("Error toggling favorite:", error);
-                        
-                        const errorMessage = document.documentElement.lang === 'ar' ? 
-                            'حدث خطأ في إضافة/إزالة العقار من المفضلة' : 
-                            'Error adding/removing property from favorites';
-                        
-                        showToast(errorMessage, 'error');
+                    // Favorite button functionality will be implemented once auth is working
+                    const heartIcon = this.querySelector('i');
+                    if(heartIcon.classList.contains('far')) {
+                        heartIcon.classList.remove('far');
+                        heartIcon.classList.add('fas');
+                        heartIcon.style.color = '#ef4444';
+                    } else {
+                        heartIcon.classList.remove('fas');
+                        heartIcon.classList.add('far');
+                        heartIcon.style.color = '';
                     }
                 });
             });
@@ -332,17 +252,19 @@
         }
     </script>
 
-     <script src="cordova.js"></script>
+    <script src="cordova.js"></script>
     <script>
         document.addEventListener('deviceready', onDeviceReady, false);
         
         function onDeviceReady() {
             // Cordova is now initialized
             console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-            // Initialize your app here
+            
+            // Initialize app
+            if (window.StatusBar) {
+                StatusBar.styleDefault();
+            }
         }
     </script>
-
-    
 </body>
 </html>
