@@ -1,13 +1,27 @@
-import { getCities, getNeighborhoods } from './locations-service.js';
+// www/js/explore-locations.js
+import { getCities, getNeighborhoods, getWeatherData, getNearbyPlaces, getNeighborhoodDetails } from './locations-service.js';
 
 let map;
 let markers = [];
 let currentCity = null;
 let currentNeighborhood = null;
-const googleApiKey = 'AIzaSyDzluJAdmR0E6C6S4fu7MH9eL7JFtxr9wo';
+let neighborhoodDetails = null;
 
 function initializeMap() {
     const saudiArabia = { lat: 24.7136, lng: 46.6753 };
+    
+    // Check if the Google Maps API is available
+    if (typeof google === 'undefined') {
+        console.error('Google Maps API not loaded');
+        const mapElement = document.getElementById('map');
+        if (mapElement) {
+            mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>خريطة غير متاحة حالياً<br>تحقق من اتصالك بالإنترنت</p></div>';
+        }
+        // Still load cities even if map is not available
+        loadCities();
+        return;
+    }
+    
     map = new google.maps.Map(document.getElementById('map'), {
         center: saudiArabia,
         zoom: 6,
@@ -30,12 +44,20 @@ window.initMap = initializeMap;
 
 async function loadCities() {
     try {
+        showLoading('cityGrid');
         const cities = await getCities();
         renderCities(cities);
-        addCityMarkers(cities);
+        
+        // Add map markers if map is available
+        if (map) {
+            addCityMarkers(cities);
+        }
+        
+        hideLoading('cityGrid');
     } catch (error) {
         console.error('Error loading cities:', error);
         showToast('حدث خطأ في تحميل بيانات المدن', 'error');
+        renderErrorState('cityGrid', 'لا يمكن تحميل المدن');
     }
 }
 
@@ -45,6 +67,11 @@ function renderCities(cities) {
     if (!cityGrid || !cities) return;
     
     cityGrid.innerHTML = '';
+    
+    if (cities.length === 0) {
+        cityGrid.innerHTML = '<div class="text-center py-5">لا توجد مدن متاحة</div>';
+        return;
+    }
     
     cities.forEach(city => {
         const cityCard = createCityCard(city);
@@ -57,8 +84,11 @@ function createCityCard(city) {
     card.className = 'city-card';
     card.dataset.cityId = city.id;
     
+    // Default image if none provided
+    const imageUrl = city.imageUrl || 'img/placeholder.jpg';
+    
     card.innerHTML = `
-        <img src="${city.imageUrl}" alt="${city.name}" class="city-card__image">
+        <img src="${imageUrl}" alt="${city.name}" class="city-card__image">
         <div class="city-card__overlay">
             <div class="city-card__name">${city.name}</div>
         </div>
@@ -73,6 +103,7 @@ function createCityCard(city) {
 
 function selectCity(city) {
     currentCity = city;
+    currentNeighborhood = null;
     
     document.getElementById('cityGrid').parentElement.style.display = 'none';
     const neighborhoodsSection = document.getElementById('neighborhoodsSection');
@@ -80,21 +111,31 @@ function selectCity(city) {
     
     document.getElementById('selectedCityTitle').textContent = `أحياء ${city.name}`;
     
-    map.setCenter({ lat: city.lat, lng: city.lng });
-    map.setZoom(12);
+    if (map) {
+        map.setCenter({ lat: city.lat, lng: city.lng });
+        map.setZoom(12);
+        clearMarkers();
+    }
     
-    clearMarkers();
     loadNeighborhoods(city.id);
 }
 
 async function loadNeighborhoods(cityId) {
     try {
+        showLoading('neighborhoodGrid');
         const neighborhoods = await getNeighborhoods(cityId);
         renderNeighborhoods(neighborhoods);
-        addNeighborhoodMarkers(neighborhoods);
+        
+        // Add map markers if map is available
+        if (map) {
+            addNeighborhoodMarkers(neighborhoods);
+        }
+        
+        hideLoading('neighborhoodGrid');
     } catch (error) {
         console.error('Error loading neighborhoods:', error);
         showToast('حدث خطأ في تحميل بيانات الأحياء', 'error');
+        renderErrorState('neighborhoodGrid', 'لا يمكن تحميل الأحياء');
     }
 }
 
@@ -104,6 +145,11 @@ function renderNeighborhoods(neighborhoods) {
     if (!neighborhoodGrid || !neighborhoods) return;
     
     neighborhoodGrid.innerHTML = '';
+    
+    if (neighborhoods.length === 0) {
+        neighborhoodGrid.innerHTML = '<div class="text-center py-5">لا توجد أحياء متاحة</div>';
+        return;
+    }
     
     neighborhoods.forEach(neighborhood => {
         const neighborhoodCard = createNeighborhoodCard(neighborhood);
@@ -116,9 +162,12 @@ function createNeighborhoodCard(neighborhood) {
     card.className = 'neighborhood-card';
     card.dataset.neighborhoodId = neighborhood.id;
     
+    // Default image if none provided
+    const imageUrl = neighborhood.imageUrl || 'img/placeholder.jpg';
+    
     card.innerHTML = `
         <div class="neighborhood-card__image-container">
-            <img src="${neighborhood.imageUrl}" alt="${neighborhood.name}" class="neighborhood-card__image">
+            <img src="${imageUrl}" alt="${neighborhood.name}" class="neighborhood-card__image">
             <div class="neighborhood-card__overlay">
                 <div class="neighborhood-card__name">${neighborhood.name}</div>
                 <div class="neighborhood-card__info">
@@ -136,7 +185,7 @@ function createNeighborhoodCard(neighborhood) {
     return card;
 }
 
-function selectNeighborhood(neighborhood) {
+async function selectNeighborhood(neighborhood) {
     currentNeighborhood = neighborhood;
     
     document.getElementById('neighborhoodsSection').style.display = 'none';
@@ -145,112 +194,149 @@ function selectNeighborhood(neighborhood) {
     
     document.getElementById('selectedNeighborhoodTitle').textContent = `حي ${neighborhood.name}`;
     
-    map.setCenter({ lat: neighborhood.lat, lng: neighborhood.lng });
-    map.setZoom(15);
+    if (map) {
+        map.setCenter({ lat: neighborhood.lat, lng: neighborhood.lng });
+        map.setZoom(15);
+    }
     
-    getWeatherData(neighborhood);
-    getNearbyPlaces(neighborhood);
+    // Load neighborhood details
+    await Promise.all([
+        loadNeighborhoodDetails(neighborhood),
+        loadWeatherData(neighborhood),
+        loadNearbyPlaces(neighborhood)
+    ]);
 }
 
-function addCityMarkers(cities) {
-    if (!cities) return;
-    
-    cities.forEach(city => {
-        const markerPosition = { lat: city.lat, lng: city.lng };
+async function loadNeighborhoodDetails(neighborhood) {
+    try {
+        // Create a new section for neighborhood demographics if it doesn't exist
+        let demographicsCard = document.querySelector('.demographics-card');
         
-        const marker = new google.maps.Marker({
-            position: markerPosition,
-            map: map,
-            title: city.name,
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                fillColor: '#2563eb',
-                fillOpacity: 1,
-                scale: 8,
-                strokeColor: '#ffffff',
-                strokeWeight: 2
-            }
-        });
-        
-        const infoWindow = new google.maps.InfoWindow({
-            content: `
-                <div class="map-info-window">
-                    <div class="map-info-title">${city.name}</div>
-                    <div class="map-info-subtitle">${city.neighborhoods ? city.neighborhoods.length : 0} أحياء</div>
-                </div>
-            `
-        });
-        
-        marker.addListener('click', () => {
-            markers.forEach(m => {
-                if (m.infoWindow && m.infoWindow.getMap()) {
-                    m.infoWindow.close();
-                }
-            });
+        if (!demographicsCard) {
+            const neighborhoodDetails = document.querySelector('.neighborhood-details');
             
-            infoWindow.open(map, marker);
-            selectCity(city);
-        });
-        
-        marker.infoWindow = infoWindow;
-        markers.push(marker);
-    });
-}
-
-function addNeighborhoodMarkers(neighborhoods) {
-    if (!neighborhoods) return;
-    
-    neighborhoods.forEach(neighborhood => {
-        const markerPosition = { lat: neighborhood.lat, lng: neighborhood.lng };
-        
-        const marker = new google.maps.Marker({
-            position: markerPosition,
-            map: map,
-            title: neighborhood.name,
-            icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                fillColor: '#059669',
-                fillOpacity: 1,
-                scale: 6,
-                strokeColor: '#ffffff',
-                strokeWeight: 2
-            }
-        });
-        
-        const infoWindow = new google.maps.InfoWindow({
-            content: `
-                <div class="map-info-window">
-                    <div class="map-info-title">${neighborhood.name}</div>
-                    <div class="map-info-subtitle">${currentCity ? currentCity.name : ''}</div>
-                </div>
-            `
-        });
-        
-        marker.addListener('click', () => {
-            markers.forEach(m => {
-                if (m.infoWindow && m.infoWindow.getMap()) {
-                    m.infoWindow.close();
+            if (neighborhoodDetails) {
+                demographicsCard = document.createElement('div');
+                demographicsCard.className = 'info-card demographics-card';
+                demographicsCard.innerHTML = `
+                    <h3 class="info-card-title">
+                        <i class="fas fa-chart-pie"></i>
+                        معلومات الحي
+                    </h3>
+                    <div class="demographics-info" id="demographicsInfo">
+                        <div class="weather-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            جاري تحميل معلومات الحي...
+                        </div>
+                    </div>
+                `;
+                
+                // Insert it after the weather card
+                const weatherCard = document.querySelector('.weather-card');
+                if (weatherCard) {
+                    weatherCard.after(demographicsCard);
+                } else {
+                    neighborhoodDetails.prepend(demographicsCard);
                 }
-            });
-            
-            infoWindow.open(map, marker);
-            selectNeighborhood(neighborhood);
-        });
+            }
+        }
         
-        marker.infoWindow = infoWindow;
-        markers.push(marker);
-    });
+        const demographicsInfo = document.getElementById('demographicsInfo');
+        
+        if (demographicsInfo) {
+            demographicsInfo.innerHTML = `
+                <div class="weather-loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    جاري تحميل معلومات الحي...
+                </div>
+            `;
+            
+            try {
+                neighborhoodDetails = await getNeighborhoodDetails(neighborhood);
+                
+                let html = `
+                    <div class="neighborhood-description mb-3">
+                        ${neighborhoodDetails.description}
+                    </div>
+                    <div class="neighborhood-stats">
+                        <div class="stat-group">
+                            <div class="stat-title">الديموغرافيا</div>
+                            <div class="stat-items">
+                                <div class="stat-item">
+                                    <div class="stat-label">عدد السكان</div>
+                                    <div class="stat-value">${neighborhoodDetails.demographics.population}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">الكثافة السكانية</div>
+                                    <div class="stat-value">${neighborhoodDetails.demographics.density}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">متوسط العمر</div>
+                                    <div class="stat-value">${neighborhoodDetails.demographics.avgAge} سنة</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-group">
+                            <div class="stat-title">المرافق</div>
+                            <div class="stat-items">
+                                <div class="stat-item">
+                                    <div class="stat-label">المدارس</div>
+                                    <div class="stat-value">${neighborhoodDetails.amenities.schools}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">المستشفيات</div>
+                                    <div class="stat-value">${neighborhoodDetails.amenities.hospitals}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">الحدائق</div>
+                                    <div class="stat-value">${neighborhoodDetails.amenities.parks}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">مراكز التسوق</div>
+                                    <div class="stat-value">${neighborhoodDetails.amenities.malls}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-group">
+                            <div class="stat-title">العقارات</div>
+                            <div class="stat-items">
+                                <div class="stat-item">
+                                    <div class="stat-label">متوسط الأسعار</div>
+                                    <div class="stat-value">${neighborhoodDetails.realEstate.avgPrice}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">التغير السنوي</div>
+                                    <div class="stat-value">${neighborhoodDetails.realEstate.priceChange}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">عقارات للبيع</div>
+                                    <div class="stat-value">${neighborhoodDetails.realEstate.propertiesForSale}</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">عقارات للإيجار</div>
+                                    <div class="stat-value">${neighborhoodDetails.realEstate.propertiesForRent}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                demographicsInfo.innerHTML = html;
+                
+                // Add CSS for the new elements
+                addNeighborhoodDetailStyles();
+                
+            } catch (error) {
+                console.error('Error loading neighborhood details:', error);
+                demographicsInfo.innerHTML = '<div class="text-center">لا يمكن تحميل معلومات الحي</div>';
+            }
+        }
+    } catch (error) {
+        console.error('Error setting up neighborhood details section:', error);
+    }
 }
 
-function clearMarkers() {
-    markers.forEach(marker => {
-        marker.setMap(null);
-    });
-    
-    markers = [];
-}
-
-async function getWeatherData(neighborhood) {
+async function loadWeatherData(neighborhood) {
     const weatherInfo = document.getElementById('weatherInfo');
     
     if (!weatherInfo) return;
@@ -263,13 +349,11 @@ async function getWeatherData(neighborhood) {
     `;
     
     try {
-        setTimeout(() => {
-            const mockWeather = getMockWeatherData(neighborhood);
-            displayWeatherData(mockWeather);
-        }, 1000);
+        const weatherData = await getWeatherData(neighborhood);
+        displayWeatherData(weatherData);
     } catch (error) {
         console.error('Error fetching weather data:', error);
-        weatherInfo.innerHTML = '<div class="text-center">حدث خطأ في تحميل معلومات الطقس</div>';
+        weatherInfo.innerHTML = '<div class="text-center">لا يمكن تحميل معلومات الطقس</div>';
     }
 }
 
@@ -307,7 +391,7 @@ function displayWeatherData(data) {
     `;
 }
 
-async function getNearbyPlaces(neighborhood) {
+async function loadNearbyPlaces(neighborhood) {
     const nearbyInfo = document.getElementById('nearbyInfo');
     
     if (!nearbyInfo) return;
@@ -320,10 +404,8 @@ async function getNearbyPlaces(neighborhood) {
     `;
     
     try {
-        setTimeout(() => {
-            const mockPlaces = getMockNearbyPlaces(neighborhood);
-            displayNearbyPlaces(mockPlaces);
-        }, 1500);
+        const places = await getNearbyPlaces(neighborhood);
+        displayNearbyPlaces(places);
     } catch (error) {
         console.error('Error fetching nearby places:', error);
         nearbyInfo.innerHTML = `<div class="text-center">لا يمكن تحميل المرافق القريبة</div>`;
@@ -379,94 +461,225 @@ function getPlaceIcon(type) {
     }
 }
 
-function getMockWeatherData(neighborhood) {
-    const temp = 20 + Math.floor(Math.random() * 20);
-    const feelsLike = temp + (Math.random() > 0.5 ? 2 : -2);
+function addCityMarkers(cities) {
+    if (!map || !cities) return;
     
-    let icon, description;
-    if (temp > 35) {
-        icon = '01d';
-        description = 'صافي';
-    } else if (temp > 30) {
-        icon = '02d';
-        description = 'غائم جزئياً';
-    } else if (temp > 25) {
-        icon = '03d';
-        description = 'غائم';
-    } else {
-        icon = '04d';
-        description = 'غائم كلياً';
-    }
-    
-    const humidity = 30 + Math.floor(Math.random() * 40);
-    const windSpeed = 1 + Math.floor(Math.random() * 5);
-    
-    return {
-        main: {
-            temp: temp,
-            feels_like: feelsLike,
-            humidity: humidity
-        },
-        weather: [
-            {
-                description: description,
-                icon: icon
+    cities.forEach(city => {
+        const markerPosition = { lat: city.lat, lng: city.lng };
+        
+        const marker = new google.maps.Marker({
+            position: markerPosition,
+            map: map,
+            title: city.name,
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#2563eb',
+                fillOpacity: 1,
+                scale: 8,
+                strokeColor: '#ffffff',
+                strokeWeight: 2
             }
-        ],
-        wind: {
-            speed: windSpeed
-        }
-    };
+        });
+        
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <div class="map-info-window">
+                    <div class="map-info-title">${city.name}</div>
+                    <div class="map-info-subtitle">${city.neighborhoods ? city.neighborhoods.length : 0} أحياء</div>
+                </div>
+            `
+        });
+        
+        marker.addListener('click', () => {
+            markers.forEach(m => {
+                if (m.infoWindow && m.infoWindow.getMap()) {
+                    m.infoWindow.close();
+                }
+            });
+            
+            infoWindow.open(map, marker);
+            selectCity(city);
+        });
+        
+        marker.infoWindow = infoWindow;
+        markers.push(marker);
+    });
 }
 
-function getMockNearbyPlaces(neighborhood) {
-    const seed = neighborhood.lat + neighborhood.lng;
-    const rng = new PseudoRNG(seed);
+function addNeighborhoodMarkers(neighborhoods) {
+    if (!map || !neighborhoods) return;
     
-    const placeTypes = ['restaurant', 'school', 'hospital', 'park', 'shopping_mall', 'mosque'];
-    const placeNames = {
-        restaurant: ['مطعم السلطان', 'مطعم الريف', 'مطعم البيت', 'مطعم الشرق', 'كافيه لاتيه'],
-        school: ['مدرسة الأمل', 'مدرسة النور', 'مدرسة المستقبل', 'مدرسة الرواد'],
-        hospital: ['مستشفى السلام', 'مركز الصحة', 'مستشفى الشفاء', 'عيادة الرعاية'],
-        park: ['حديقة الأمير', 'منتزه الزهور', 'حديقة الملك فهد', 'الحديقة المركزية'],
-        shopping_mall: ['مول الحياة', 'مركز التسوق', 'مجمع العرب', 'العثيم مول'],
-        mosque: ['جامع الملك فهد', 'مسجد النور', 'مسجد السلام', 'جامع الإمام محمد']
-    };
+    neighborhoods.forEach(neighborhood => {
+        const markerPosition = { lat: neighborhood.lat, lng: neighborhood.lng };
+        
+        const marker = new google.maps.Marker({
+            position: markerPosition,
+            map: map,
+            title: neighborhood.name,
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#059669',
+                fillOpacity: 1,
+                scale: 6,
+                strokeColor: '#ffffff',
+                strokeWeight: 2
+            }
+        });
+        
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <div class="map-info-window">
+                    <div class="map-info-title">${neighborhood.name}</div>
+                    <div class="map-info-subtitle">${currentCity ? currentCity.name : ''}</div>
+                </div>
+            `
+        });
+        
+        marker.addListener('click', () => {
+            markers.forEach(m => {
+                if (m.infoWindow && m.infoWindow.getMap()) {
+                    m.infoWindow.close();
+                }
+            });
+            
+            infoWindow.open(map, marker);
+            selectNeighborhood(neighborhood);
+        });
+        
+        marker.infoWindow = infoWindow;
+        markers.push(marker);
+    });
+}
+
+function clearMarkers() {
+    markers.forEach(marker => {
+        marker.setMap(null);
+    });
     
-    const count = 3 + Math.floor(rng.random() * 3);
-    const places = [];
+    markers = [];
+}
+
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
     
-    for (let i = 0; i < count; i++) {
-        const typeIndex = Math.floor(rng.random() * placeTypes.length);
-        const type = placeTypes[typeIndex];
-        
-        const nameIndex = Math.floor(rng.random() * placeNames[type].length);
-        const name = placeNames[type][nameIndex];
-        
-        const distance = 100 + Math.floor(rng.random() * 900);
-        
-        places.push({
-            name: name,
-            type: type,
-            distance: distance
+    container.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+            <p style="margin-top: 10px;">جاري التحميل...</p>
+        </div>
+    `;
+}
+
+function hideLoading(containerId) {
+    // This function doesn't need to do anything as the container will be
+    // populated with content when data is loaded
+}
+
+function renderErrorState(containerId, message) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+            <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: var(--danger-color);"></i>
+            <p style="margin-top: 10px;">${message}</p>
+            <button class="btn btn--primary mt-3" id="retry-${containerId}">إعادة المحاولة</button>
+        </div>
+    `;
+    
+    const retryButton = document.getElementById(`retry-${containerId}`);
+    if (retryButton) {
+        retryButton.addEventListener('click', function() {
+            if (containerId === 'cityGrid') {
+                loadCities();
+            } else if (containerId === 'neighborhoodGrid' && currentCity) {
+                loadNeighborhoods(currentCity.id);
+            }
         });
     }
-    
-    return places.sort((a, b) => a.distance - b.distance);
 }
 
-class PseudoRNG {
-    constructor(seed) {
-        this.seed = seed;
-    }
+function addNeighborhoodDetailStyles() {
+    // Check if the stylesheet already exists
+    if (document.getElementById('neighborhood-details-style')) return;
     
-    random() {
-        const x = Math.sin(this.seed++) * 10000;
-        return x - Math.floor(x);
-    }
+    const style = document.createElement('style');
+    style.id = 'neighborhood-details-style';
+    style.textContent = `
+        .neighborhood-description {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+        }
+        
+        .neighborhood-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .stat-group {
+            background-color: var(--lighter-gray);
+            border-radius: var(--border-radius-sm);
+            padding: 10px;
+        }
+        
+        .stat-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--light-gray);
+            padding-bottom: 5px;
+        }
+        
+        .stat-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--gray-color);
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        @media (min-width: 768px) {
+            .neighborhood-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    `;
+    
+    document.head.appendChild(style);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the map if Google Maps API is loaded
+    if (typeof google !== 'undefined') {
+        initializeMap();
+    } else {
+        // Handle case where map is not available
+        const mapElement = document.getElementById('map');
+        if (mapElement) {
+            mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>خريطة غير متاحة حالياً<br>تحقق من اتصالك بالإنترنت</p></div>';
+        }
+        // Still load cities even if map is not available
+        loadCities();
+    }
+    
     const backToCitiesBtn = document.getElementById('backToCities');
     if (backToCitiesBtn) {
         backToCitiesBtn.addEventListener('click', function(e) {
@@ -475,10 +688,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('neighborhoodsSection').style.display = 'none';
             document.getElementById('cityGrid').parentElement.style.display = 'block';
             
-            map.setCenter({ lat: 24.7136, lng: 46.6753 });
-            map.setZoom(6);
+            if (map) {
+                map.setCenter({ lat: 24.7136, lng: 46.6753 });
+                map.setZoom(6);
+                clearMarkers();
+            }
             
-            clearMarkers();
             loadCities();
             
             currentCity = null;
@@ -494,10 +709,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('neighborhoodsSection').style.display = 'block';
             
             if (currentCity) {
-                map.setCenter({ lat: currentCity.lat, lng: currentCity.lng });
-                map.setZoom(12);
+                if (map) {
+                    map.setCenter({ lat: currentCity.lat, lng: currentCity.lng });
+                    map.setZoom(12);
+                    clearMarkers();
+                }
                 
-                clearMarkers();
                 loadNeighborhoods(currentCity.id);
             }
             

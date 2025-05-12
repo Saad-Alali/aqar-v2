@@ -48,6 +48,48 @@
           "nameEn": "Al Rabiea",
           "lat": 24.7978,
           "lng": 46.6610
+        },
+        {
+          "id": "alrawabi",
+          "name": "الروابي",
+          "nameEn": "Al Rawabi",
+          "lat": 24.7667,
+          "lng": 46.7458
+        },
+        {
+          "id": "alsulemaniyah",
+          "name": "السليمانية",
+          "nameEn": "Al Sulemaniyah",
+          "lat": 24.7129,
+          "lng": 46.7121
+        },
+        {
+          "id": "alhittin",
+          "name": "حطين",
+          "nameEn": "Hittin",
+          "lat": 24.7572,
+          "lng": 46.6183
+        },
+        {
+          "id": "alhamra",
+          "name": "الحمراء",
+          "nameEn": "Al Hamra",
+          "lat": 24.7394,
+          "lng": 46.7317
+        },
+        {
+          "id": "kingfahd",
+          "name": "حي الملك فهد",
+          "nameEn": "King Fahd District",
+          "lat": 24.7650,
+          "lng": 46.7283
+        },
+        {
+          "id": "almurabba",
+          "name": "المربع",
+          "nameEn": "Al Murabba",
+          "lat": 24.6372,
+          "lng": 46.7133
         }
       ]
     },
@@ -92,6 +134,41 @@
           "nameEn": "Al Khalidiyyah",
           "lat": 21.5830,
           "lng": 39.1099
+        },
+        {
+          "id": "alshati",
+          "name": "الشاطئ",
+          "nameEn": "Al Shati",
+          "lat": 21.6388,
+          "lng": 39.1054
+        },
+        {
+          "id": "alnahda",
+          "name": "النهضة",
+          "nameEn": "Al Nahda",
+          "lat": 21.4953,
+          "lng": 39.2459
+        },
+        {
+          "id": "alsamer",
+          "name": "السامر",
+          "nameEn": "Al Samer",
+          "lat": 21.5321,
+          "lng": 39.1727
+        },
+        {
+          "id": "alzahra",
+          "name": "الزهراء",
+          "nameEn": "Al Zahra",
+          "lat": 21.5876,
+          "lng": 39.1443
+        },
+        {
+          "id": "almurjan",
+          "name": "المرجان",
+          "nameEn": "Al Murjan",
+          "lat": 21.7076,
+          "lng": 39.0903
         }
       ]
     },
@@ -129,6 +206,34 @@
           "nameEn": "Al Qadisiyah",
           "lat": 26.4499,
           "lng": 50.1098
+        },
+        {
+          "id": "alanood",
+          "name": "العنود",
+          "nameEn": "Al Anood",
+          "lat": 26.4225,
+          "lng": 50.0943
+        },
+        {
+          "id": "alrakah",
+          "name": "الراكة",
+          "nameEn": "Al Rakah",
+          "lat": 26.3863,
+          "lng": 50.1936
+        },
+        {
+          "id": "albadiyah",
+          "name": "البادية",
+          "nameEn": "Al Badiyah",
+          "lat": 26.4455,
+          "lng": 50.0694
+        },
+        {
+          "id": "aldoha",
+          "name": "الدوحة",
+          "nameEn": "Al Doha",
+          "lat": 26.4311,
+          "lng": 50.1137
         }
       ]
     },
@@ -166,6 +271,27 @@
           "nameEn": "Al Azizia",
           "lat": 21.3587,
           "lng": 39.9540
+        },
+        {
+          "id": "alrussaifah",
+          "name": "الرصيفة",
+          "nameEn": "Al Russaifah",
+          "lat": 21.3972,
+          "lng": 39.8802
+        },
+        {
+          "id": "alhajlah",
+          "name": "الحجلة",
+          "nameEn": "Al Hajlah",
+          "lat": 21.4112,
+          "lng": 39.9010
+        },
+        {
+          "id": "alnaseem-makkah",
+          "name": "النسيم",
+          "nameEn": "Al Naseem",
+          "lat": 21.4195,
+          "lng": 39.8603
         }
       ]
     },
@@ -196,6 +322,94 @@
           "nameEn": "Al Shuhada",
           "lat": 24.4823,
           "lng": 39.5723
+        },
+        {
+          "id": "alharrah",
+          "name": "الحرة",
+          "nameEn": "Al Harrah",
+          "lat": 24.5033,
+          "lng": 39.5833
+        },
+        {
+          "id": "alsalam",
+          "name": "السلام",
+          "nameEn": "Al Salam",
+          "lat": 24.5321,
+          "lng": 39.5747
+        },
+        {
+          "id": "alnakheel",
+          "name": "النخيل",
+          "nameEn": "Al Nakheel",
+          "lat": 24.5137,
+          "lng": 39.5521
+        }
+      ]
+    },
+    {
+      "id": "taif",
+      "name": "الطائف",
+      "nameEn": "Taif",
+      "lat": 21.2702,
+      "lng": 40.4165,
+      "neighborhoods": [
+        {
+          "id": "alsalamah-taif",
+          "name": "السلامة",
+          "nameEn": "Al Salamah",
+          "lat": 21.2778,
+          "lng": 40.4154
+        },
+        {
+          "id": "alshifa",
+          "name": "الشفا",
+          "nameEn": "Al Shifa",
+          "lat": 21.2102,
+          "lng": 40.3512
+        },
+        {
+          "id": "alnuzha-taif",
+          "name": "النزهة",
+          "nameEn": "Al Nuzha",
+          "lat": 21.2833,
+          "lng": 40.4092
+        },
+        {
+          "id": "alwahaah",
+          "name": "الوحاة",
+          "nameEn": "Al Wahaah",
+          "lat": 21.2631,
+          "lng": 40.4325
+        }
+      ]
+    },
+    {
+      "id": "abha",
+      "name": "أبها",
+      "nameEn": "Abha",
+      "lat": 18.2164,
+      "lng": 42.5053,
+      "neighborhoods": [
+        {
+          "id": "alkhalidia-abha",
+          "name": "الخالدية",
+          "nameEn": "Al Khalidia",
+          "lat": 18.2230,
+          "lng": 42.5119
+        },
+        {
+          "id": "almansak",
+          "name": "المنسك",
+          "nameEn": "Al Mansak",
+          "lat": 18.2093,
+          "lng": 42.5001
+        },
+        {
+          "id": "alsulaimaniah-abha",
+          "name": "السليمانية",
+          "nameEn": "Al Sulaimaniah",
+          "lat": 18.2279,
+          "lng": 42.4972
         }
       ]
     }

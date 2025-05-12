@@ -340,6 +340,56 @@
     pointer-events: none;
 }
 
+/* New styles for neighborhood details */
+.neighborhood-description {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: var(--dark-color);
+}
+
+.neighborhood-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.stat-group {
+    background-color: var(--lighter-gray);
+    border-radius: var(--border-radius-sm);
+    padding: 10px;
+}
+
+.stat-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--light-gray);
+    padding-bottom: 5px;
+}
+
+.stat-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--gray-color);
+}
+
+.stat-value {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
 @media (min-width: 768px) {
     .city-grid, 
     .neighborhood-grid {
@@ -356,6 +406,10 @@
     
     .weather-card {
         grid-column: span 2;
+    }
+    
+    .neighborhood-stats {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
