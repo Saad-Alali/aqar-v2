@@ -1,20 +1,9 @@
-// json-service.js - Enhanced with better data management and error handling
-/**
- * JSON Service
- * Handles loading and saving data from/to JSON files and localStorage
- */
-
-// Cached data for the application
 export const dataCache = {
   properties: null,
   users: null,
   initialized: false
 };
 
-/**
- * Initialize the JSON service by loading data
- * @returns {Promise<Object>} The data cache
- */
 export async function initializeJsonService() {
   if (dataCache.initialized) {
     return dataCache;
@@ -34,10 +23,8 @@ export async function initializeJsonService() {
   } catch (error) {
     console.error('Error initializing JSON service:', error);
     
-    // Load from localStorage if fetch fails
     loadFromLocalStorage();
     
-    // If still not initialized, use sample data
     if (!dataCache.initialized) {
       dataCache.properties = getSampleProperties();
       dataCache.users = getSampleUsers();
@@ -48,11 +35,6 @@ export async function initializeJsonService() {
   }
 }
 
-/**
- * Sync data with localStorage
- * This ensures any updates made in the current session are preserved
- * and any updates made in other tabs/sessions are loaded
- */
 function syncWithLocalStorage() {
   const storedProperties = localStorage.getItem('aqar_properties');
   const storedUsers = localStorage.getItem('aqar_users');
@@ -61,7 +43,6 @@ function syncWithLocalStorage() {
     try {
       const localProperties = JSON.parse(storedProperties);
       
-      // Merge with fetched properties to ensure we have the latest data
       if (dataCache.properties) {
         dataCache.properties.forEach((property, index) => {
           const localProperty = localProperties.find(p => p.id === property.id);
@@ -81,7 +62,6 @@ function syncWithLocalStorage() {
     try {
       const localUsers = JSON.parse(storedUsers);
       
-      // Merge with fetched users
       if (dataCache.users) {
         dataCache.users.forEach((user, index) => {
           const localUser = localUsers.find(u => u.id === user.id);
@@ -90,7 +70,6 @@ function syncWithLocalStorage() {
           }
         });
         
-        // Add any new users that were created locally
         localUsers.forEach(localUser => {
           if (!dataCache.users.some(u => u.id === localUser.id)) {
             dataCache.users.push(localUser);
@@ -104,14 +83,9 @@ function syncWithLocalStorage() {
     }
   }
   
-  // Save merged data back to localStorage
   saveToLocalStorage();
 }
 
-/**
- * Load data from localStorage
- * Used as a fallback when fetch fails
- */
 function loadFromLocalStorage() {
   const storedProperties = localStorage.getItem('aqar_properties');
   const storedUsers = localStorage.getItem('aqar_users');
@@ -141,10 +115,6 @@ function loadFromLocalStorage() {
   }
 }
 
-/**
- * Save data to localStorage
- * This should be called whenever data is modified
- */
 export function saveToLocalStorage() {
   if (dataCache.properties) {
     localStorage.setItem('aqar_properties', JSON.stringify(dataCache.properties));
@@ -155,11 +125,6 @@ export function saveToLocalStorage() {
   }
 }
 
-/**
- * Get sample properties data
- * Used as a fallback when no data is available
- * @returns {Array} Sample properties
- */
 function getSampleProperties() {
   return [
     {
@@ -216,11 +181,6 @@ function getSampleProperties() {
   ];
 }
 
-/**
- * Get sample users data
- * Used as a fallback when no data is available
- * @returns {Array} Sample users
- */
 function getSampleUsers() {
   return [
     {
@@ -235,44 +195,24 @@ function getSampleUsers() {
   ];
 }
 
-/**
- * Get a specific property by ID
- * @param {string} propertyId - The property ID to find
- * @returns {Promise<Object|null>} The property or null if not found
- */
 export async function getPropertyById(propertyId) {
   await initializeJsonService();
   
   return dataCache.properties.find(p => p.id === propertyId) || null;
 }
 
-/**
- * Get a specific user by ID
- * @param {string} userId - The user ID to find
- * @returns {Promise<Object|null>} The user or null if not found
- */
 export async function getUserById(userId) {
   await initializeJsonService();
   
   return dataCache.users.find(u => u.id === userId) || null;
 }
 
-/**
- * Get a user by email
- * @param {string} email - The email to find
- * @returns {Promise<Object|null>} The user or null if not found
- */
 export async function getUserByEmail(email) {
   await initializeJsonService();
   
   return dataCache.users.find(u => u.email.toLowerCase() === email.toLowerCase()) || null;
 }
 
-/**
- * Add a new property
- * @param {Object} property - The property to add
- * @returns {Promise<Object>} The added property
- */
 export async function addProperty(property) {
   await initializeJsonService();
   
@@ -288,12 +228,6 @@ export async function addProperty(property) {
   return newProperty;
 }
 
-/**
- * Update a property
- * @param {string} propertyId - The property ID
- * @param {Object} updates - The updates to apply
- * @returns {Promise<Object>} The updated property
- */
 export async function updateProperty(propertyId, updates) {
   await initializeJsonService();
   
@@ -312,11 +246,6 @@ export async function updateProperty(propertyId, updates) {
   return updatedProperty;
 }
 
-/**
- * Delete a property
- * @param {string} propertyId - The property ID
- * @returns {Promise<boolean>} Success status
- */
 export async function deleteProperty(propertyId) {
   await initializeJsonService();
   
@@ -329,7 +258,6 @@ export async function deleteProperty(propertyId) {
   dataCache.properties.splice(propertyIndex, 1);
   saveToLocalStorage();
   
-  // Also remove from all users' favorites
   dataCache.users.forEach(user => {
     if (user.favorites && user.favorites.includes(propertyId)) {
       user.favorites = user.favorites.filter(id => id !== propertyId);

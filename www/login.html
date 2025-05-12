@@ -57,11 +57,47 @@
         .login-footer a:hover {
             text-decoration: underline;
         }
+        .login-or-divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--gray-color);
+        }
+        .login-or-divider::before,
+        .login-or-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--light-gray);
+        }
+        .login-or-divider span {
+            padding: 0 10px;
+        }
+        .social-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 10px;
+            background-color: white;
+            border: 1px solid var(--light-gray);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .social-login-btn:hover {
+            background-color: var(--lighter-gray);
+        }
+        .social-login-btn i {
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
-
         <div class="app-content login-container">
             <div class="login-logo">عقار</div>
             
@@ -91,6 +127,15 @@
                     <button type="submit" class="btn btn--primary btn--block" id="loginBtn">دخول</button>
                 </form>
                 
+                <div class="login-or-divider">
+                    <span>أو</span>
+                </div>
+                
+                <button class="social-login-btn" id="googleLoginBtn">
+                    <i class="fab fa-google"></i>
+                    تسجيل الدخول بحساب Google
+                </button>
+                
                 <div class="login-footer">
                     <p>ليس لديك حساب؟ <a href="register.html">إنشاء حساب جديد</a></p>
                 </div>
@@ -100,13 +145,23 @@
 
     <script type="module">
         import { initializeJsonService } from './js/json-service.js';
-        import { loginUser } from './js/auth-service.js';
+        import { loginUser, initializeFirebase } from './js/auth-service.js';
+        
+        document.addEventListener('deviceready', async function() {
+            try {
+                console.log("Device is ready");
+                await initializeFirebase();
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+            }
+        }, false);
         
         document.addEventListener('DOMContentLoaded', async function() {
             try {
                 await initializeJsonService();
                 
                 const loginForm = document.getElementById('loginForm');
+                const googleLoginBtn = document.getElementById('googleLoginBtn');
                 
                 if (loginForm) {
                     const emailInput = document.getElementById('email');
@@ -131,7 +186,7 @@
                                 const loginBtn = document.getElementById('loginBtn');
                                 const alertsContainer = document.getElementById('formAlerts');
                                 
-                                loginBtn.textContent = 'جارٍ تسجيل الدخول...';
+                                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ تسجيل الدخول...';
                                 loginBtn.disabled = true;
                                 
                                 alertsContainer.innerHTML = '';
@@ -151,10 +206,8 @@
                                 
                                 let errorMessage = 'فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد الخاصة بك.';
                                 
-                                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                                    errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
-                                } else if (error.code === 'auth/too-many-requests') {
-                                    errorMessage = 'تم تجاوز الحد المسموح به من المحاولات. يرجى المحاولة لاحقاً.';
+                                if (error.message) {
+                                    errorMessage = error.message;
                                 }
                                 
                                 alertsContainer.innerHTML = `<div class="alert alert--danger">${errorMessage}</div>`;
@@ -165,8 +218,48 @@
                     });
                 }
                 
+                if (googleLoginBtn) {
+                    googleLoginBtn.addEventListener('click', async function() {
+                        try {
+                            await initializeFirebase();
+                            
+                            if (typeof cordova !== 'undefined' && cordova.plugins && cordova.plugins.firebase && cordova.plugins.firebase.auth) {
+                                const alertsContainer = document.getElementById('formAlerts');
+                                googleLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارِ التسجيل...';
+                                googleLoginBtn.disabled = true;
+                                
+                                cordova.plugins.firebase.auth.signInWithGoogle()
+                                    .then((userCredential) => {
+                                        alertsContainer.innerHTML = '<div class="alert alert--success">تم تسجيل الدخول بنجاح! جاري التحويل...</div>';
+                                        
+                                        setTimeout(() => {
+                                            window.location.href = 'index.html';
+                                        }, 1000);
+                                    })
+                                    .catch((error) => {
+                                        console.error("Google login error:", error);
+                                        
+                                        let errorMessage = 'فشل تسجيل الدخول بحساب Google. يرجى المحاولة مرة أخرى.';
+                                        
+                                        alertsContainer.innerHTML = `<div class="alert alert--danger">${errorMessage}</div>`;
+                                        googleLoginBtn.textContent = 'تسجيل الدخول بحساب Google';
+                                        googleLoginBtn.innerHTML = '<i class="fab fa-google"></i> تسجيل الدخول بحساب Google';
+                                        googleLoginBtn.disabled = false;
+                                    });
+                            } else {
+                                const alertsContainer = document.getElementById('formAlerts');
+                                alertsContainer.innerHTML = '<div class="alert alert--danger">تسجيل الدخول بحساب Google غير متاح حالياً</div>';
+                            }
+                        } catch (error) {
+                            console.error("Error with Google login:", error);
+                            const alertsContainer = document.getElementById('formAlerts');
+                            alertsContainer.innerHTML = '<div class="alert alert--danger">حدث خطأ أثناء تسجيل الدخول بحساب Google</div>';
+                        }
+                    });
+                }
+                
             } catch (error) {
-                console.error("Error initializing Firebase:", error);
+                console.error("Error initializing app:", error);
                 
                 const alertsContainer = document.getElementById('formAlerts');
                 if (alertsContainer) {
@@ -200,5 +293,7 @@
             }
         }
     </script>
+    
+    <script src="cordova.js"></script>
 </body>
 </html>

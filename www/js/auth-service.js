@@ -1,50 +1,120 @@
-// auth-service.js - Enhanced with user data management
-import { initializeJsonService, dataCache, saveToLocalStorage } from './json-service.js';
+// auth-service.js with Firebase integration
+import { dataCache, saveToLocalStorage } from './json-service.js';
 
 const LOCAL_STORAGE_USER_KEY = 'aqar_current_user';
 let currentUserCache = null;
+let firebaseInitialized = false;
+
+/**
+ * Initialize Firebase authentication
+ */
+export async function initializeFirebase() {
+  if (firebaseInitialized) {
+    return true;
+  }
+  
+  return new Promise((resolve) => {
+    document.addEventListener('deviceready', function() {
+      if (typeof cordova !== 'undefined' && cordova.plugins && cordova.plugins.firebase) {
+        console.log("Firebase plugin is available");
+        firebaseInitialized = true;
+        resolve(true);
+      } else {
+        console.warn("Firebase plugin is not available, falling back to local auth");
+        resolve(false);
+      }
+    }, false);
+    
+    // If already past deviceready, check now
+    if (typeof cordova !== 'undefined' && cordova.plugins && cordova.plugins.firebase) {
+      console.log("Firebase plugin is available (already ready)");
+      firebaseInitialized = true;
+      resolve(true);
+    }
+    
+    // Timeout after 3 seconds to prevent hanging
+    setTimeout(() => {
+      if (!firebaseInitialized) {
+        console.warn("Firebase initialization timed out, falling back to local auth");
+        resolve(false);
+      }
+    }, 3000);
+  });
+}
 
 /**
  * Register a new user
- * @param {string} email - User email
- * @param {string} password - User password
- * @param {string} fullName - User's full name
- * @param {string} phone - User's phone number
- * @returns {Promise<Object>} The created user object without password
  */
 export async function registerUser(email, password, fullName, phone) {
   try {
-    await initializeJsonService();
+    await initializeFirebase();
     
-    // Check if email already exists
-    const existingUser = dataCache.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (existingUser) {
-      throw new Error('البريد الإلكتروني مستخدم بالفعل');
+    if (firebaseInitialized) {
+      // Using Firebase Auth
+      return new Promise((resolve, reject) => {
+        cordova.plugins.firebase.auth.createUserWithEmailAndPassword(email, password)
+          .then(async (userCredential) => {
+            // Create the user profile
+            const newUser = {
+              id: userCredential.uid,
+              email: email,
+              fullName: fullName,
+              phone: phone || '',
+              avatarUrl: 'img/placeholder.jpg',
+              favorites: [],
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString()
+            };
+            
+            // Save to dataCache if available
+            if (dataCache && dataCache.users) {
+              dataCache.users.push(newUser);
+              saveToLocalStorage();
+            }
+            
+            // Set as current user
+            setCurrentUser(newUser);
+            
+            resolve(newUser);
+          })
+          .catch((error) => {
+            console.error("Firebase registration error:", error);
+            if (error.code === 'auth/email-already-in-use') {
+              reject(new Error('البريد الإلكتروني مستخدم بالفعل'));
+            } else {
+              reject(new Error('حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.'));
+            }
+          });
+      });
+    } else {
+      // Fallback to local auth
+      if (dataCache && dataCache.users) {
+        const existingUser = dataCache.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+        if (existingUser) {
+          throw new Error('البريد الإلكتروني مستخدم بالفعل');
+        }
+        
+        const newUser = {
+          id: 'user' + Date.now(),
+          email: email,
+          password: password,
+          fullName: fullName,
+          phone: phone || '',
+          avatarUrl: 'img/placeholder.jpg',
+          favorites: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        dataCache.users.push(newUser);
+        saveToLocalStorage();
+        setCurrentUser(newUser);
+        
+        return { ...newUser, password: undefined };
+      } else {
+        throw new Error('نظام المصادقة غير متوفر حالياً');
+      }
     }
-    
-    // Create new user
-    const newUser = {
-      id: 'user' + Date.now(),
-      email: email,
-      password: password, // In a real app, this should be hashed
-      fullName: fullName,
-      phone: phone || '',
-      avatarUrl: 'img/placeholder.jpg',
-      favorites: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    
-    // Add to users array
-    dataCache.users.push(newUser);
-    
-    // Save to localStorage
-    saveToLocalStorage();
-    
-    // Set as current user
-    setCurrentUser(newUser);
-    
-    return { ...newUser, password: undefined };
   } catch (error) {
     console.error('Error registering user:', error);
     throw error;
@@ -52,28 +122,75 @@ export async function registerUser(email, password, fullName, phone) {
 }
 
 /**
- * Login a user
- * @param {string} email - User email
- * @param {string} password - User password
- * @returns {Promise<Object>} The user object without password
+ * Log in a user
  */
 export async function loginUser(email, password) {
   try {
-    await initializeJsonService();
+    await initializeFirebase();
     
-    // Find user by email and password
-    const user = dataCache.users.find(
-      u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-    );
-    
-    if (!user) {
-      throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+    if (firebaseInitialized) {
+      // Using Firebase Auth
+      return new Promise((resolve, reject) => {
+        cordova.plugins.firebase.auth.signInWithEmailAndPassword(email, password)
+          .then(async (userCredential) => {
+            let user = null;
+            
+            // Try to find user in local cache
+            if (dataCache && dataCache.users) {
+              user = dataCache.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+            }
+            
+            if (!user) {
+              // Create basic user object if not found
+              user = {
+                id: userCredential.uid,
+                email: email,
+                fullName: email.split('@')[0],
+                avatarUrl: 'img/placeholder.jpg',
+                favorites: [],
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+              };
+              
+              // Add to dataCache if available
+              if (dataCache && dataCache.users) {
+                dataCache.users.push(user);
+                saveToLocalStorage();
+              }
+            }
+            
+            // Set as current user
+            setCurrentUser(user);
+            
+            resolve(user);
+          })
+          .catch((error) => {
+            console.error("Firebase login error:", error);
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+              reject(new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة'));
+            } else {
+              reject(new Error('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.'));
+            }
+          });
+      });
+    } else {
+      // Fallback to local auth
+      if (dataCache && dataCache.users) {
+        const user = dataCache.users.find(
+          u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+        );
+        
+        if (!user) {
+          throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+        }
+        
+        setCurrentUser(user);
+        
+        return { ...user, password: undefined };
+      } else {
+        throw new Error('نظام المصادقة غير متوفر حالياً');
+      }
     }
-    
-    // Set as current user
-    setCurrentUser(user);
-    
-    return { ...user, password: undefined };
   } catch (error) {
     console.error('Error logging in:', error);
     throw error;
@@ -81,15 +198,32 @@ export async function loginUser(email, password) {
 }
 
 /**
- * Logout the current user
- * @returns {Promise<boolean>} Success status
+ * Log out the current user
  */
 export async function logoutUser() {
   try {
-    // Clear current user
-    currentUserCache = null;
-    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
-    return true;
+    await initializeFirebase();
+    
+    if (firebaseInitialized) {
+      // Using Firebase Auth
+      return new Promise((resolve, reject) => {
+        cordova.plugins.firebase.auth.signOut()
+          .then(() => {
+            currentUserCache = null;
+            localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+            resolve(true);
+          })
+          .catch((error) => {
+            console.error("Firebase logout error:", error);
+            reject(error);
+          });
+      });
+    } else {
+      // Fallback to local auth
+      currentUserCache = null;
+      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+      return true;
+    }
   } catch (error) {
     console.error('Error logging out:', error);
     return false;
@@ -98,65 +232,129 @@ export async function logoutUser() {
 
 /**
  * Get the current logged in user
- * @returns {Promise<Object|null>} The current user or null if not logged in
  */
 export async function getCurrentUser() {
-  // Return from cache if available
   if (currentUserCache) {
     return { ...currentUserCache, password: undefined };
   }
   
-  // Try to get from localStorage
   try {
-    const userData = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
-    if (userData) {
-      const user = JSON.parse(userData);
-      currentUserCache = user;
-      return { ...user, password: undefined };
+    await initializeFirebase();
+    
+    if (firebaseInitialized) {
+      // Using Firebase Auth
+      return new Promise((resolve) => {
+        cordova.plugins.firebase.auth.getCurrentUser()
+          .then((user) => {
+            if (user) {
+              // Try to get detailed user info from local storage
+              const userData = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
+              
+              if (userData) {
+                try {
+                  const localUser = JSON.parse(userData);
+                  currentUserCache = localUser;
+                  resolve({ ...localUser, password: undefined });
+                  return;
+                } catch (e) {
+                  console.error('Error parsing stored user:', e);
+                }
+              }
+              
+              // Create basic user if not found in local storage
+              const basicUser = {
+                id: user.uid,
+                email: user.email,
+                fullName: user.displayName || user.email.split('@')[0],
+                avatarUrl: user.photoURL || 'img/placeholder.jpg',
+                favorites: []
+              };
+              
+              currentUserCache = basicUser;
+              resolve(basicUser);
+            } else {
+              resolve(null);
+            }
+          })
+          .catch((error) => {
+            console.error("Error getting current user from Firebase:", error);
+            resolve(null);
+          });
+      });
+    } else {
+      // Fallback to local storage
+      const userData = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
+      
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          currentUserCache = user;
+          return { ...user, password: undefined };
+        } catch (error) {
+          console.error('Error parsing stored user:', error);
+        }
+      }
+      
+      return null;
     }
   } catch (error) {
-    console.error('Error getting current user from localStorage:', error);
+    console.error('Error getting current user:', error);
+    return null;
   }
-  
-  return null;
 }
 
 /**
- * Update user profile information
- * @param {string} userId - The user ID
- * @param {Object} updatedData - The updated user data
- * @returns {Promise<Object>} The updated user without password
+ * Update user profile
  */
 export async function updateUserProfile(userId, updatedData) {
   try {
-    await initializeJsonService();
+    await initializeFirebase();
     
-    const userIndex = dataCache.users.findIndex(u => u.id === userId);
-    
-    if (userIndex === -1) {
-      throw new Error('المستخدم غير موجود');
+    // Always update local cache
+    if (dataCache && dataCache.users) {
+      const userIndex = dataCache.users.findIndex(u => u.id === userId);
+      
+      if (userIndex !== -1) {
+        const user = dataCache.users[userIndex];
+        const updatedUser = {
+          ...user,
+          ...updatedData,
+          updatedAt: new Date().toISOString()
+        };
+        
+        dataCache.users[userIndex] = updatedUser;
+        saveToLocalStorage();
+        
+        if (currentUserCache && currentUserCache.id === userId) {
+          setCurrentUser(updatedUser);
+        }
+        
+        return { ...updatedUser, password: undefined };
+      }
     }
     
-    // Update user data
-    const user = dataCache.users[userIndex];
-    const updatedUser = {
-      ...user,
-      ...updatedData,
-      updatedAt: new Date().toISOString()
-    };
-    
-    // Replace in array
-    dataCache.users[userIndex] = updatedUser;
-    
-    // Save to localStorage
-    saveToLocalStorage();
-    
-    // Update current user if it's the logged in user
-    if (currentUserCache && currentUserCache.id === userId) {
-      setCurrentUser(updatedUser);
+    if (firebaseInitialized) {
+      // For now, we only update the user display name
+      // Firebase has more limited profile data
+      if (updatedData.fullName) {
+        return new Promise((resolve, reject) => {
+          cordova.plugins.firebase.auth.updateProfile({
+            displayName: updatedData.fullName
+          })
+            .then(() => {
+              // User is already updated in local cache above
+              const updatedUser = currentUserCache;
+              resolve({ ...updatedUser, password: undefined });
+            })
+            .catch((error) => {
+              console.error("Error updating Firebase profile:", error);
+              reject(new Error('حدث خطأ أثناء تحديث الملف الشخصي'));
+            });
+        });
+      }
     }
     
-    return { ...updatedUser, password: undefined };
+    throw new Error('المستخدم غير موجود');
   } catch (error) {
     console.error('Error updating user profile:', error);
     throw error;
@@ -164,172 +362,45 @@ export async function updateUserProfile(userId, updatedData) {
 }
 
 /**
- * Update user avatar
- * @param {string} userId - The user ID
- * @param {File} avatarFile - The avatar file
- * @returns {Promise<Object>} The updated user without password
- */
-export async function updateUserAvatar(userId, avatarFile) {
-  try {
-    await initializeJsonService();
-    
-    // In a real implementation, we would upload the file to a server
-    // For now, we'll just pretend we updated the avatar
-    
-    const userIndex = dataCache.users.findIndex(u => u.id === userId);
-    
-    if (userIndex === -1) {
-      throw new Error('المستخدم غير موجود');
-    }
-    
-    // Update user data
-    const user = dataCache.users[userIndex];
-    const updatedUser = {
-      ...user,
-      avatarUrl: 'img/placeholder.jpg', // In a real app, this would be the uploaded image URL
-      updatedAt: new Date().toISOString()
-    };
-    
-    // Replace in array
-    dataCache.users[userIndex] = updatedUser;
-    
-    // Save to localStorage
-    saveToLocalStorage();
-    
-    // Update current user if it's the logged in user
-    if (currentUserCache && currentUserCache.id === userId) {
-      setCurrentUser(updatedUser);
-    }
-    
-    return { ...updatedUser, password: undefined };
-  } catch (error) {
-    console.error('Error updating user avatar:', error);
-    throw error;
-  }
-}
-
-/**
- * Delete user's profile avatar (reset to default)
- * @param {string} userId - The user ID
- * @returns {Promise<Object>} The updated user without password
- */
-export async function deleteUserAvatar(userId) {
-  try {
-    await initializeJsonService();
-    
-    const userIndex = dataCache.users.findIndex(u => u.id === userId);
-    
-    if (userIndex === -1) {
-      throw new Error('المستخدم غير موجود');
-    }
-    
-    // Update user data to reset avatar
-    const user = dataCache.users[userIndex];
-    const updatedUser = {
-      ...user,
-      avatarUrl: 'img/default-avatar.jpg', // Default avatar
-      updatedAt: new Date().toISOString()
-    };
-    
-    // Replace in array
-    dataCache.users[userIndex] = updatedUser;
-    
-    // Save to localStorage
-    saveToLocalStorage();
-    
-    // Update current user if it's the logged in user
-    if (currentUserCache && currentUserCache.id === userId) {
-      setCurrentUser(updatedUser);
-    }
-    
-    return { ...updatedUser, password: undefined };
-  } catch (error) {
-    console.error('Error deleting user avatar:', error);
-    throw error;
-  }
-}
-
-/**
- * Delete a user's account completely
- * @param {string} userId - The user ID
- * @returns {Promise<boolean>} Success status
- */
-export async function deleteUserAccount(userId) {
-  try {
-    await initializeJsonService();
-    
-    const userIndex = dataCache.users.findIndex(u => u.id === userId);
-    
-    if (userIndex === -1) {
-      throw new Error('المستخدم غير موجود');
-    }
-    
-    // Remove user from array
-    dataCache.users.splice(userIndex, 1);
-    
-    // Save to localStorage
-    saveToLocalStorage();
-    
-    // Logout if it's the current user
-    if (currentUserCache && currentUserCache.id === userId) {
-      await logoutUser();
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('Error deleting user account:', error);
-    throw error;
-  }
-}
-
-/**
- * Toggle a property as favorite for a user
- * @param {string} userId - The user ID
- * @param {string} propertyId - The property ID
- * @returns {Promise<boolean>} True if added, false if removed
+ * Toggle a property as favorite
  */
 export async function toggleFavorite(userId, propertyId) {
   try {
-    await initializeJsonService();
-    
-    const userIndex = dataCache.users.findIndex(u => u.id === userId);
-    
-    if (userIndex === -1) {
-      throw new Error('المستخدم غير موجود');
+    if (dataCache && dataCache.users) {
+      const userIndex = dataCache.users.findIndex(u => u.id === userId);
+      
+      if (userIndex === -1) {
+        throw new Error('المستخدم غير موجود');
+      }
+      
+      const user = dataCache.users[userIndex];
+      const favorites = [...(user.favorites || [])];
+      const isFavorite = favorites.includes(propertyId);
+      
+      if (isFavorite) {
+        const index = favorites.indexOf(propertyId);
+        favorites.splice(index, 1);
+      } else {
+        favorites.push(propertyId);
+      }
+      
+      const updatedUser = {
+        ...user,
+        favorites,
+        updatedAt: new Date().toISOString()
+      };
+      
+      dataCache.users[userIndex] = updatedUser;
+      saveToLocalStorage();
+      
+      if (currentUserCache && currentUserCache.id === userId) {
+        setCurrentUser(updatedUser);
+      }
+      
+      return !isFavorite;
     }
     
-    const user = dataCache.users[userIndex];
-    const favorites = [...(user.favorites || [])];
-    const isFavorite = favorites.includes(propertyId);
-    
-    if (isFavorite) {
-      // Remove from favorites
-      const index = favorites.indexOf(propertyId);
-      favorites.splice(index, 1);
-    } else {
-      // Add to favorites
-      favorites.push(propertyId);
-    }
-    
-    // Update user data
-    const updatedUser = {
-      ...user,
-      favorites,
-      updatedAt: new Date().toISOString()
-    };
-    
-    // Replace in array
-    dataCache.users[userIndex] = updatedUser;
-    
-    // Save to localStorage
-    saveToLocalStorage();
-    
-    // Update current user if it's the logged in user
-    if (currentUserCache && currentUserCache.id === userId) {
-      setCurrentUser(updatedUser);
-    }
-    
-    return !isFavorite; // Return whether it was added (true) or removed (false)
+    throw new Error('نظام المفضلة غير متوفر حالياً');
   } catch (error) {
     console.error('Error toggling favorite:', error);
     throw error;
@@ -338,24 +409,19 @@ export async function toggleFavorite(userId, propertyId) {
 
 /**
  * Set the current user in localStorage and cache
- * @param {Object} user - The user to set as current
  */
 function setCurrentUser(user) {
-  currentUserCache = user;
-  localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user));
-}
-
-// Add to auth-service.js
-function setCurrentUser(user) {
-    // If Cordova is available, use native storage
-    if (window.cordova && window.NativeStorage) {
-        window.NativeStorage.setItem('currentUser', JSON.stringify(user),
-            function() { console.log('User saved to native storage'); },
-            function(error) { console.error('Error saving user', error); }
-        );
-    } else {
-        // Fallback to localStorage
-        localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user));
+  if (window.cordova && window.NativeStorage) {
+    try {
+      window.NativeStorage.setItem('currentUser', JSON.stringify(user),
+        function() { console.log('User saved to native storage'); },
+        function(error) { console.error('Error saving user', error); }
+      );
+    } catch (e) {
+      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user));
     }
-    currentUserCache = user;
+  } else {
+    localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user));
+  }
+  currentUserCache = user;
 }
