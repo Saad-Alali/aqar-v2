@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Color Scheme */
             --primary-color: #2563eb;
             --primary-dark: #1d4ed8;
             --primary-light: #3b82f6;
@@ -29,20 +28,14 @@
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
             --success-color: #10b981;
-
-            /* Typography */
             --body-font: 'Tajawal', sans-serif;
             --heading-font: 'Tajawal', sans-serif;
-
-            /* Spacing */
             --spacing-xs: 0.25rem;
             --spacing-sm: 0.5rem;
             --spacing-md: 1rem;
             --spacing-lg: 1.5rem;
             --spacing-xl: 2rem;
             --spacing-xxl: 3rem;
-
-            /* Border radius */
             --border-radius-sm: 0.25rem;
             --border-radius-md: 0.5rem;
             --border-radius-lg: 1rem;
@@ -61,7 +54,6 @@
             color: var(--dark-color);
         }
 
-        /* Splash Screen */
         .splash-container {
             height: 100vh;
             width: 100%;
@@ -87,11 +79,9 @@
         }
 
         .splash-logo {
-            font-size: 4.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            width: 150px;
+            height: auto;
+            margin-bottom: 1rem;
         }
 
         .splash-tagline {
@@ -135,7 +125,6 @@
             }
         }
 
-        /* Onboarding */
         .onboarding-container {
             height: 100vh;
             width: 100%;
@@ -340,27 +329,23 @@
 </head>
 
 <body>
-    <!-- Splash Screen -->
     <div class="splash-container" id="splashScreen">
         <div class="splash-logo-container">
-            <div class="splash-logo">عقار</div>
+            <img src="img/logo.png" alt="عقار" class="splash-logo">
             <div class="splash-tagline">شريكك في العثور على المنزل المثالي</div>
         </div>
         <div class="splash-loader"></div>
     </div>
 
-    <!-- Onboarding Slides -->
     <div class="onboarding-container" id="onboardingContainer">
         <button class="skip-button" onclick="goToLogin()">تخطي</button>
 
-        <!-- Slide 1: Search Features -->
         <div class="onboarding-slide active" id="slide1">
             <div class="onboarding-image">
                 <i class="fas fa-search-location"></i>
             </div>
             <h2 class="onboarding-title">ابحث بذكاء عن أفضل العقارات</h2>
-            <p class="onboarding-description">تصفح آلاف العقارات واستخدم خيارات البحث المتقدمة للعثور على العقار المناسب
-                لك</p>
+            <p class="onboarding-description">تصفح آلاف العقارات واستخدم خيارات البحث المتقدمة للعثور على العقار المناسب لك</p>
 
             <div class="onboarding-features">
                 <div class="onboarding-feature">
@@ -389,7 +374,6 @@
             </div>
         </div>
 
-        <!-- Slide 2: Favorites & Comparison -->
         <div class="onboarding-slide" id="slide2">
             <div class="onboarding-image">
                 <i class="fas fa-heart"></i>
@@ -424,14 +408,12 @@
             </div>
         </div>
 
-        <!-- Slide 3: Exploring & Virtual Tours -->
         <div class="onboarding-slide" id="slide3">
             <div class="onboarding-image">
                 <i class="fas fa-map-marked-alt"></i>
             </div>
             <h2 class="onboarding-title">استكشف الأحياء والمناطق</h2>
-            <p class="onboarding-description">تعرف على تفاصيل المناطق والأحياء والخدمات القريبة ومعلومات مفصلة عن كل
-                منطقة</p>
+            <p class="onboarding-description">تعرف على تفاصيل المناطق والأحياء والخدمات القريبة ومعلومات مفصلة عن كل منطقة</p>
 
             <div class="onboarding-features">
                 <div class="onboarding-feature">
@@ -460,14 +442,12 @@
             </div>
         </div>
 
-        <!-- Slide 4: Start -->
         <div class="onboarding-slide" id="slide4">
             <div class="onboarding-image">
                 <i class="fas fa-home"></i>
             </div>
             <h2 class="onboarding-title">ابدأ رحلتك العقارية الآن</h2>
-            <p class="onboarding-description">سجل دخول الآن واستمتع بتجربة فريدة في البحث عن العقارات المناسبة بكل سهولة
-            </p>
+            <p class="onboarding-description">سجل دخول الآن واستمتع بتجربة فريدة في البحث عن العقارات المناسبة بكل سهولة</p>
 
             <div class="onboarding-features">
                 <div class="onboarding-feature">
@@ -498,67 +478,44 @@
     </div>
 
     <script>
-        // Variables for slides control
         let currentSlide = 1;
         const totalSlides = 4;
 
-        // Show splash screen for 3 seconds
         setTimeout(() => {
             const splashScreen = document.getElementById('splashScreen');
             const onboardingContainer = document.getElementById('onboardingContainer');
 
-            // Fade out splash screen
             splashScreen.style.opacity = '0';
             splashScreen.style.transform = 'scale(1.1)';
 
-            // Show onboarding screen
             onboardingContainer.style.opacity = '1';
 
-            // Remove splash screen after animation completes
             setTimeout(() => {
                 splashScreen.style.display = 'none';
             }, 500);
         }, 3000);
 
-        // Function to go to next slide
         function nextSlide() {
             if (currentSlide < totalSlides) {
-                // Hide current slide
                 document.getElementById(`slide${currentSlide}`).classList.remove('active');
-
-                // Increment current slide
                 currentSlide++;
-
-                // Show new slide
                 document.getElementById(`slide${currentSlide}`).classList.add('active');
             }
         }
 
-        // Function to go to previous slide
         function previousSlide() {
             if (currentSlide > 1) {
-                // Hide current slide
                 document.getElementById(`slide${currentSlide}`).classList.remove('active');
-
-                // Decrement current slide
                 currentSlide--;
-
-                // Show new slide
                 document.getElementById(`slide${currentSlide}`).classList.add('active');
             }
         }
 
-        // Function to go to login page
-        function goToLogin() {
-            window.location.href = 'login.html';
-        }
         function goToLogin() {
             const urlParams = new URLSearchParams(window.location.search);
             const redirectUrl = urlParams.get('redirect') || 'login.html';
             window.location.href = redirectUrl;
         }
     </script>
-
 </body>
-
 </html>
