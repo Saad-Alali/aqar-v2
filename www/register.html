@@ -3,7 +3,7 @@
 <head>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: content:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: content:;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#2563eb">
@@ -107,10 +107,11 @@
     </div>
 
     <script src="cordova.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/json-service.js"></script>
-    <script src="js/auth-service.js"></script>
-    <script>
+    <script type="module">
+        import { initializeJsonService } from './js/json-service.js';
+        import { registerUser } from './js/auth-service.js';
+        import { showToast } from './js/app.js';
+        
         document.addEventListener('deviceready', onDeviceReady, false);
         
         function onDeviceReady() {
@@ -120,10 +121,7 @@
         
         async function initApp() {
             try {
-                // Initialize the JSON service
-                if (typeof initializeJsonService === 'function') {
-                    await initializeJsonService();
-                }
+                await initializeJsonService();
                 
                 const registerForm = document.getElementById('registerForm');
                 
