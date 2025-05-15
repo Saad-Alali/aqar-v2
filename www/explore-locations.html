@@ -12,17 +12,9 @@
     <title>استكشاف المواقع - عقار</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/explore-locations.css">
-    <script>
-        // Define initMap globally before Google Maps API loads
-        window.initMap = function() {
-            console.log('Initial initMap called');
-            // This will be replaced by the actual implementation
-            // from explore-locations.js
-        };
-    </script>
+    <link rel="stylesheet" href="/styles/pages/style.css">
+    <link rel="stylesheet" href="/styles/pages/components.css">
+    <link rel="stylesheet" href="/styles/pages/explore-locations.css">
 </head>
 
 <body>
@@ -48,7 +40,6 @@
                     المدن
                 </h2>
                 <div class="city-grid" id="cityGrid">
-                    <!-- Loading indicator -->
                     <div style="grid-column: span 2; text-align: center; padding: 20px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
                         <p style="margin-top: 10px;">جاري تحميل المدن...</p>
@@ -65,7 +56,6 @@
                     <h2 class="explore-section-title" id="selectedCityTitle">الأحياء</h2>
                 </div>
                 <div class="neighborhood-grid" id="neighborhoodGrid">
-                    <!-- Loading indicator -->
                     <div style="grid-column: span 2; text-align: center; padding: 20px;">
                         <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
                         <p style="margin-top: 10px;">جاري تحميل الأحياء...</p>
@@ -94,7 +84,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     <div class="info-card nearby-card">
                         <h3 class="info-card-title">
@@ -137,6 +126,15 @@
     </div>
 
     <script type="module" src="js/explore-locations.js"></script>
+    <script>
+        function initMap() {
+            if (window.initializeMap) {
+                window.initializeMap();
+            } else {
+                setTimeout(initMap, 100);
+            }
+        }
+    </script>
     <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzluJAdmR0E6C6S4fu7MH9eL7JFtxr9wo&v=weekly&callback=initMap&loading=async"></script>
 </body>

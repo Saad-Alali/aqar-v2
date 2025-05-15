@@ -1,4 +1,4 @@
-import { getCurrentUser } from './auth-service.js';
+import { getCurrentUser } from '../services/auth-service.js';
 
 const API_KEY = 'AIzaSyDzluJAdmR0E6C6S4fu7MH9eL7JFtxr9wo';
 let citiesCache = null;

@@ -1,6 +1,3 @@
-// www/js/explore-locations.js
-import { getCities, getNeighborhoods, getWeatherData, getNearbyPlaces, getNeighborhoodDetails } from './locations-service.js';
-
 let map;
 let markers = [];
 let currentCity = null;
@@ -38,8 +35,7 @@ function initializeMap() {
     loadCities();
 }
 
-// Explicitly set the global initMap function to call our initialize function
-window.initMap = initializeMap;
+window.initializeMap = initializeMap;
 
 async function loadCities() {
     try {
@@ -82,10 +78,10 @@ function createCityCard(city) {
     card.className = 'city-card';
     card.dataset.cityId = city.id;
     
-    const imageUrl = city.imageUrl || 'img/placeholder.jpg';
+    const imageUrl = ensureValidImageUrl(city.imageUrl || getCityImageUrl(city.nameEn || city.name));
     
     card.innerHTML = `
-        <img src="${imageUrl}" alt="${city.name}" class="city-card__image">
+        <img src="${imageUrl}" alt="${city.name}" class="city-card__image" onerror="this.src='img/placeholder.jpg'">
         <div class="city-card__overlay">
             <div class="city-card__name">${city.name}</div>
         </div>
@@ -96,6 +92,28 @@ function createCityCard(city) {
     });
     
     return card;
+}
+
+function ensureValidImageUrl(url) {
+    if (!url || url.trim() === '') {
+        return 'img/placeholder.jpg';
+    }
+    
+    if (url.startsWith('https://images.unsplash.com')) {
+        return url;
+    }
+    
+    const fallbackImages = [
+        'img/city1.jpg',
+        'img/city2.jpg',
+        'img/city3.jpg',
+        'img/city4.jpg',
+        'img/city5.jpg',
+        'img/placeholder.jpg'
+    ];
+    
+    const hashCode = url.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return fallbackImages[hashCode % fallbackImages.length];
 }
 
 function selectCity(city) {
@@ -158,11 +176,11 @@ function createNeighborhoodCard(neighborhood) {
     card.className = 'neighborhood-card';
     card.dataset.neighborhoodId = neighborhood.id;
     
-    const imageUrl = neighborhood.imageUrl || 'img/placeholder.jpg';
+    const imageUrl = ensureValidImageUrl(neighborhood.imageUrl || getNeighborhoodImageUrl(currentCity ? currentCity.nameEn : '', neighborhood.nameEn || neighborhood.name));
     
     card.innerHTML = `
         <div class="neighborhood-card__image-container">
-            <img src="${imageUrl}" alt="${neighborhood.name}" class="neighborhood-card__image">
+            <img src="${imageUrl}" alt="${neighborhood.name}" class="neighborhood-card__image" onerror="this.src='img/placeholder.jpg'">
             <div class="neighborhood-card__overlay">
                 <div class="neighborhood-card__name">${neighborhood.name}</div>
                 <div class="neighborhood-card__info">
@@ -562,8 +580,6 @@ function showLoading(containerId) {
 }
 
 function hideLoading(containerId) {
-    // This function doesn't need to do anything as the container will be
-    // populated with content when data is loaded
 }
 
 function renderErrorState(containerId, message) {
@@ -656,9 +672,6 @@ function addNeighborhoodDetailStyles() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // No need to initialize here as we've explicitly exposed initMap globally
-    // and it will be called by the Google Maps API when it loads
-    
     const backToCitiesBtn = document.getElementById('backToCities');
     if (backToCitiesBtn) {
         backToCitiesBtn.addEventListener('click', function(e) {
@@ -701,18 +714,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Check if the map already has content
     const mapElement = document.getElementById('map');
     if (mapElement && mapElement.innerHTML === '') {
         mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>جاري تحميل الخريطة...</p></div>';
     }
     
-    // If Google Maps API is already loaded, initialize the map
     if (typeof google !== 'undefined' && google.maps) {
         initializeMap();
     }
     
-    // If Google Maps failed to load, still load cities
     if (mapElement && !mapElement.querySelector('.gm-style')) {
         loadCities();
     }
@@ -743,4 +753,208 @@ function showToast(message, type = 'info', duration = 3000) {
             toast.remove();
         }, 300);
     }, duration);
+}
+
+async function getCities() {
+    try {
+        const response = await fetch('data/locations.json');
+        const data = await response.json();
+        return data.cities.map(city => ({
+            ...city,
+            imageUrl: getCityImageUrl(city.nameEn || city.name)
+        }));
+    } catch (error) {
+        console.error('Error fetching cities:', error);
+        throw error;
+    }
+}
+
+async function getNeighborhoods(cityId) {
+    try {
+        const response = await fetch('data/locations.json');
+        const data = await response.json();
+        const city = data.cities.find(c => c.id === cityId);
+        
+        if (!city) {
+            throw new Error('City not found');
+        }
+        
+        return city.neighborhoods.map(neighborhood => ({
+            ...neighborhood,
+            imageUrl: getNeighborhoodImageUrl(city.nameEn, neighborhood.nameEn || neighborhood.name)
+        }));
+    } catch (error) {
+        console.error('Error fetching neighborhoods:', error);
+        throw error;
+    }
+}
+
+async function getNeighborhoodDetails(neighborhood) {
+    return getMockNeighborhoodDetails(neighborhood);
+}
+
+async function getWeatherData(location) {
+    return getMockWeatherData(location);
+}
+
+async function getNearbyPlaces(location) {
+    return getMockNearbyPlaces(location);
+}
+
+function getMockNeighborhoodDetails(neighborhood) {
+    const cityNameToPopulation = {
+        'Riyadh': { min: 80000, max: 200000 },
+        'Jeddah': { min: 70000, max: 180000 },
+        'Dammam': { min: 50000, max: 120000 },
+        'Makkah': { min: 60000, max: 150000 },
+        'Medinah': { min: 50000, max: 120000 },
+        'default': { min: 40000, max: 100000 }
+    };
+    
+    const cityName = neighborhood.nameEn.split(' ')[0];
+    const popRange = cityNameToPopulation[cityName] || cityNameToPopulation.default;
+    const population = Math.floor(Math.random() * (popRange.max - popRange.min + 1)) + popRange.min;
+    
+    return {
+        id: neighborhood.id,
+        name: neighborhood.name,
+        nameEn: neighborhood.nameEn,
+        description: getCityDescription(neighborhood),
+        demographics: {
+            population: population.toLocaleString(),
+            density: Math.floor(population / 5).toLocaleString() + ' نسمة/كم²',
+            avgAge: Math.floor(Math.random() * 10) + 25
+        },
+        amenities: {
+            schools: Math.floor(Math.random() * 10) + 5,
+            hospitals: Math.floor(Math.random() * 3) + 1,
+            parks: Math.floor(Math.random() * 5) + 2,
+            malls: Math.floor(Math.random() * 3) + 1
+        },
+        realEstate: {
+            avgPrice: Math.floor(Math.random() * 1000000) + 500000 + ' ريال',
+            priceChange: '+' + (Math.floor(Math.random() * 10) + 1) + '%',
+            propertiesForSale: Math.floor(Math.random() * 100) + 50,
+            propertiesForRent: Math.floor(Math.random() * 80) + 30
+        }
+    };
+}
+
+function getMockWeatherData(location) {
+    const temp = Math.floor(Math.random() * 15) + 20;
+    const descriptions = ['صافي', 'غائم جزئياً', 'غائم', 'غيوم متفرقة'];
+    const description = descriptions[Math.floor(Math.random() * descriptions.length)];
+    
+    return {
+        weather: [
+            {
+                description: description,
+                icon: getWeatherIcon(description)
+            }
+        ],
+        main: {
+            temp: temp,
+            feels_like: temp + Math.floor(Math.random() * 3),
+            humidity: Math.floor(Math.random() * 30) + 30
+        },
+        wind: {
+            speed: (Math.random() * 5).toFixed(1)
+        }
+    };
+}
+
+function getWeatherIcon(description) {
+    const iconMap = {
+        'صافي': '01d',
+        'غائم جزئياً': '02d',
+        'غائم': '03d',
+        'غيوم متفرقة': '04d'
+    };
+    
+    return iconMap[description] || '01d';
+}
+
+function getMockNearbyPlaces(location) {
+    const placeTypes = ['restaurant', 'school', 'hospital', 'park', 'shopping_mall', 'mosque'];
+    const restaurantNames = ['مطعم الشرق', 'بيتزا هت', 'مطعم البيك', 'برجر كينج', 'ستاربكس'];
+    const schoolNames = ['مدرسة الأمل', 'مدرسة النور', 'مدرسة الرياض', 'المدرسة السعودية'];
+    const hospitalNames = ['مستشفى المملكة', 'مستشفى الدكتور سليمان الحبيب', 'المستشفى السعودي الألماني'];
+    const parkNames = ['حديقة الملك عبدالله', 'منتزه السلام', 'حديقة الأمير فيصل'];
+    const mallNames = ['العثيم مول', 'النخيل مول', 'الرياض بارك', 'حياة مول'];
+    const mosqueNames = ['مسجد الملك فهد', 'مسجد النور', 'مسجد التقوى', 'جامع الراجحي'];
+    
+    const namesByType = {
+        'restaurant': restaurantNames,
+        'school': schoolNames,
+        'hospital': hospitalNames,
+        'park': parkNames,
+        'shopping_mall': mallNames,
+        'mosque': mosqueNames
+    };
+    
+    const places = [];
+    
+    const numPlaces = Math.floor(Math.random() * 5) + 6;
+    
+    for (let i = 0; i < numPlaces; i++) {
+        const type = placeTypes[Math.floor(Math.random() * placeTypes.length)];
+        const names = namesByType[type];
+        const name = names[Math.floor(Math.random() * names.length)];
+        
+        places.push({
+            id: `place-${i}`,
+            name: name,
+            type: type,
+            distance: (Math.floor(Math.random() * 1000) + 100).toString()
+        });
+    }
+    
+    return places;
+}
+
+function getCityDescription(neighborhood) {
+    const descriptions = [
+        `يعتبر حي ${neighborhood.name} من الأحياء الحيوية في المدينة، ويتميز بموقعه الاستراتيجي وقربه من مراكز التسوق والخدمات الأساسية.`,
+        `يقع حي ${neighborhood.name} في منطقة مميزة ويوفر بيئة سكنية هادئة مع سهولة الوصول إلى الخدمات الرئيسية والمرافق العامة.`,
+        `يتميز حي ${neighborhood.name} بتنوع الخيارات السكنية والتجارية، ويعد وجهة مفضلة للعائلات الباحثة عن الاستقرار.`,
+        `يشتهر حي ${neighborhood.name} بشوارعه الواسعة وتخطيطه العمراني المميز، مما يجعله خياراً مثالياً للسكن والاستثمار العقاري.`
+    ];
+    
+    return descriptions[Math.floor(Math.random() * descriptions.length)];
+}
+
+function getCityImageUrl(cityName) {
+    const cityImages = {
+        'Riyadh': 'img/cities/riyadh.jpg',
+        'Jeddah': 'img/cities/jeddah.jpg',
+        'Dammam': 'img/cities/dammam.jpg',
+        'Makkah': 'img/cities/makkah.jpg',
+        'Medinah': 'img/cities/medinah.jpg',
+        'Taif': 'img/cities/taif.jpg',
+        'Abha': 'img/cities/abha.jpg'
+    };
+    
+    if (cityImages[cityName]) {
+        return cityImages[cityName];
+    }
+    
+    return 'img/placeholder.jpg';
+}
+
+function getNeighborhoodImageUrl(cityName, neighborhoodName) {
+    const neighborhoodImages = {
+        'Olaya': 'img/neighborhoods/olaya.jpg',
+        'Al Malaz': 'img/neighborhoods/almalaz.jpg',
+        'Al Wazarat': 'img/neighborhoods/alwazarat.jpg',
+        'Al Worood': 'img/neighborhoods/alworood.jpg',
+        'Al Naseem': 'img/neighborhoods/alnaseem.jpg',
+        'Al Balad': 'img/neighborhoods/albalad.jpg',
+        'Al Hamra': 'img/neighborhoods/alhamra.jpg'
+    };
+    
+    if (neighborhoodImages[neighborhoodName]) {
+        return neighborhoodImages[neighborhoodName];
+    }
+    
+    return 'img/placeholder.jpg';
 }
