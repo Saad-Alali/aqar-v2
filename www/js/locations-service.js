@@ -1,4 +1,3 @@
-// Modified locations-service.js to handle API failures
 import { getCurrentUser } from './auth-service.js';
 
 const API_KEY = 'AIzaSyDzluJAdmR0E6C6S4fu7MH9eL7JFtxr9wo';
@@ -20,10 +19,8 @@ export async function getCities() {
             }
         }
         
-        const currentLang = localStorage.getItem('aqar_language') || 'ar';
-        
         try {
-            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/cities?lang=${currentLang}`, {
+            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/cities?lang=ar`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,10 +63,8 @@ export async function getNeighborhoods(cityId) {
             throw new Error('City not found');
         }
         
-        const currentLang = localStorage.getItem('aqar_language') || 'ar';
-        
         try {
-            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/neighborhoods/${cityId}?lang=${currentLang}`, {
+            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/neighborhoods/${cityId}?lang=ar`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,10 +90,8 @@ export async function getNeighborhoods(cityId) {
 
 export async function getNeighborhoodDetails(neighborhood) {
     try {
-        const currentLang = localStorage.getItem('aqar_language') || 'ar';
-        
         try {
-            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/neighborhood-details/${neighborhood.id}?lang=${currentLang}`, {
+            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/neighborhood-details/${neighborhood.id}?lang=ar`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,7 +105,6 @@ export async function getNeighborhoodDetails(neighborhood) {
             
             return await response.json();
         } catch (error) {
-            // Fallback to mock data when API fails
             console.warn('Error fetching neighborhood details from API, using fallback data:', error);
             return getMockNeighborhoodDetails(neighborhood);
         }
@@ -125,7 +117,7 @@ export async function getNeighborhoodDetails(neighborhood) {
 export async function getWeatherData(location) {
     try {
         try {
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lng}&units=metric&appid=3b00f1c4ff5c5848f8fc0347b3835025&lang=${localStorage.getItem('aqar_language') || 'ar'}`);
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lng}&units=metric&appid=3b00f1c4ff5c5848f8fc0347b3835025&lang=ar`);
             
             if (!response.ok) {
                 throw new Error('Failed to fetch weather data');
@@ -133,7 +125,6 @@ export async function getWeatherData(location) {
             
             return await response.json();
         } catch (error) {
-            // Fallback to mock weather data
             console.warn('Error fetching weather data, using fallback data:', error);
             return getMockWeatherData(location);
         }
@@ -145,10 +136,8 @@ export async function getWeatherData(location) {
 
 export async function getNearbyPlaces(location) {
     try {
-        const currentLang = localStorage.getItem('aqar_language') || 'ar';
-        
         try {
-            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/nearby-places?lat=${location.lat}&lng=${location.lng}&lang=${currentLang}`, {
+            const response = await fetch(`https://saudicitiesmicroservice.azurewebsites.net/api/nearby-places?lat=${location.lat}&lng=${location.lng}&lang=ar`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -162,7 +151,6 @@ export async function getNearbyPlaces(location) {
             
             return await response.json();
         } catch (error) {
-            // Fallback to mock data when API fails
             console.warn('Error fetching nearby places from API, using fallback data:', error);
             return getMockNearbyPlaces(location);
         }
@@ -172,7 +160,6 @@ export async function getNearbyPlaces(location) {
     }
 }
 
-// Mock data generators for fallback scenarios
 function getMockNeighborhoodDetails(neighborhood) {
     const cityNameToPopulation = {
         'Riyadh': { min: 80000, max: 200000 },
@@ -213,7 +200,7 @@ function getMockNeighborhoodDetails(neighborhood) {
 }
 
 function getMockWeatherData(location) {
-    const temp = Math.floor(Math.random() * 15) + 20; // 20-35 degrees
+    const temp = Math.floor(Math.random() * 15) + 20;
     const descriptions = ['صافي', 'غائم جزئياً', 'غائم', 'غيوم متفرقة'];
     const description = descriptions[Math.floor(Math.random() * descriptions.length)];
     
@@ -266,7 +253,6 @@ function getMockNearbyPlaces(location) {
     
     const places = [];
     
-    // Generate 6-10 random places
     const numPlaces = Math.floor(Math.random() * 5) + 6;
     
     for (let i = 0; i < numPlaces; i++) {
@@ -286,25 +272,14 @@ function getMockNearbyPlaces(location) {
 }
 
 function getCityDescription(neighborhood) {
-    const descriptions = {
-        'ar': [
-            `يعتبر حي ${neighborhood.name} من الأحياء الحيوية في المدينة، ويتميز بموقعه الاستراتيجي وقربه من مراكز التسوق والخدمات الأساسية.`,
-            `يقع حي ${neighborhood.name} في منطقة مميزة ويوفر بيئة سكنية هادئة مع سهولة الوصول إلى الخدمات الرئيسية والمرافق العامة.`,
-            `يتميز حي ${neighborhood.name} بتنوع الخيارات السكنية والتجارية، ويعد وجهة مفضلة للعائلات الباحثة عن الاستقرار.`,
-            `يشتهر حي ${neighborhood.name} بشوارعه الواسعة وتخطيطه العمراني المميز، مما يجعله خياراً مثالياً للسكن والاستثمار العقاري.`
-        ],
-        'en': [
-            `${neighborhood.nameEn} is one of the vibrant neighborhoods in the city, characterized by its strategic location and proximity to shopping centers and essential services.`,
-            `${neighborhood.nameEn} is located in a distinguished area and provides a quiet residential environment with easy access to main services and public facilities.`,
-            `${neighborhood.nameEn} is characterized by a variety of residential and commercial options, and is a preferred destination for families looking for stability.`,
-            `${neighborhood.nameEn} is known for its wide streets and distinctive urban planning, making it an ideal choice for housing and real estate investment.`
-        ]
-    };
+    const descriptions = [
+        `يعتبر حي ${neighborhood.name} من الأحياء الحيوية في المدينة، ويتميز بموقعه الاستراتيجي وقربه من مراكز التسوق والخدمات الأساسية.`,
+        `يقع حي ${neighborhood.name} في منطقة مميزة ويوفر بيئة سكنية هادئة مع سهولة الوصول إلى الخدمات الرئيسية والمرافق العامة.`,
+        `يتميز حي ${neighborhood.name} بتنوع الخيارات السكنية والتجارية، ويعد وجهة مفضلة للعائلات الباحثة عن الاستقرار.`,
+        `يشتهر حي ${neighborhood.name} بشوارعه الواسعة وتخطيطه العمراني المميز، مما يجعله خياراً مثالياً للسكن والاستثمار العقاري.`
+    ];
     
-    const currentLang = localStorage.getItem('aqar_language') || 'ar';
-    const descArray = descriptions[currentLang] || descriptions.ar;
-    
-    return descArray[Math.floor(Math.random() * descArray.length)];
+    return descriptions[Math.floor(Math.random() * descriptions.length)];
 }
 
 function addImageUrlsToCities(cities) {
