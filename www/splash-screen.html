@@ -329,19 +329,28 @@
             position: absolute;
             top: 1.5rem;
             left: 1.5rem;
-            background: transparent;
-            border: none;
-            color: var(--gray-color);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 16px;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
         }
 
         .skip-button:hover {
-            background-color: rgba(107, 114, 128, 0.1);
-            color: var(--dark-color);
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .skip-button:active {
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -359,7 +368,7 @@
     </div>
 
     <div class="onboarding-container" id="onboardingContainer">
-        <button class="skip-button" onclick="goToLogin()">تخطي</button>
+        <button class="skip-button" id="skipButton">تخطي</button>
 
         <div class="onboarding-slide active" id="slide1">
             <div class="onboarding-image">
@@ -500,7 +509,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Start the splash screen animation immediately without any checks
             setTimeout(() => {
                 const splashScreen = document.getElementById('splashScreen');
                 const onboardingContainer = document.getElementById('onboardingContainer');
@@ -514,6 +522,8 @@
                     splashScreen.style.display = 'none';
                 }, 500);
             }, 3000);
+            
+            document.getElementById('skipButton').addEventListener('click', goToLogin);
         });
         
         let currentSlide = 1;
@@ -535,14 +545,10 @@
             }
         }
 
-        // Update this function in splash-screen.html
-function goToLogin() {
-    // Mark that user has seen splash/onboarding
-    localStorage.setItem('has_seen_splash', 'true');
-    
-    // Redirect to login page
-    window.location.href = 'login.html';
-}
+        function goToLogin() {
+            localStorage.setItem('has_seen_splash', 'true');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>

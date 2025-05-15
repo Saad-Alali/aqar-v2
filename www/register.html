@@ -30,6 +30,7 @@
             flex-direction: column;
             align-items: center;
             padding: var(--spacing-xl) var(--spacing-md);
+            background-color: #f8fafc;
         }
 
         .register-logo {
@@ -43,6 +44,10 @@
         .register-form {
             width: 100%;
             max-width: 400px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
         }
 
         .form__error {
@@ -51,6 +56,122 @@
 
         .form__input--error+.form__error {
             display: block;
+        }
+
+        .form__label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            text-align: right;
+        }
+
+        .form__input {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--dark-color);
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s;
+            text-align: right;
+        }
+
+        .form__input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background-color: #fff;
+            outline: none;
+        }
+
+        .btn--primary {
+            height: 48px;
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        .btn--primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .back-button {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .back-button i {
+            margin-left: 6px;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        /* Improved Alert Styling */
+        .alert {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            border-right: 4px solid;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            animation: slideDown 0.3s ease-out forwards;
+        }
+
+        .alert--success {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border-color: #10b981;
+        }
+
+        .alert--danger {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border-color: #ef4444;
+        }
+
+        .alert i {
+            margin-left: 12px;
+            font-size: 1.1rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -109,7 +230,7 @@
                         <small class="form__error" id="confirmPasswordError">كلمات المرور غير متطابقة</small>
                     </div>
 
-                    <button type="submit" class="btn btn--primary btn--block mt-4" id="registerBtn">إنشاء حساب</button>
+                    <button type="submit" class="btn btn--primary btn--block" id="registerBtn">إنشاء حساب</button>
 
                     <div class="form__footer text-center mt-4">
                         <p>لديك حساب بالفعل؟ <a href="login.html" class="form__footer-link">تسجيل الدخول</a></p>
@@ -162,12 +283,10 @@
                                 const registerBtn = document.getElementById('registerBtn');
                                 const alertsContainer = document.getElementById('formAlerts');
 
-                                registerBtn.textContent = 'جارٍ إنشاء الحساب...';
+                                registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ إنشاء الحساب...';
                                 registerBtn.disabled = true;
 
                                 alertsContainer.innerHTML = '';
-
-                                console.log("Attempting to register user:", inputs.email.value);
 
                                 const user = await registerUser(
                                     inputs.email.value,
@@ -176,16 +295,12 @@
                                     inputs.phone.value
                                 );
 
-                                console.log("Registration successful:", user);
-
-                                alertsContainer.innerHTML = '<div class="alert alert--success">تم إنشاء الحساب بنجاح! جاري التحويل...</div>';
+                                alertsContainer.innerHTML = '<div class="alert alert--success"><i class="fas fa-check-circle"></i> تم إنشاء الحساب بنجاح! جاري التحويل...</div>';
 
                                 setTimeout(() => {
                                     window.location.href = 'index.html';
-                                }, 1000);
+                                }, 1500);
                             } catch (error) {
-                                console.error("Registration error:", error);
-
                                 const alertsContainer = document.getElementById('formAlerts');
                                 const registerBtn = document.getElementById('registerBtn');
 
@@ -195,7 +310,7 @@
                                     errorMessage = error.message;
                                 }
 
-                                alertsContainer.innerHTML = `<div class="alert alert--danger">${errorMessage}</div>`;
+                                alertsContainer.innerHTML = `<div class="alert alert--danger"><i class="fas fa-exclamation-circle"></i> ${errorMessage}</div>`;
                                 registerBtn.textContent = 'إنشاء حساب';
                                 registerBtn.disabled = false;
                             }
@@ -204,11 +319,9 @@
                 }
 
             } catch (error) {
-                console.error("Error initializing app:", error);
-
                 const alertsContainer = document.getElementById('formAlerts');
                 if (alertsContainer) {
-                    alertsContainer.innerHTML = '<div class="alert alert--danger">حدث خطأ في تهيئة التطبيق. يرجى المحاولة مرة أخرى لاحقاً.</div>';
+                    alertsContainer.innerHTML = '<div class="alert alert--danger"><i class="fas fa-exclamation-triangle"></i> حدث خطأ في تهيئة التطبيق. يرجى المحاولة مرة أخرى لاحقاً.</div>';
                 }
             }
         }
@@ -286,5 +399,4 @@
         }
     </script>
 </body>
-
 </html>
