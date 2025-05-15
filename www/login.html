@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -140,6 +139,8 @@
         import { loginUser } from './js/auth-service.js';
         import { showToast } from './js/app.js';
 
+        document.addEventListener('DOMContentLoaded', initApp);
+
         async function initApp() {
             try {
                 await initializeJsonService();
@@ -245,5 +246,4 @@
         }
     </script>
 </body>
-
 </html>
