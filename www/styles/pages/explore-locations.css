@@ -1,421 +1,457 @@
-/* www/css/explore-locations.css */
 .explore-container {
-    padding-bottom: 70px;
+  padding-bottom: calc(70px + var(--safe-area-bottom));
+  width: 100%;
 }
 
 .explore-map-container {
-    width: 100%;
-    height: 250px;
-    position: relative;
-    margin-bottom: var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
+  width: 100%;
+  height: 40vh;
+  min-height: 250px;
+  max-height: 300px;
+  position: relative;
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 #map {
-    width: 100%;
-    height: 100%;
-    border-radius: var(--border-radius-md);
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius-md);
 }
 
 .explore-section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-md);
-    color: var(--dark-color);
-    display: flex;
-    align-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  color: var(--dark-color);
+  display: flex;
+  align-items: center;
 }
 
 .explore-section-title i {
-    margin-left: 8px;
-    color: var(--primary-color);
+  margin-left: 8px;
+  color: var(--primary-color);
 }
 
 .city-grid, 
 .neighborhood-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
 }
 
 .city-card, 
 .neighborhood-card {
-    position: relative;
-    height: 140px;
-    border-radius: var(--border-radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  height: 140px;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .city-card:active, 
 .neighborhood-card:active {
-    transform: scale(0.98);
-    box-shadow: var(--shadow-lg);
+  transform: scale(0.98);
+  box-shadow: var(--shadow-lg);
 }
 
 .city-card:hover, 
 .neighborhood-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
 }
 
 .city-card__image, 
 .neighborhood-card__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
 }
 
 .city-card:hover .city-card__image,
 .neighborhood-card:hover .neighborhood-card__image {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .city-card__overlay, 
 .neighborhood-card__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: var(--spacing-sm);
-    transition: background 0.3s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--spacing-sm);
+  transition: background 0.3s;
 }
 
 .city-card:hover .city-card__overlay,
 .neighborhood-card:hover .neighborhood-card__overlay {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.2) 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.2) 100%);
 }
 
 .city-card__name, 
 .neighborhood-card__name {
-    color: var(--white-color);
-    font-weight: 600;
-    font-size: 1.1rem;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    margin-bottom: 6px;
+  color: var(--white-color);
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .neighborhood-card__info {
-    color: var(--primary-light);
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.3s, transform 0.3s;
+  color: var(--primary-light);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
 }
 
 .neighborhood-card:hover .neighborhood-card__info {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .neighborhood-card__info i {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-xs);
-    border-bottom: 1px solid var(--light-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--light-gray);
+  width: 100%;
 }
 
 .back-link {
-    display: flex;
-    align-items: center;
-    color: var(--primary-color);
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
 .back-link:hover {
-    color: var(--primary-dark);
+  color: var(--primary-dark);
 }
 
 .back-link i {
-    margin-left: var(--spacing-xs);
+  margin-left: var(--spacing-xs);
 }
 
 .neighborhood-details {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+  width: 100%;
 }
 
 .info-card {
-    background-color: var(--white-color);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-md);
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.3s, box-shadow 0.3s;
+  background-color: var(--white-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 100%;
 }
 
 .info-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .info-card-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    display: flex;
-    align-items: center;
-    color: var(--primary-color);
-    border-bottom: 1px solid var(--light-gray);
-    padding-bottom: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 8px;
 }
 
 .info-card-title i {
-    margin-left: var(--spacing-xs);
+  margin-left: var(--spacing-xs);
 }
 
 .weather-info {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
 }
 
 .weather-loading,
 .nearby-loading {
-    text-align: center;
-    color: var(--gray-color);
-    padding: var(--spacing-md) 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  text-align: center;
+  color: var(--gray-color);
+  padding: var(--spacing-md) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .weather-loading i,
 .nearby-loading i {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: var(--primary-color);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: var(--primary-color);
 }
 
 .weather-main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
 }
 
 .weather-temp {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--dark-color);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
 }
 
 .weather-icon {
-    width: 60px;
-    height: 60px;
-    margin-left: var(--spacing-sm);
+  width: 60px;
+  height: 60px;
+  margin-left: var(--spacing-sm);
 }
 
 .weather-description {
-    font-size: 1rem;
-    color: var(--gray-color);
-    margin-bottom: var(--spacing-sm);
-    text-align: center;
+  font-size: 1rem;
+  color: var(--gray-color);
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
 }
 
 .weather-details {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin-top: var(--spacing-sm);
-    background-color: var(--lighter-gray);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-sm);
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: var(--spacing-sm);
+  background-color: var(--lighter-gray);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-sm);
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .weather-detail {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+  flex: 1;
 }
 
 .weather-detail-label {
-    font-size: 0.75rem;
-    color: var(--gray-color);
-    margin-bottom: 4px;
+  font-size: 0.75rem;
+  color: var(--gray-color);
+  margin-bottom: 4px;
 }
 
 .weather-detail-value {
-    font-weight: 600;
-    font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .nearby-places {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
 }
 
 .nearby-place {
-    display: flex;
-    align-items: center;
-    padding: var(--spacing-xs) 0;
-    border-bottom: 1px solid var(--light-gray);
-    transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--light-gray);
+  transition: background-color 0.2s;
+  width: 100%;
 }
 
 .nearby-place:hover {
-    background-color: var(--lighter-gray);
-    border-radius: var(--border-radius-sm);
+  background-color: var(--lighter-gray);
+  border-radius: var(--border-radius-sm);
 }
 
 .nearby-place:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .nearby-place-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--primary-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: var(--spacing-sm);
-    color: var(--white-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--spacing-sm);
+  color: var(--white-color);
+  flex-shrink: 0;
 }
 
 .nearby-place-details {
-    flex: 1;
+  flex: 1;
+  min-width: 0;
 }
 
 .nearby-place-name {
-    font-weight: 600;
-    margin-bottom: 2px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nearby-place-distance {
-    font-size: 0.75rem;
-    color: var(--gray-color);
+  font-size: 0.75rem;
+  color: var(--gray-color);
 }
 
 .map-info-window {
-    padding: var(--spacing-xs);
-    max-width: 250px;
+  padding: var(--spacing-xs);
+  max-width: 250px;
 }
 
 .map-info-title {
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--primary-color);
 }
 
 .map-info-subtitle {
-    font-size: 0.85rem;
-    color: var(--gray-color);
+  font-size: 0.85rem;
+  color: var(--gray-color);
 }
 
 .toast-container {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 300px;
-    pointer-events: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  pointer-events: none;
 }
 
-/* New styles for neighborhood details */
 .neighborhood-description {
-    line-height: 1.6;
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-    color: var(--dark-color);
+  line-height: 1.6;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: var(--dark-color);
 }
 
 .neighborhood-stats {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  width: 100%;
 }
 
 .stat-group {
-    background-color: var(--lighter-gray);
-    border-radius: var(--border-radius-sm);
-    padding: 10px;
+  background-color: var(--lighter-gray);
+  border-radius: var(--border-radius-sm);
+  padding: 10px;
+  width: 100%;
 }
 
 .stat-title {
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    border-bottom: 1px solid var(--light-gray);
-    padding-bottom: 5px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--light-gray);
+  padding-bottom: 5px;
 }
 
 .stat-items {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
 }
 
 .stat-item {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .stat-label {
-    font-size: 0.75rem;
-    color: var(--gray-color);
+  font-size: 0.75rem;
+  color: var(--gray-color);
 }
 
 .stat-value {
-    font-weight: 600;
-    font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 359px) {
+  .city-grid, 
+  .neighborhood-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-items {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (min-width: 768px) {
-    .city-grid, 
-    .neighborhood-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .explore-map-container {
-        height: 350px;
-    }
-    
-    .neighborhood-details {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .weather-card {
-        grid-column: span 2;
-    }
-    
-    .neighborhood-stats {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  .city-grid, 
+  .neighborhood-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .explore-map-container {
+    height: 350px;
+    max-height: 50vh;
+  }
+  
+  .neighborhood-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .weather-card {
+    grid-column: span 2;
+  }
+  
+  .neighborhood-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (min-width: 992px) {
-    .city-grid, 
-    .neighborhood-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  .city-grid, 
+  .neighborhood-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }

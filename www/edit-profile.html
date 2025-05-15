@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>تعديل الملف الشخصي - عقار</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/common/main.css">
     <link rel="stylesheet" href="styles/components/components.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/pages/edit-profile.css">
     <link rel="stylesheet" href="styles/pages/edit-profile-inline.css">
 </head>
@@ -36,25 +33,25 @@
             <form class="form" id="editProfileForm">
                 <div class="form__group">
                     <label for="fullName" class="form__label">الاسم الكامل</label>
-                    <input type="text" id="fullName" name="fullName" class="form__input" placeholder="أدخل اسمك الكامل" required>
+                    <input type="text" id="fullName" name="fullName" class="form__input" placeholder="أدخل اسمك الكامل" required autocomplete="name">
                     <small class="form__error" id="fullNameError">يجب أن يكون الاسم الكامل 3 أحرف على الأقل</small>
                 </div>
                 
                 <div class="form__group">
                     <label for="email" class="form__label">البريد الإلكتروني</label>
-                    <input type="email" id="email" name="email" class="form__input" placeholder="أدخل بريدك الإلكتروني" required disabled>
+                    <input type="email" id="email" name="email" class="form__input" placeholder="أدخل بريدك الإلكتروني" required disabled autocomplete="email">
                     <small class="form__error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</small>
                 </div>
                 
                 <div class="form__group">
                     <label for="phone" class="form__label">رقم الجوال</label>
-                    <input type="tel" id="phone" name="phone" class="form__input" placeholder="أدخل رقم الجوال">
+                    <input type="tel" id="phone" name="phone" class="form__input" placeholder="أدخل رقم الجوال" autocomplete="tel">
                     <small class="form__error" id="phoneError">يرجى إدخال رقم جوال صحيح</small>
                 </div>
                 
                 <div class="form__group">
                     <label for="address" class="form__label">العنوان</label>
-                    <input type="text" id="address" name="address" class="form__input" placeholder="أدخل عنوانك">
+                    <input type="text" id="address" name="address" class="form__input" placeholder="أدخل عنوانك" autocomplete="street-address">
                     <small class="form__error" id="addressError">يرجى إدخال عنوان صحيح</small>
                 </div>
                 

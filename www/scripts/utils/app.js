@@ -58,17 +58,16 @@ function initNavigation() {
   const logoutBtn = document.getElementById('logoutBtn');
   
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', async (e) => {
+    logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       
       if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-        try {
-          await logoutUser();
-          window.location.href = 'login.html';
-        } catch (error) {
-          console.error("Error logging out:", error);
-          showToast("حدث خطأ في تسجيل الخروج", "error");
-        }
+        // Disable button to prevent multiple clicks
+        logoutBtn.disabled = true;
+        
+        // Remove user directly from localStorage and redirect
+        localStorage.removeItem('aqar_current_user');
+        window.location.href = 'login.html';
       }
     });
   }
@@ -273,6 +272,7 @@ function removeOfflineIndicator() {
   }
 }
 
+// Definir showToast solo una vez
 export function showToast(message, type = 'info', duration = 3000) {
   const existingToast = document.querySelector('.toast');
   if (existingToast) {

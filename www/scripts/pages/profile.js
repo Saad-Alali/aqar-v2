@@ -54,17 +54,19 @@ function initializeInteractions(user) {
             e.preventDefault();
             
             if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-                try {
-                    logoutUser().then(() => {
-                        window.location.href = 'login.html';
-                    }).catch(error => {
-                        console.error("Error logging out:", error);
-                        showToast('حدث خطأ في تسجيل الخروج', "error");
-                    });
-                } catch (error) {
-                    console.error("Error logging out:", error);
-                    showToast('حدث خطأ في تسجيل الخروج', "error");
-                }
+                // Prevent multiple clicks
+                logoutBtn.disabled = true;
+                
+                // Clear user data from localStorage directly without waiting for async
+                localStorage.removeItem('aqar_current_user');
+                
+                // Immediately redirect to login page
+                window.location.href = 'login.html';
+                
+                // Also call the async function to clean up properly in the background
+                logoutUser().catch(error => {
+                    console.error("Error during background logout cleanup:", error);
+                });
             }
         });
     }
@@ -99,6 +101,12 @@ function initializeInteractions(user) {
 
             if (confirm(confirmMessage)) {
                 try {
+                    deleteAccountBtn.disabled = true;
+                    
+                    // Clear localStorage immediately
+                    localStorage.removeItem('aqar_current_user');
+                    
+                    // Then call the async function and redirect
                     await deleteUserAccount(user.id);
                     const successMessage = 'تم حذف الحساب بنجاح';
                     showToast(successMessage, 'success');
@@ -107,6 +115,7 @@ function initializeInteractions(user) {
                         window.location.href = 'index.html';
                     }, 1500);
                 } catch (error) {
+                    deleteAccountBtn.disabled = false;
                     console.error("Error deleting account:", error);
                     const errorMessage = 'فشل حذف الحساب';
                     showToast(errorMessage, 'error');

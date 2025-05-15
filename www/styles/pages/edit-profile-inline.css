@@ -1,17 +1,57 @@
 body {
-    font-family: 'Tajawal', sans-serif;
+  font-family: 'Tajawal', sans-serif;
 }
+
 .edit-profile-container {
-    padding-bottom: 70px;
+  padding-bottom: calc(70px + var(--safe-area-bottom));
+  width: 100%;
 }
+
 .form__error {
-    display: none;
+  display: none;
 }
+
 .form__input--error + .form__error {
-    display: block;
+  display: block;
 }
+
 .blurred-content {
-    filter: blur(5px);
-    pointer-events: none;
-    user-select: none;
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* أنماط خاصة للاستجابة على الشاشات الصغيرة */
+@media (max-width: 360px) {
+  .form {
+    padding: var(--spacing-md);
+  }
+  
+  .form__input {
+    padding: 0.6rem;
+  }
+  
+  .btn {
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* أنماط خاصة للأجهزة ذات الارتفاع المنخفض */
+@media (max-height: 700px) {
+  .form__group {
+    margin-bottom: 10px;
+  }
+  
+  .form {
+    padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+  }
+}
+
+/* أنماط للتعامل مع الـ autofill في المتصفحات المختلفة */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #f8fafc inset;
+  transition: background-color 5000s ease-in-out 0s;
 }

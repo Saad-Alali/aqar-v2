@@ -1,28 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta http-equiv="Content-Security-Policy" 
-    content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; 
-    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; 
-    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
-    script-src 'self' 'unsafe-inline' 'unsafe-eval'; 
-    img-src 'self' data: content:;">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>تسجيل الدخول - عقار</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/common/main.css">
     <link rel="stylesheet" href="styles/components/components.css">
     <link rel="stylesheet" href="styles/pages/login-inline.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -37,14 +27,14 @@
                     <div class="form__group">
                         <label for="email" class="form__label">البريد الإلكتروني</label>
                         <input type="email" id="email" name="email" class="form__input"
-                            placeholder="أدخل بريدك الإلكتروني" required>
+                            placeholder="أدخل بريدك الإلكتروني" required autocomplete="email">
                         <small class="form__error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</small>
                     </div>
 
                     <div class="form__group">
                         <label for="password" class="form__label">كلمة المرور</label>
                         <input type="password" id="password" name="password" class="form__input"
-                            placeholder="أدخل كلمة المرور" required>
+                            placeholder="أدخل كلمة المرور" required autocomplete="current-password">
                         <small class="form__error" id="passwordError">يرجى إدخال كلمة المرور</small>
                     </div>
 
@@ -58,7 +48,6 @@
         </div>
     </div>
 
-    <script src="cordova.js"></script>
     <script type="module" src="scripts/pages/login.js"></script>
 </body>
 </html>

@@ -1,28 +1,26 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>تفاصيل العقار - عقار</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/common/main.css">
     <link rel="stylesheet" href="styles/components/components.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/pages/property-details-inline.css">
 </head>
 <body>
     <div class="app-container">
         <!-- App Header (Transparent) -->
-        <header class="app-header" style="background-color: transparent; position: absolute; box-shadow: none; z-index: 10;">
+        <header class="app-header" style="background-color: transparent; position: absolute; box-shadow: none; z-index: 10; padding-top: var(--safe-area-top);">
             <div class="app-header-action">
-                <a href="index.html" class="back-button" style="color: white; background-color: rgba(0,0,0,0.3); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <a href="index.html" class="back-button">
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -33,9 +31,8 @@
             </div>
         </header>
 
-
         <!-- App Content -->
-        <div class="app-content property-details-container" id="propertyContent">
+        <div class="app-content property-details-container" id="propertyContent" style="padding-top: var(--safe-area-top);">
             <!-- Loading Indicator -->
             <div id="loadingIndicator" class="text-center py-5" style="min-height: 80vh; display: flex; flex-direction: column; justify-content: center;">
                 <i class="fas fa-spinner fa-spin fa-2x"></i>
@@ -58,12 +55,12 @@
                 <!-- Property Details -->
                 <div class="container py-3">
                     <div class="property-section">
-                        <h1 class="property-card__title" style="font-size: 1.5rem;" id="propertyTitle">جاري التحميل...</h1>
+                        <h1 class="property-card__title" id="propertyTitle">جاري التحميل...</h1>
                         <div class="property-card__location mt-2" id="propertyLocation">
                             <i class="fas fa-map-marker-alt property-card__location-icon"></i>
                             جاري التحميل...
                         </div>
-                        <div class="property-card__price mt-2" style="font-size: 1.5rem;" id="propertyPrice">جاري التحميل...</div>
+                        <div class="property-card__price mt-2" id="propertyPrice">جاري التحميل...</div>
                     </div>
 
                     <!-- Property Features -->

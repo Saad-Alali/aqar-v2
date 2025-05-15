@@ -65,12 +65,17 @@ export async function loginUser(email, password) {
 
 export async function logoutUser() {
   try {
-    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+    // Reset the cache immediately
     currentUserCache = null;
+    
+    // Remove from localStorage
+    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+    
     return true;
   } catch (error) {
     console.error('Error logging out:', error);
-    throw error;
+    // Still return true to ensure logout is considered successful
+    return true;
   }
 }
 
@@ -89,6 +94,8 @@ export async function getCurrentUser() {
         return { ...user, password: undefined };
       } catch (error) {
         console.error('Error parsing stored user:', error);
+        // Clear invalid data
+        localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
       }
     }
     
