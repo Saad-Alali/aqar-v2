@@ -1,30 +1,41 @@
-let map;
-let markers = [];
-let currentCity = null;
-let currentNeighborhood = null;
-let neighborhoodDetails = null;
+// Global variables to track map state
+let map;                     // Google Maps instance
+let markers = [];            // Array to store map markers
+let currentCity = null;      // Currently selected city
+let currentNeighborhood = null; // Currently selected neighborhood
+let neighborhoodDetails = null; // Detailed information about the selected neighborhood
 
+/**
+ * Initializes the Google Map when the API is loaded
+ * This function is called by the Google Maps API callback
+ */
 function initializeMap() {
+    // Default center coordinates for Saudi Arabia
     const saudiArabia = { lat: 24.7136, lng: 46.6753 };
     
+    // Check if Google Maps API is loaded
     if (typeof google === 'undefined') {
         console.error('Google Maps API not loaded');
+        // Show error message in the map container
         const mapElement = document.getElementById('map');
         if (mapElement) {
             mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>خريطة غير متاحة حالياً<br>تحقق من اتصالك بالإنترنت</p></div>';
         }
+        // Continue loading cities without the map
         loadCities();
         return;
     }
     
+    // Initialize the map with default options
     map = new google.maps.Map(document.getElementById('map'), {
         center: saudiArabia,
         zoom: 6,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false,
+        mapTypeControl: false,      // Hide map type control (satellite/terrain)
+        streetViewControl: false,    // Hide street view control
+        fullscreenControl: false,    // Hide fullscreen control
         styles: [
             {
+                // Hide points of interest labels for cleaner map
                 featureType: 'poi',
                 elementType: 'labels',
                 stylers: [{ visibility: 'off' }]
@@ -32,21 +43,33 @@ function initializeMap() {
         ]
     });
     
+    // Load cities data to populate the city grid
     loadCities();
 }
 
+// Make the function available globally for the Google Maps callback
 window.initializeMap = initializeMap;
 
+/**
+ * Loads cities data from the API or local storage
+ */
 async function loadCities() {
     try {
+        // Show loading indicator while fetching data
         showLoading('cityGrid');
+        
+        // Get cities data
         const cities = await getCities();
+        
+        // Render cities in the grid
         renderCities(cities);
         
+        // Add markers for cities on the map if it's available
         if (map) {
             addCityMarkers(cities);
         }
         
+        // Hide loading indicator
         hideLoading('cityGrid');
     } catch (error) {
         console.error('Error loading cities:', error);
@@ -55,31 +78,45 @@ async function loadCities() {
     }
 }
 
+/**
+ * Renders the cities grid with data
+ * @param {Array} cities - Array of city objects
+ */
 function renderCities(cities) {
     const cityGrid = document.getElementById('cityGrid');
     
     if (!cityGrid || !cities) return;
     
+    // Clear existing content
     cityGrid.innerHTML = '';
     
+    // Handle empty state
     if (cities.length === 0) {
         cityGrid.innerHTML = '<div class="text-center py-5">لا توجد مدن متاحة</div>';
         return;
     }
     
+    // Create and append city cards
     cities.forEach(city => {
         const cityCard = createCityCard(city);
         cityGrid.appendChild(cityCard);
     });
 }
 
+/**
+ * Creates a city card element
+ * @param {Object} city - The city data object
+ * @returns {HTMLElement} The created card element
+ */
 function createCityCard(city) {
     const card = document.createElement('div');
     card.className = 'city-card';
     card.dataset.cityId = city.id;
     
+    // Get a valid image URL for the city
     const imageUrl = ensureValidImageUrl(city.imageUrl || getCityImageUrl(city.nameEn || city.name));
     
+    // Create card content with image and city name
     card.innerHTML = `
         <img src="${imageUrl}" alt="${city.name}" class="city-card__image" onerror="this.src='img/placeholder.jpg'">
         <div class="city-card__overlay">
@@ -87,6 +124,7 @@ function createCityCard(city) {
         </div>
     `;
     
+    // Add click event to select this city
     card.addEventListener('click', () => {
         selectCity(city);
     });
@@ -94,15 +132,23 @@ function createCityCard(city) {
     return card;
 }
 
+/**
+ * Ensures a valid image URL is used, with fallbacks if needed
+ * @param {string} url - The original image URL
+ * @returns {string} A valid image URL or fallback image
+ */
 function ensureValidImageUrl(url) {
+    // If URL is empty or null, use placeholder
     if (!url || url.trim() === '') {
         return 'img/placeholder.jpg';
     }
     
+    // If URL is from Unsplash (trusted source), use it
     if (url.startsWith('https://images.unsplash.com')) {
         return url;
     }
     
+    // Otherwise use a local fallback image based on a hash of the URL
     const fallbackImages = [
         'img/city1.jpg',
         'img/city2.jpg',
@@ -112,39 +158,60 @@ function ensureValidImageUrl(url) {
         'img/placeholder.jpg'
     ];
     
+    // Simple hash function to pick a consistent image for the same URL
     const hashCode = url.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return fallbackImages[hashCode % fallbackImages.length];
 }
 
+/**
+ * Handles city selection - shows neighborhoods for selected city
+ * @param {Object} city - The selected city object
+ */
 function selectCity(city) {
+    // Update current selections
     currentCity = city;
     currentNeighborhood = null;
     
+    // Hide cities grid and show neighborhoods section
     document.getElementById('cityGrid').parentElement.style.display = 'none';
     const neighborhoodsSection = document.getElementById('neighborhoodsSection');
     neighborhoodsSection.style.display = 'block';
     
+    // Update title with city name
     document.getElementById('selectedCityTitle').textContent = `أحياء ${city.name}`;
     
+    // Update map if available
     if (map) {
         map.setCenter({ lat: city.lat, lng: city.lng });
         map.setZoom(12);
         clearMarkers();
     }
     
+    // Load neighborhoods for the selected city
     loadNeighborhoods(city.id);
 }
 
+/**
+ * Loads neighborhoods data for a specific city
+ * @param {string} cityId - ID of the selected city
+ */
 async function loadNeighborhoods(cityId) {
     try {
+        // Show loading indicator
         showLoading('neighborhoodGrid');
+        
+        // Get neighborhoods data for the city
         const neighborhoods = await getNeighborhoods(cityId);
+        
+        // Render neighborhoods in the grid
         renderNeighborhoods(neighborhoods);
         
+        // Add markers for neighborhoods on the map if it's available
         if (map) {
             addNeighborhoodMarkers(neighborhoods);
         }
         
+        // Hide loading indicator
         hideLoading('neighborhoodGrid');
     } catch (error) {
         console.error('Error loading neighborhoods:', error);
@@ -153,31 +220,45 @@ async function loadNeighborhoods(cityId) {
     }
 }
 
+/**
+ * Renders the neighborhoods grid with data
+ * @param {Array} neighborhoods - Array of neighborhood objects
+ */
 function renderNeighborhoods(neighborhoods) {
     const neighborhoodGrid = document.getElementById('neighborhoodGrid');
     
     if (!neighborhoodGrid || !neighborhoods) return;
     
+    // Clear existing content
     neighborhoodGrid.innerHTML = '';
     
+    // Handle empty state
     if (neighborhoods.length === 0) {
         neighborhoodGrid.innerHTML = '<div class="text-center py-5">لا توجد أحياء متاحة</div>';
         return;
     }
     
+    // Create and append neighborhood cards
     neighborhoods.forEach(neighborhood => {
         const neighborhoodCard = createNeighborhoodCard(neighborhood);
         neighborhoodGrid.appendChild(neighborhoodCard);
     });
 }
 
+/**
+ * Creates a neighborhood card element
+ * @param {Object} neighborhood - The neighborhood data object
+ * @returns {HTMLElement} The created card element
+ */
 function createNeighborhoodCard(neighborhood) {
     const card = document.createElement('div');
     card.className = 'neighborhood-card';
     card.dataset.neighborhoodId = neighborhood.id;
     
+    // Get a valid image URL for the neighborhood
     const imageUrl = ensureValidImageUrl(neighborhood.imageUrl || getNeighborhoodImageUrl(currentCity ? currentCity.nameEn : '', neighborhood.nameEn || neighborhood.name));
     
+    // Create card content with image and neighborhood name
     card.innerHTML = `
         <div class="neighborhood-card__image-container">
             <img src="${imageUrl}" alt="${neighborhood.name}" class="neighborhood-card__image" onerror="this.src='img/placeholder.jpg'">
@@ -191,6 +272,7 @@ function createNeighborhoodCard(neighborhood) {
         </div>
     `;
     
+    // Add click event to select this neighborhood
     card.addEventListener('click', () => {
         selectNeighborhood(neighborhood);
     });
@@ -198,20 +280,29 @@ function createNeighborhoodCard(neighborhood) {
     return card;
 }
 
+/**
+ * Handles neighborhood selection - shows detailed info for selected neighborhood
+ * @param {Object} neighborhood - The selected neighborhood object
+ */
 async function selectNeighborhood(neighborhood) {
+    // Update current selection
     currentNeighborhood = neighborhood;
     
+    // Hide neighborhoods grid and show neighborhood details section
     document.getElementById('neighborhoodsSection').style.display = 'none';
     const neighborhoodInfo = document.getElementById('neighborhoodInfo');
     neighborhoodInfo.style.display = 'block';
     
+    // Update title with neighborhood name
     document.getElementById('selectedNeighborhoodTitle').textContent = `حي ${neighborhood.name}`;
     
+    // Update map if available
     if (map) {
         map.setCenter({ lat: neighborhood.lat, lng: neighborhood.lng });
         map.setZoom(15);
     }
     
+    // Load all neighborhood data in parallel
     await Promise.all([
         loadNeighborhoodDetails(neighborhood),
         loadWeatherData(neighborhood),
@@ -219,14 +310,20 @@ async function selectNeighborhood(neighborhood) {
     ]);
 }
 
+/**
+ * Loads detailed information about a neighborhood
+ * @param {Object} neighborhood - The neighborhood object
+ */
 async function loadNeighborhoodDetails(neighborhood) {
     try {
+        // Find or create the demographics card
         let demographicsCard = document.querySelector('.demographics-card');
         
         if (!demographicsCard) {
             const neighborhoodDetails = document.querySelector('.neighborhood-details');
             
             if (neighborhoodDetails) {
+                // Create the demographics card if it doesn't exist
                 demographicsCard = document.createElement('div');
                 demographicsCard.className = 'info-card demographics-card';
                 demographicsCard.innerHTML = `
@@ -242,6 +339,7 @@ async function loadNeighborhoodDetails(neighborhood) {
                     </div>
                 `;
                 
+                // Insert it after the weather card if it exists
                 const weatherCard = document.querySelector('.weather-card');
                 if (weatherCard) {
                     weatherCard.after(demographicsCard);
@@ -254,6 +352,7 @@ async function loadNeighborhoodDetails(neighborhood) {
         const demographicsInfo = document.getElementById('demographicsInfo');
         
         if (demographicsInfo) {
+            // Show loading state
             demographicsInfo.innerHTML = `
                 <div class="weather-loading">
                     <i class="fas fa-spinner fa-spin"></i>
@@ -262,8 +361,10 @@ async function loadNeighborhoodDetails(neighborhood) {
             `;
             
             try {
+                // Get neighborhood details
                 const details = await getNeighborhoodDetails(neighborhood);
                 
+                // Populate the demographics card with data
                 let html = `
                     <div class="neighborhood-description mb-3">
                         ${details.description || 'لا يوجد وصف متاح لهذا الحي'}
@@ -332,6 +433,8 @@ async function loadNeighborhoodDetails(neighborhood) {
                 `;
                 
                 demographicsInfo.innerHTML = html;
+                
+                // Add CSS styles for the neighborhood details
                 addNeighborhoodDetailStyles();
                 
             } catch (error) {
@@ -344,11 +447,16 @@ async function loadNeighborhoodDetails(neighborhood) {
     }
 }
 
+/**
+ * Loads weather data for a neighborhood
+ * @param {Object} neighborhood - The neighborhood object
+ */
 async function loadWeatherData(neighborhood) {
     const weatherInfo = document.getElementById('weatherInfo');
     
     if (!weatherInfo) return;
     
+    // Show loading state
     weatherInfo.innerHTML = `
         <div class="weather-loading">
             <i class="fas fa-spinner fa-spin"></i>
@@ -357,6 +465,7 @@ async function loadWeatherData(neighborhood) {
     `;
     
     try {
+        // Get weather data for the neighborhood
         const weatherData = await getWeatherData(neighborhood);
         displayWeatherData(weatherData);
     } catch (error) {
@@ -365,17 +474,23 @@ async function loadWeatherData(neighborhood) {
     }
 }
 
+/**
+ * Displays weather data in the UI
+ * @param {Object} data - Weather data object
+ */
 function displayWeatherData(data) {
     const weatherInfo = document.getElementById('weatherInfo');
     
     if (!weatherInfo) return;
     
+    // Extract weather details from the data
     const temp = Math.round(data.main.temp);
     const description = data.weather[0].description;
     const humidity = data.main.humidity;
     const windSpeed = data.wind.speed;
     const feelsLike = Math.round(data.main.feels_like);
     
+    // Create HTML for weather display
     weatherInfo.innerHTML = `
         <div class="weather-main">
             <div class="weather-temp">${temp}°C</div>
@@ -399,11 +514,16 @@ function displayWeatherData(data) {
     `;
 }
 
+/**
+ * Loads nearby places for a neighborhood
+ * @param {Object} neighborhood - The neighborhood object
+ */
 async function loadNearbyPlaces(neighborhood) {
     const nearbyInfo = document.getElementById('nearbyInfo');
     
     if (!nearbyInfo) return;
     
+    // Show loading state
     nearbyInfo.innerHTML = `
         <div class="nearby-loading">
             <i class="fas fa-spinner fa-spin"></i>
@@ -412,6 +532,7 @@ async function loadNearbyPlaces(neighborhood) {
     `;
     
     try {
+        // Get nearby places for the neighborhood
         const places = await getNearbyPlaces(neighborhood);
         displayNearbyPlaces(places);
     } catch (error) {
@@ -420,16 +541,22 @@ async function loadNearbyPlaces(neighborhood) {
     }
 }
 
+/**
+ * Displays nearby places in the UI
+ * @param {Array} places - Array of nearby places
+ */
 function displayNearbyPlaces(places) {
     const nearbyInfo = document.getElementById('nearbyInfo');
     
     if (!nearbyInfo) return;
     
+    // Handle empty state
     if (!places || places.length === 0) {
         nearbyInfo.innerHTML = `<div class="text-center">لا توجد مرافق قريبة</div>`;
         return;
     }
     
+    // Create HTML for places display
     let html = `<div class="nearby-places">`;
     
     places.forEach(place => {
@@ -450,6 +577,11 @@ function displayNearbyPlaces(places) {
     nearbyInfo.innerHTML = html;
 }
 
+/**
+ * Gets the appropriate Font Awesome icon for a place type
+ * @param {string} type - The place type
+ * @returns {string} CSS class for the icon
+ */
 function getPlaceIcon(type) {
     switch (type) {
         case 'restaurant':
@@ -469,12 +601,17 @@ function getPlaceIcon(type) {
     }
 }
 
+/**
+ * Adds city markers to the map
+ * @param {Array} cities - Array of city objects
+ */
 function addCityMarkers(cities) {
     if (!map || !cities) return;
     
     cities.forEach(city => {
         const markerPosition = { lat: city.lat, lng: city.lng };
         
+        // Create a custom circle marker for each city
         const marker = new google.maps.Marker({
             position: markerPosition,
             map: map,
@@ -489,6 +626,7 @@ function addCityMarkers(cities) {
             }
         });
         
+        // Create info window for the marker
         const infoWindow = new google.maps.InfoWindow({
             content: `
                 <div class="map-info-window">
@@ -498,28 +636,41 @@ function addCityMarkers(cities) {
             `
         });
         
+        // Add click event to the marker
         marker.addListener('click', () => {
+            // Close all other info windows
             markers.forEach(m => {
                 if (m.infoWindow && m.infoWindow.getMap()) {
                     m.infoWindow.close();
                 }
             });
             
+            // Open this info window
             infoWindow.open(map, marker);
+            
+            // Select the city
             selectCity(city);
         });
         
+        // Store info window reference on the marker
         marker.infoWindow = infoWindow;
+        
+        // Add marker to the markers array
         markers.push(marker);
     });
 }
 
+/**
+ * Adds neighborhood markers to the map
+ * @param {Array} neighborhoods - Array of neighborhood objects
+ */
 function addNeighborhoodMarkers(neighborhoods) {
     if (!map || !neighborhoods) return;
     
     neighborhoods.forEach(neighborhood => {
         const markerPosition = { lat: neighborhood.lat, lng: neighborhood.lng };
         
+        // Create a custom circle marker for each neighborhood
         const marker = new google.maps.Marker({
             position: markerPosition,
             map: map,
@@ -534,6 +685,7 @@ function addNeighborhoodMarkers(neighborhoods) {
             }
         });
         
+        // Create info window for the marker
         const infoWindow = new google.maps.InfoWindow({
             content: `
                 <div class="map-info-window">
@@ -543,22 +695,33 @@ function addNeighborhoodMarkers(neighborhoods) {
             `
         });
         
+        // Add click event to the marker
         marker.addListener('click', () => {
+            // Close all other info windows
             markers.forEach(m => {
                 if (m.infoWindow && m.infoWindow.getMap()) {
                     m.infoWindow.close();
                 }
             });
             
+            // Open this info window
             infoWindow.open(map, marker);
+            
+            // Select the neighborhood
             selectNeighborhood(neighborhood);
         });
         
+        // Store info window reference on the marker
         marker.infoWindow = infoWindow;
+        
+        // Add marker to the markers array
         markers.push(marker);
     });
 }
 
+/**
+ * Clears all markers from the map
+ */
 function clearMarkers() {
     markers.forEach(marker => {
         marker.setMap(null);
@@ -567,6 +730,10 @@ function clearMarkers() {
     markers = [];
 }
 
+/**
+ * Shows loading indicator in a container
+ * @param {string} containerId - ID of the container element
+ */
 function showLoading(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -579,9 +746,20 @@ function showLoading(containerId) {
     `;
 }
 
+/**
+ * Hides loading indicator in a container
+ * @param {string} containerId - ID of the container element
+ */
 function hideLoading(containerId) {
+    // This function is empty because the loading indicator
+    // is replaced when content is rendered
 }
 
+/**
+ * Renders an error state in a container
+ * @param {string} containerId - ID of the container element
+ * @param {string} message - Error message to display
+ */
 function renderErrorState(containerId, message) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -594,6 +772,7 @@ function renderErrorState(containerId, message) {
         </div>
     `;
     
+    // Add retry button functionality
     const retryButton = document.getElementById(`retry-${containerId}`);
     if (retryButton) {
         retryButton.addEventListener('click', function() {
@@ -606,6 +785,10 @@ function renderErrorState(containerId, message) {
     }
 }
 
+/**
+ * Adds CSS styles for the neighborhood details
+ * Dynamically creates a style element if it doesn't exist
+ */
 function addNeighborhoodDetailStyles() {
     if (document.getElementById('neighborhood-details-style')) return;
     
@@ -671,35 +854,44 @@ function addNeighborhoodDetailStyles() {
     document.head.appendChild(style);
 }
 
+// Initialize UI elements when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Back button from neighborhoods to cities view
     const backToCitiesBtn = document.getElementById('backToCities');
     if (backToCitiesBtn) {
         backToCitiesBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
+            // Hide neighborhoods and show cities
             document.getElementById('neighborhoodsSection').style.display = 'none';
             document.getElementById('cityGrid').parentElement.style.display = 'block';
             
+            // Reset map to Saudi Arabia view
             if (map) {
                 map.setCenter({ lat: 24.7136, lng: 46.6753 });
-                map.setZoom(6);
+                map.setZoom( 6);
                 clearMarkers();
             }
             
+            // Reload cities
             loadCities();
             
+            // Reset current city
             currentCity = null;
         });
     }
     
+    // Back button from neighborhood details to neighborhoods view
     const backToNeighborhoodsBtn = document.getElementById('backToNeighborhoods');
     if (backToNeighborhoodsBtn) {
         backToNeighborhoodsBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
+            // Hide neighborhood details and show neighborhoods
             document.getElementById('neighborhoodInfo').style.display = 'none';
             document.getElementById('neighborhoodsSection').style.display = 'block';
             
+            // Reset map to city view
             if (currentCity) {
                 if (map) {
                     map.setCenter({ lat: currentCity.lat, lng: currentCity.lng });
@@ -707,27 +899,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     clearMarkers();
                 }
                 
+                // Reload neighborhoods
                 loadNeighborhoods(currentCity.id);
             }
             
+            // Reset current neighborhood
             currentNeighborhood = null;
         });
     }
     
+    // Initialize map placeholder
     const mapElement = document.getElementById('map');
     if (mapElement && mapElement.innerHTML === '') {
         mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>جاري تحميل الخريطة...</p></div>';
     }
     
+    // Initialize map immediately if Google Maps API is already loaded
     if (typeof google !== 'undefined' && google.maps) {
         initializeMap();
     }
     
+    // Load cities even if map isn't ready yet
     if (mapElement && !mapElement.querySelector('.gm-style')) {
         loadCities();
     }
 });
 
+/**
+ * Displays a toast notification
+ * @param {string} message - The message to display
+ * @param {string} type - The type of toast (info, success, error, warning)
+ * @param {number} duration - How long to show the toast (in milliseconds)
+ */
 function showToast(message, type = 'info', duration = 3000) {
     let toastContainer = document.querySelector('.toast-container');
     if (!toastContainer) {
@@ -742,23 +945,32 @@ function showToast(message, type = 'info', duration = 3000) {
     
     toastContainer.appendChild(toast);
     
+    // Trigger animation after a small delay to ensure DOM update
     setTimeout(() => {
         toast.classList.add('toast--visible');
     }, 10);
     
+    // Remove toast after duration
     setTimeout(() => {
         toast.classList.remove('toast--visible');
         
+        // Remove element after animation completes
         setTimeout(() => {
             toast.remove();
         }, 300);
     }, duration);
 }
 
+/**
+ * Fetches cities data from a JSON file
+ * @returns {Promise<Array>} Array of city objects
+ */
 async function getCities() {
     try {
         const response = await fetch('data/locations.json');
         const data = await response.json();
+        
+        // Add image URLs to cities
         return data.cities.map(city => ({
             ...city,
             imageUrl: getCityImageUrl(city.nameEn || city.name)
@@ -769,6 +981,11 @@ async function getCities() {
     }
 }
 
+/**
+ * Fetches neighborhoods data for a specific city
+ * @param {string} cityId - ID of the city
+ * @returns {Promise<Array>} Array of neighborhood objects
+ */
 async function getNeighborhoods(cityId) {
     try {
         const response = await fetch('data/locations.json');
@@ -779,6 +996,7 @@ async function getNeighborhoods(cityId) {
             throw new Error('City not found');
         }
         
+        // Add image URLs to neighborhoods
         return city.neighborhoods.map(neighborhood => ({
             ...neighborhood,
             imageUrl: getNeighborhoodImageUrl(city.nameEn, neighborhood.nameEn || neighborhood.name)
@@ -789,19 +1007,40 @@ async function getNeighborhoods(cityId) {
     }
 }
 
+/**
+ * Gets details for a specific neighborhood
+ * @param {Object} neighborhood - The neighborhood object
+ * @returns {Promise<Object>} Neighborhood details object
+ */
 async function getNeighborhoodDetails(neighborhood) {
     return getMockNeighborhoodDetails(neighborhood);
 }
 
+/**
+ * Gets weather data for a location
+ * @param {Object} location - The location object with lat/lng
+ * @returns {Promise<Object>} Weather data object
+ */
 async function getWeatherData(location) {
     return getMockWeatherData(location);
 }
 
+/**
+ * Gets nearby places for a location
+ * @param {Object} location - The location object with lat/lng
+ * @returns {Promise<Array>} Array of nearby places
+ */
 async function getNearbyPlaces(location) {
     return getMockNearbyPlaces(location);
 }
 
+/**
+ * Creates mock neighborhood details
+ * @param {Object} neighborhood - The neighborhood object
+ * @returns {Object} Mock neighborhood details
+ */
 function getMockNeighborhoodDetails(neighborhood) {
+    // Map city names to population ranges for realistic mock data
     const cityNameToPopulation = {
         'Riyadh': { min: 80000, max: 200000 },
         'Jeddah': { min: 70000, max: 180000 },
@@ -811,10 +1050,14 @@ function getMockNeighborhoodDetails(neighborhood) {
         'default': { min: 40000, max: 100000 }
     };
     
+    // Extract city name from neighborhood name (simplified)
     const cityName = neighborhood.nameEn.split(' ')[0];
     const popRange = cityNameToPopulation[cityName] || cityNameToPopulation.default;
+    
+    // Generate random population within appropriate range
     const population = Math.floor(Math.random() * (popRange.max - popRange.min + 1)) + popRange.min;
     
+    // Create mock data object
     return {
         id: neighborhood.id,
         name: neighborhood.name,
@@ -840,11 +1083,18 @@ function getMockNeighborhoodDetails(neighborhood) {
     };
 }
 
+/**
+ * Creates mock weather data
+ * @param {Object} location - The location object
+ * @returns {Object} Mock weather data
+ */
 function getMockWeatherData(location) {
+    // Generate mock temperature and description
     const temp = Math.floor(Math.random() * 15) + 20;
     const descriptions = ['صافي', 'غائم جزئياً', 'غائم', 'غيوم متفرقة'];
     const description = descriptions[Math.floor(Math.random() * descriptions.length)];
     
+    // Create mock weather data
     return {
         weather: [
             {
@@ -863,6 +1113,11 @@ function getMockWeatherData(location) {
     };
 }
 
+/**
+ * Gets appropriate weather icon for a description
+ * @param {string} description - Weather description
+ * @returns {string} OpenWeatherMap icon code
+ */
 function getWeatherIcon(description) {
     const iconMap = {
         'صافي': '01d',
@@ -874,7 +1129,13 @@ function getWeatherIcon(description) {
     return iconMap[description] || '01d';
 }
 
+/**
+ * Creates mock nearby places data
+ * @param {Object} location - The location object
+ * @returns {Array} Array of mock nearby places
+ */
 function getMockNearbyPlaces(location) {
+    // Define place types and names for each type
     const placeTypes = ['restaurant', 'school', 'hospital', 'park', 'shopping_mall', 'mosque'];
     const restaurantNames = ['مطعم الشرق', 'بيتزا هت', 'مطعم البيك', 'برجر كينج', 'ستاربكس'];
     const schoolNames = ['مدرسة الأمل', 'مدرسة النور', 'مدرسة الرياض', 'المدرسة السعودية'];
@@ -883,6 +1144,7 @@ function getMockNearbyPlaces(location) {
     const mallNames = ['العثيم مول', 'النخيل مول', 'الرياض بارك', 'حياة مول'];
     const mosqueNames = ['مسجد الملك فهد', 'مسجد النور', 'مسجد التقوى', 'جامع الراجحي'];
     
+    // Map place types to name arrays
     const namesByType = {
         'restaurant': restaurantNames,
         'school': schoolNames,
@@ -894,8 +1156,10 @@ function getMockNearbyPlaces(location) {
     
     const places = [];
     
+    // Generate random number of places between 6-10
     const numPlaces = Math.floor(Math.random() * 5) + 6;
     
+    // Generate mock places
     for (let i = 0; i < numPlaces; i++) {
         const type = placeTypes[Math.floor(Math.random() * placeTypes.length)];
         const names = namesByType[type];
@@ -912,6 +1176,11 @@ function getMockNearbyPlaces(location) {
     return places;
 }
 
+/**
+ * Creates random description for a neighborhood
+ * @param {Object} neighborhood - The neighborhood object
+ * @returns {string} A description
+ */
 function getCityDescription(neighborhood) {
     const descriptions = [
         `يعتبر حي ${neighborhood.name} من الأحياء الحيوية في المدينة، ويتميز بموقعه الاستراتيجي وقربه من مراكز التسوق والخدمات الأساسية.`,
@@ -923,7 +1192,13 @@ function getCityDescription(neighborhood) {
     return descriptions[Math.floor(Math.random() * descriptions.length)];
 }
 
+/**
+ * Gets image URL for a city
+ * @param {string} cityName - English name of the city
+ * @returns {string} Image URL
+ */
 function getCityImageUrl(cityName) {
+    // Map of city names to image paths
     const cityImages = {
         'Riyadh': 'img/cities/riyadh.jpg',
         'Jeddah': 'img/cities/jeddah.jpg',
@@ -934,6 +1209,7 @@ function getCityImageUrl(cityName) {
         'Abha': 'img/cities/abha.jpg'
     };
     
+    // Return specific image if available, otherwise fallback
     if (cityImages[cityName]) {
         return cityImages[cityName];
     }
@@ -941,7 +1217,14 @@ function getCityImageUrl(cityName) {
     return 'img/placeholder.jpg';
 }
 
+/**
+ * Gets image URL for a neighborhood
+ * @param {string} cityName - English name of the city
+ * @param {string} neighborhoodName - English name of the neighborhood
+ * @returns {string} Image URL
+ */
 function getNeighborhoodImageUrl(cityName, neighborhoodName) {
+    // Map of neighborhood names to image paths
     const neighborhoodImages = {
         'Olaya': 'img/neighborhoods/olaya.jpg',
         'Al Malaz': 'img/neighborhoods/almalaz.jpg',
@@ -952,6 +1235,7 @@ function getNeighborhoodImageUrl(cityName, neighborhoodName) {
         'Al Hamra': 'img/neighborhoods/alhamra.jpg'
     };
     
+    // Return specific image if available, otherwise fallback
     if (neighborhoodImages[neighborhoodName]) {
         return neighborhoodImages[neighborhoodName];
     }

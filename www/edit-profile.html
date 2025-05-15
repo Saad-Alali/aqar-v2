@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- Character set and viewport configuration for proper responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Theme color for browser UI elements and mobile PWA configurations -->
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Page title -->
     <title>تعديل الملف الشخصي - عقار</title>
+    
+    <!-- External stylesheets: Font Awesome for icons and Google Fonts for typography -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- App stylesheets: main styles, component styles, and page-specific styles -->
     <link rel="stylesheet" href="styles/common/main.css">
     <link rel="stylesheet" href="styles/components/components.css">
     <link rel="stylesheet" href="styles/pages/edit-profile.css">
     <link rel="stylesheet" href="styles/pages/edit-profile-inline.css">
 </head>
 <body>
+    <!-- Main container for the entire application -->
     <div class="app-container">
+        <!-- Header section with back button and page title -->
         <header class="app-header">
             <div class="app-header-action">
+                <!-- Back button to navigate to profile page -->
                 <a href="profile.html" class="back-button">
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -27,34 +39,42 @@
             <div class="app-header-action"></div>
         </header>
 
+        <!-- Main content container for the edit profile form -->
         <div class="app-content edit-profile-container" id="editProfileContent">
+            <!-- Container for form alerts (success/error messages) -->
             <div id="formAlerts"></div>
             
+            <!-- Profile edit form -->
             <form class="form" id="editProfileForm">
+                <!-- Full name input field -->
                 <div class="form__group">
                     <label for="fullName" class="form__label">الاسم الكامل</label>
                     <input type="text" id="fullName" name="fullName" class="form__input" placeholder="أدخل اسمك الكامل" required autocomplete="name">
                     <small class="form__error" id="fullNameError">يجب أن يكون الاسم الكامل 3 أحرف على الأقل</small>
                 </div>
                 
+                <!-- Email input field (disabled - can't be changed) -->
                 <div class="form__group">
                     <label for="email" class="form__label">البريد الإلكتروني</label>
                     <input type="email" id="email" name="email" class="form__input" placeholder="أدخل بريدك الإلكتروني" required disabled autocomplete="email">
                     <small class="form__error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</small>
                 </div>
                 
+                <!-- Phone number input field -->
                 <div class="form__group">
                     <label for="phone" class="form__label">رقم الجوال</label>
                     <input type="tel" id="phone" name="phone" class="form__input" placeholder="أدخل رقم الجوال" autocomplete="tel">
                     <small class="form__error" id="phoneError">يرجى إدخال رقم جوال صحيح</small>
                 </div>
                 
+                <!-- Address input field -->
                 <div class="form__group">
                     <label for="address" class="form__label">العنوان</label>
                     <input type="text" id="address" name="address" class="form__input" placeholder="أدخل عنوانك" autocomplete="street-address">
                     <small class="form__error" id="addressError">يرجى إدخال عنوان صحيح</small>
                 </div>
                 
+                <!-- Form buttons: Save and Cancel -->
                 <div class="form__group">
                     <button type="submit" class="btn btn--primary btn--block" id="saveBtn">حفظ التغييرات</button>
                     <a href="profile.html" class="btn btn--outline-primary btn--block mt-2">إلغاء</a>
@@ -62,29 +82,36 @@
             </form>
         </div>
 
+        <!-- Bottom navigation tab bar -->
         <div class="tab-bar">
+            <!-- Home tab -->
             <a href="index.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-home"></i></div>
                 <div class="tab-bar__label">الرئيسية</div>
             </a>
+            <!-- Search tab -->
             <a href="search.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-search"></i></div>
                 <div class="tab-bar__label">بحث</div>
             </a>
+            <!-- Explore tab -->
             <a href="explore-locations.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-map-marked-alt"></i></div>
                 <div class="tab-bar__label">استكشاف</div>
             </a>
+            <!-- Favorites tab -->
             <a href="favorites.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-heart"></i></div>
                 <div class="tab-bar__label">المفضلة</div>
             </a>
+            <!-- Profile tab (active) -->
             <a href="profile.html" class="tab-bar__item tab-bar__item--active">
                 <div class="tab-bar__icon"><i class="fas fa-user"></i></div>
                 <div class="tab-bar__label">حسابي</div>
             </a>
         </div>
         
+        <!-- Authentication overlay (shown when user is not logged in) -->
         <div class="auth-overlay" id="authOverlay" style="display: none;">
             <div class="auth-overlay__icon">
                 <i class="fas fa-user-lock"></i>
@@ -100,6 +127,7 @@
         </div>
     </div>
 
+    <!-- JavaScript module for handling edit profile functionality -->
     <script type="module" src="scripts/pages/edit-profile.js"></script>
 </body>
 </html>

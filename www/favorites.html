@@ -2,36 +2,51 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <!-- Character set and viewport configuration for responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Theme color for browser UI elements and mobile PWA configurations -->
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Page title -->
     <title>المفضلة - عقار</title>
+    
+    <!-- External stylesheets: Font Awesome for icons and Google Fonts for typography -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- App stylesheets: main styles, component styles, and page-specific styles -->
     <link rel="stylesheet" href="styles/common/main.css">
     <link rel="stylesheet" href="styles/components/components.css">
     <link rel="stylesheet" href="styles/pages/favorites.css">
 </head>
 
 <body>
+    <!-- Main container for the entire application -->
     <div class="app-container">
+        <!-- Header section with back button, page title and more options button -->
         <header class="app-header">
             <div class="app-header-action">
+                <!-- Back button to navigate to home page -->
                 <a href="index.html" class="back-button">
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
             <h1 class="app-title">المفضلة</h1>
             <div class="app-header-action">
+                <!-- More options button to open dropdown menu -->
                 <i class="fas fa-ellipsis-v" id="moreOptionsBtn"></i>
             </div>
         </header>
 
+        <!-- Main content container -->
         <div class="app-content favorites-container" id="favoritesContent">
+            <!-- Filter tabs for favorite properties -->
             <div class="favorites-tabs">
                 <div class="favorites-tab favorites-tab--active" data-filter="all">الكل</div>
                 <div class="favorites-tab" data-filter="للبيع">للبيع</div>
@@ -43,10 +58,12 @@
             </div>
 
             <div class="container">
+                <!-- Container for favorite items (populated by JavaScript) -->
                 <div id="favoritesWithItems" style="display: none;">
                     <!-- Favorite property items will be dynamically added here -->
                 </div>
 
+                <!-- Empty state shown when no favorites exist -->
                 <div id="favoritesEmpty" class="empty-state">
                     <div class="empty-state__icon">
                         <i class="far fa-heart"></i>
@@ -58,7 +75,7 @@
                 </div>
             </div>
 
-            <!-- Clear All Button -->
+            <!-- Clear All Button (initially hidden, shown when favorites exist) -->
             <div class="container" style="text-align: center; margin-top: 20px;">
                 <button id="clearAllFavoritesBtn" class="btn btn--danger" style="display: none;">
                     <i class="fas fa-trash-alt"></i> حذف جميع المفضلات
@@ -66,30 +83,36 @@
             </div>
         </div>
 
-        <!-- Updated Tab Bar -->
+        <!-- Bottom navigation tab bar -->
         <div class="tab-bar">
+            <!-- Home tab -->
             <a href="index.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-home"></i></div>
                 <div class="tab-bar__label">الرئيسية</div>
             </a>
+            <!-- Search tab -->
             <a href="search.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-search"></i></div>
                 <div class="tab-bar__label">بحث</div>
             </a>
+            <!-- Explore tab -->
             <a href="explore-locations.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-map-marked-alt"></i></div>
                 <div class="tab-bar__label">استكشاف</div>
             </a>
+            <!-- Favorites tab (active) -->
             <a href="favorites.html" class="tab-bar__item tab-bar__item--active">
                 <div class="tab-bar__icon"><i class="fas fa-heart"></i></div>
                 <div class="tab-bar__label">المفضلة</div>
             </a>
+            <!-- Profile tab -->
             <a href="profile.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-user"></i></div>
                 <div class="tab-bar__label">حسابي</div>
             </a>
         </div>
 
+        <!-- Authentication overlay (shown when user is not logged in) -->
         <div class="auth-overlay" id="authOverlay" style="display: none;">
             <div class="auth-overlay__icon">
                 <i class="fas fa-heart"></i>
@@ -104,16 +127,19 @@
             </div>
         </div>
 
-        <!-- More Options Menu -->
+        <!-- More Options Dropdown Menu (initially hidden) -->
         <div class="dropdown-menu" id="optionsMenu" style="display: none; position: fixed; top: 60px; right: 10px; z-index: 1000;">
+            <!-- Clear all button in dropdown -->
             <div class="dropdown-menu__item" id="clearAllBtn">
                 <i class="fas fa-trash-alt" style="margin-left: 8px; color: #ef4444;"></i>
                 <span>حذف جميع المفضلات</span>
             </div>
+            <!-- Sort by newest option -->
             <div class="dropdown-menu__item" id="sortByNewestBtn">
                 <i class="fas fa-sort-amount-down" style="margin-left: 8px;"></i>
                 <span>ترتيب حسب الأحدث</span>
             </div>
+            <!-- Sort by price option -->
             <div class="dropdown-menu__item" id="sortByPriceBtn">
                 <i class="fas fa-sort-numeric-down" style="margin-left: 8px;"></i>
                 <span>ترتيب حسب السعر</span>
@@ -121,6 +147,7 @@
         </div>
     </div>
 
+    <!-- JavaScript module for handling favorites functionality -->
     <script type="module" src="scripts/pages/favorites.js"></script>
 </body>
 </html>

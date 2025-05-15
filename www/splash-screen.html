@@ -2,34 +2,52 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <!-- PWA capability configurations -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Character set and viewport configuration for responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Theme color for browser UI elements and mobile PWA configurations -->
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Page title -->
     <title>عقار - تطبيق البحث عن العقارات</title>
+    
+    <!-- External stylesheets: Font Awesome for icons and Google Fonts for typography -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Page-specific stylesheet -->
     <link rel="stylesheet" href="styles/pages/splash-screen.css">
 </head>
 
 <body>
+    <!-- Splash screen that appears on app startup -->
     <div class="splash-container" id="splashScreen">
         <div class="splash-logo-container">
+            <!-- App logo with icon and text -->
             <div class="splash-logo">
                 <i class="fas fa-home"></i>
                 <span class="splash-logo-text">عقار</span>
             </div>
+            <!-- App tagline -->
             <div class="splash-tagline">شريكك في العثور على المنزل المثالي</div>
         </div>
+        <!-- Loading animation -->
         <div class="splash-loader"></div>
     </div>
 
+    <!-- Onboarding container with walkthrough slides (initially hidden) -->
     <div class="onboarding-container" id="onboardingContainer">
+        <!-- Skip button to bypass onboarding -->
         <button class="skip-button" id="skipButton">تخطي</button>
 
+        <!-- First onboarding slide: Smart property search -->
         <div class="onboarding-slide active" id="slide1">
             <div class="onboarding-image">
                 <i class="fas fa-search-location"></i>
@@ -37,6 +55,7 @@
             <h2 class="onboarding-title">ابحث بذكاء عن أفضل العقارات</h2>
             <p class="onboarding-description">تصفح آلاف العقارات واستخدم خيارات البحث المتقدمة للعثور على العقار المناسب لك</p>
 
+            <!-- Feature highlights for this slide -->
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -52,18 +71,21 @@
                 </div>
             </div>
 
+            <!-- Navigation dots to show current slide -->
             <div class="onboarding-pagination">
                 <div class="onboarding-dot active"></div>
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
             </div>
+            <!-- Navigation buttons -->
             <div class="onboarding-buttons">
                 <button class="onboarding-button secondary hidden">السابق</button>
                 <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
             </div>
         </div>
 
+        <!-- Second onboarding slide: Save and compare favorites -->
         <div class="onboarding-slide" id="slide2">
             <div class="onboarding-image">
                 <i class="fas fa-heart"></i>
@@ -71,6 +93,7 @@
             <h2 class="onboarding-title">حفظ ومقارنة العقارات المفضلة</h2>
             <p class="onboarding-description">قم بحفظ العقارات المفضلة لديك والمقارنة بينها لاتخاذ القرار الأفضل</p>
 
+            <!-- Feature highlights for this slide -->
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -86,18 +109,21 @@
                 </div>
             </div>
 
+            <!-- Navigation dots to show current slide -->
             <div class="onboarding-pagination">
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot active"></div>
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
             </div>
+            <!-- Navigation buttons -->
             <div class="onboarding-buttons">
                 <button class="onboarding-button secondary" onclick="previousSlide()">السابق</button>
                 <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
             </div>
         </div>
 
+        <!-- Third onboarding slide: Explore neighborhoods -->
         <div class="onboarding-slide" id="slide3">
             <div class="onboarding-image">
                 <i class="fas fa-map-marked-alt"></i>
@@ -105,6 +131,7 @@
             <h2 class="onboarding-title">استكشف الأحياء والمناطق</h2>
             <p class="onboarding-description">تعرف على تفاصيل المناطق والأحياء والخدمات القريبة ومعلومات مفصلة عن كل منطقة</p>
 
+            <!-- Feature highlights for this slide -->
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -120,18 +147,21 @@
                 </div>
             </div>
 
+            <!-- Navigation dots to show current slide -->
             <div class="onboarding-pagination">
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot active"></div>
                 <div class="onboarding-dot"></div>
             </div>
+            <!-- Navigation buttons -->
             <div class="onboarding-buttons">
                 <button class="onboarding-button secondary" onclick="previousSlide()">السابق</button>
                 <button class="onboarding-button primary" onclick="nextSlide()">التالي</button>
             </div>
         </div>
 
+        <!-- Fourth onboarding slide: Start real estate journey -->
         <div class="onboarding-slide" id="slide4">
             <div class="onboarding-image">
                 <i class="fas fa-home"></i>
@@ -139,6 +169,7 @@
             <h2 class="onboarding-title">ابدأ رحلتك العقارية الآن</h2>
             <p class="onboarding-description">سجل دخول الآن واستمتع بتجربة فريدة في البحث عن العقارات المناسبة بكل سهولة</p>
 
+            <!-- Feature highlights for this slide -->
             <div class="onboarding-features">
                 <div class="onboarding-feature">
                     <div class="onboarding-feature-icon">
@@ -154,12 +185,14 @@
                 </div>
             </div>
 
+            <!-- Navigation dots to show current slide -->
             <div class="onboarding-pagination">
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot"></div>
                 <div class="onboarding-dot active"></div>
             </div>
+            <!-- Navigation buttons -->
             <div class="onboarding-buttons">
                 <button class="onboarding-button secondary" onclick="previousSlide()">السابق</button>
                 <button class="onboarding-button primary" onclick="goToLogin()">ابدأ الآن</button>
@@ -167,6 +200,7 @@
         </div>
     </div>
 
+    <!-- JavaScript for handling splash screen and onboarding functionality -->
     <script src="scripts/pages/splash-screen.js"></script>
 </body>
 </html>

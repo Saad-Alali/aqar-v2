@@ -2,54 +2,79 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <!-- PWA capability configurations -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Character set and viewport configuration for responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Theme color for browser UI elements and mobile PWA configurations -->
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Page title -->
     <title>حسابي - عقار</title>
+    
+    <!-- External stylesheets: Font Awesome for icons and Google Fonts for typography -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- App stylesheets: main styles, component styles, and page-specific styles -->
     <link rel="stylesheet" href="styles/common/main.css">
     <link rel="stylesheet" href="styles/components/components.css">
     <link rel="stylesheet" href="styles/pages/profile.css">
     <link rel="stylesheet" href="styles/pages/profile-inline.css">
+    
+    <!-- Additional fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <!-- Main container for the entire application -->
     <div class="app-container">
+        <!-- Header section with back button, page title and settings button -->
         <header class="app-header">
             <div class="app-header-action">
+                <!-- Back button to navigate to home page -->
                 <a href="index.html" class="back-button">
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
             <h1 class="app-title">حسابي</h1>
             <div class="app-header-action">
+                <!-- Settings button (currently not active) -->
                 <i class="fas fa-cog" id="settingsBtn"></i>
             </div>
         </header>
 
+        <!-- Main content container -->
         <div class="app-content profile-container" id="profileContent">
+            <!-- Container for profile alerts (success/error messages) -->
             <div id="profileAlerts"></div>
 
+            <!-- Profile card with user information -->
             <div class="profile__card">
                 <div class="profile__header">
+                    <!-- User avatar/photo -->
                     <div class="profile__avatar">
                         <img src="img/placeholder.jpg" alt="صورة الملف الشخصي" id="profileAvatar" class="profile__img">
                     </div>
                     <div>
+                        <!-- User name (loaded by JavaScript) -->
                         <h2 class="profile__title" id="profileName">جاري التحميل...</h2>
+                        <!-- User email (loaded by JavaScript) -->
                         <p class="profile__email" id="profileEmail"></p>
                     </div>
                 </div>
             </div>
 
+            <!-- Profile menu card with various options -->
             <div class="profile__card" style="padding: 0;">
+                <!-- Edit profile menu item -->
                 <a href="edit-profile.html" class="profile-menu-item">
                     <div class="profile-menu-icon">
                         <i class="fas fa-user"></i>
@@ -62,6 +87,7 @@
                     </div>
                 </a>
 
+                <!-- Favorites menu item -->
                 <a href="favorites.html" class="profile-menu-item">
                     <div class="profile-menu-icon">
                         <i class="fas fa-heart"></i>
@@ -74,6 +100,7 @@
                     </div>
                 </a>
 
+                <!-- Clear favorites menu item -->
                 <a href="#" class="profile-menu-item" id="clearFavoritesBtn">
                     <div class="profile-menu-icon">
                         <i class="fas fa-trash"></i>
@@ -86,6 +113,7 @@
                     </div>
                 </a>
 
+                <!-- Developer info menu item -->
                 <a href="#" class="profile-menu-item" id="developerInfoBtn">
                     <div class="profile-menu-icon">
                         <i class="fas fa-code"></i>
@@ -98,6 +126,7 @@
                     </div>
                 </a>
 
+                <!-- Delete account menu item (danger action) -->
                 <a href="#" class="profile-menu-item profile-menu-item--danger" id="deleteAccountBtn">
                     <div class="profile-menu-icon profile-menu-icon--danger">
                         <i class="fas fa-user-slash"></i>
@@ -107,6 +136,7 @@
                     </div>
                 </a>
 
+                <!-- Logout menu item (danger action) -->
                 <a href="#" class="profile-menu-item profile-menu-item--danger" id="logoutBtn">
                     <div class="profile-menu-icon profile-menu-icon--danger">
                         <i class="fas fa-sign-out-alt"></i>
@@ -117,35 +147,43 @@
                 </a>
             </div>
 
+            <!-- App version and copyright information -->
             <div class="text-center mt-4" style="color: var(--gray-color); font-size: 0.875rem;">
                 <p>نسخة التطبيق: 1.0.0</p>
                 <p class="mt-1">&copy; 2025 عقار - جميع الحقوق محفوظة</p>
             </div>
         </div>
 
+        <!-- Bottom navigation tab bar -->
         <div class="tab-bar">
+            <!-- Home tab -->
             <a href="index.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-home"></i></div>
                 <div class="tab-bar__label">الرئيسية</div>
             </a>
+            <!-- Search tab -->
             <a href="search.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-search"></i></div>
                 <div class="tab-bar__label">بحث</div>
             </a>
+            <!-- Explore tab -->
             <a href="explore-locations.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-map-marked-alt"></i></div>
                 <div class="tab-bar__label">استكشاف</div>
             </a>
+            <!-- Favorites tab -->
             <a href="favorites.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-heart"></i></div>
                 <div class="tab-bar__label">المفضلة</div>
             </a>
+            <!-- Profile tab (active) -->
             <a href="profile.html" class="tab-bar__item tab-bar__item--active">
                 <div class="tab-bar__icon"><i class="fas fa-user"></i></div>
                 <div class="tab-bar__label">حسابي</div>
             </a>
         </div>
 
+        <!-- Authentication overlay (shown when user is not logged in) -->
         <div class="auth-overlay" id="authOverlay" style="display: none;">
             <div class="auth-overlay__icon">
                 <i class="fas fa-user-lock"></i>
@@ -160,40 +198,50 @@
             </div>
         </div>
 
+        <!-- Developer info dialog/modal (initially hidden) -->
         <div class="dev-info-dialog" id="devInfoDialog">
             <div class="dev-info-content">
+                <!-- Dialog header with title and close button -->
                 <div class="dev-info-header">
                     <div class="dev-info-title">معلومات المطور</div>
                     <button class="dev-info-close" id="closeDevInfoBtn">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
+                <!-- Dialog body with developer details -->
                 <div class="dev-info-body">
+                    <!-- Developer name -->
                     <div class="dev-info-item">
                         <div class="dev-info-label">الاسم:</div>
                         <div class="dev-info-value">سعد ياسر العلي</div>
                     </div>
+                    <!-- Developer ID number -->
                     <div class="dev-info-item">
                         <div class="dev-info-label">رقم الجامعي:</div>
                         <div class="dev-info-value">443332004</div>
                     </div>
+                    <!-- Developer major/specialization -->
                     <div class="dev-info-item">
                         <div class="dev-info-label">التخصص:</div>
                         <div class="dev-info-value">هندسة البرمجيات</div>
                     </div>
+                    <!-- Course name -->
                     <div class="dev-info-item">
                         <div class="dev-info-label">اسم المقرر:</div>
                         <div class="dev-info-value">برمجة الاجهزة الذكيه المتقدمة 2</div>
                     </div>
+                    <!-- College name -->
                     <div class="dev-info-item">
                         <div class="dev-info-label">اسم الكليه:</div>
                         <div class="dev-info-value">كلية الاتصالات</div>
                     </div>
+                    <!-- Application creation date -->
                     <div class="dev-info-item">
                         <div class="dev-info-label">تاريخ انشاء البرنامج:</div>
                         <div class="dev-info-value">05/11/2025</div>
                     </div>
 
+                    <!-- Developer/college logo -->
                     <div class="dev-info-logo">
                         <img src="img/TVTC.png" alt="Developer Logo" id="devLogo" style="width: 180px; height: 180px;">
                     </div>
@@ -202,6 +250,7 @@
         </div>
     </div>
 
+    <!-- JavaScript module for handling profile functionality -->
     <script type="module" src="scripts/pages/profile.js"></script>
 </body>
 </html>

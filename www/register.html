@@ -2,24 +2,36 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <!-- Character set and viewport configuration for responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- Theme color for browser UI elements and mobile PWA configurations -->
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Page title -->
     <title>إنشاء حساب - عقار</title>
+    
+    <!-- External stylesheets: Font Awesome for icons and Google Fonts for typography -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- App stylesheets: main styles, component styles, and page-specific styles -->
     <link rel="stylesheet" href="styles/common/main.css">
     <link rel="stylesheet" href="styles/components/components.css">
     <link rel="stylesheet" href="styles/pages/register-inline.css">
 </head>
 
 <body>
+    <!-- Main container for the entire application -->
     <div class="app-container">
+        <!-- Header section with back button and page title -->
         <header class="app-header">
             <div class="app-header-action">
+                <!-- Back button to navigate to login page -->
                 <a href="login.html" class="back-button">
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -28,11 +40,15 @@
             <div class="app-header-action"></div>
         </header>
 
+        <!-- Main content container -->
         <div class="app-content register-container">
+            <!-- Registration form container -->
             <div class="register-form">
                 <form class="form" id="registerForm">
+                    <!-- Container for form alerts (success/error messages) -->
                     <div id="formAlerts"></div>
 
+                    <!-- Full name input field -->
                     <div class="form__group">
                         <label for="fullName" class="form__label">الاسم الكامل</label>
                         <input type="text" id="fullName" name="fullName" class="form__input"
@@ -40,6 +56,7 @@
                         <small class="form__error" id="fullNameError">يجب أن يكون الاسم الكامل 3 أحرف على الأقل</small>
                     </div>
 
+                    <!-- Email input field -->
                     <div class="form__group">
                         <label for="email" class="form__label">البريد الإلكتروني</label>
                         <input type="email" id="email" name="email" class="form__input"
@@ -47,6 +64,7 @@
                         <small class="form__error" id="emailError">يرجى إدخال بريد إلكتروني صحيح</small>
                     </div>
 
+                    <!-- Phone number input field -->
                     <div class="form__group">
                         <label for="phone" class="form__label">رقم الجوال</label>
                         <input type="tel" id="phone" name="phone" class="form__input" placeholder="أدخل رقم الجوال"
@@ -54,6 +72,7 @@
                         <small class="form__error" id="phoneError">يرجى إدخال رقم جوال صحيح</small>
                     </div>
 
+                    <!-- Password input field -->
                     <div class="form__group">
                         <label for="password" class="form__label">كلمة المرور</label>
                         <input type="password" id="password" name="password" class="form__input"
@@ -61,6 +80,7 @@
                         <small class="form__error" id="passwordError">يجب أن تكون كلمة المرور 6 أحرف على الأقل</small>
                     </div>
 
+                    <!-- Confirm password input field -->
                     <div class="form__group">
                         <label for="confirmPassword" class="form__label">تأكيد كلمة المرور</label>
                         <input type="password" id="confirmPassword" name="confirmPassword" class="form__input"
@@ -68,8 +88,10 @@
                         <small class="form__error" id="confirmPasswordError">كلمات المرور غير متطابقة</small>
                     </div>
 
+                    <!-- Register button -->
                     <button type="submit" class="btn btn--primary btn--block" id="registerBtn">إنشاء حساب</button>
 
+                    <!-- Footer with link to login page -->
                     <div class="form__footer text-center mt-4">
                         <p>لديك حساب بالفعل؟ <a href="login.html" class="form__footer-link">تسجيل الدخول</a></p>
                     </div>
@@ -78,6 +100,7 @@
         </div>
     </div>
 
+    <!-- JavaScript module for handling registration functionality -->
     <script type="module" src="scripts/pages/register.js"></script>
 </body>
 </html>
