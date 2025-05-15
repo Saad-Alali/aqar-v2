@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="css/search.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script type="module" src="js/language-handler.js"></script>
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
@@ -69,7 +68,7 @@
                 <div class="property-suggestions">
                     <div class="section-header">
                         <h3 class="section-title" data-i18n="propertySuggestions">اقتراحات عقارية</h3>
-                        <a href="#" class="section-action" data-i18n="viewAll">عرض الكل</a>
+                        <a href="#" class="section-action" id="viewAllBtn" data-i18n="viewAll">عرض الكل</a>
                     </div>
                     
                     <div id="propertySuggestions">
@@ -224,6 +223,38 @@
                 initRecentSearches();
                 initFilterPanel();
                 await loadSuggestions();
+                
+                // Initialize the "View All" button
+                const viewAllBtn = document.getElementById('viewAllBtn');
+                if (viewAllBtn) {
+                    viewAllBtn.addEventListener('click', async function(e) {
+                        e.preventDefault();
+                        try {
+                            toggleLoading(true);
+                            document.getElementById('initialSearchView').style.display = 'none';
+                            
+                            const response = await fetch('data/properties.json');
+                            const properties = await response.json();
+                            displaySearchResults(properties);
+                        } catch (error) {
+                            console.error('Error loading all properties:', error);
+                            showToast('حدث خطأ في تحميل العقارات', 'error');
+                            toggleLoading(false);
+                            document.getElementById('initialSearchView').style.display = 'block';
+                        }
+                    });
+                }
+                
+                // Initialize reset search button
+                const resetSearchBtn = document.getElementById('resetSearchBtn');
+                if (resetSearchBtn) {
+                    resetSearchBtn.addEventListener('click', function() {
+                        document.getElementById('searchInput').value = '';
+                        document.getElementById('searchResultsView').style.display = 'none';
+                        document.getElementById('noResults').style.display = 'none';
+                        document.getElementById('initialSearchView').style.display = 'block';
+                    });
+                }
                 
             } catch (error) {
                 console.error('Error initializing search page:', error);

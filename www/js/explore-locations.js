@@ -38,6 +38,7 @@ function initializeMap() {
     loadCities();
 }
 
+// Explicitly set the global initMap function to call our initialize function
 window.initMap = initializeMap;
 
 async function loadCities() {
@@ -553,7 +554,7 @@ function showLoading(containerId) {
     if (!container) return;
     
     container.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+        <div style="grid-column: span 2; text-align: center; padding: 20px;">
             <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
             <p style="margin-top: 10px;">جاري التحميل...</p>
         </div>
@@ -570,7 +571,7 @@ function renderErrorState(containerId, message) {
     if (!container) return;
     
     container.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+        <div style="grid-column: span 2; text-align: center; padding: 20px;">
             <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: var(--danger-color);"></i>
             <p style="margin-top: 10px;">${message}</p>
             <button class="btn btn--primary mt-3" id="retry-${containerId}">إعادة المحاولة</button>
@@ -655,15 +656,8 @@ function addNeighborhoodDetailStyles() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (typeof google !== 'undefined') {
-        initializeMap();
-    } else {
-        const mapElement = document.getElementById('map');
-        if (mapElement) {
-            mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>خريطة غير متاحة حالياً<br>تحقق من اتصالك بالإنترنت</p></div>';
-        }
-        loadCities();
-    }
+    // No need to initialize here as we've explicitly exposed initMap globally
+    // and it will be called by the Google Maps API when it loads
     
     const backToCitiesBtn = document.getElementById('backToCities');
     if (backToCitiesBtn) {
@@ -705,6 +699,22 @@ document.addEventListener('DOMContentLoaded', function() {
             
             currentNeighborhood = null;
         });
+    }
+    
+    // Check if the map already has content
+    const mapElement = document.getElementById('map');
+    if (mapElement && mapElement.innerHTML === '') {
+        mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>جاري تحميل الخريطة...</p></div>';
+    }
+    
+    // If Google Maps API is already loaded, initialize the map
+    if (typeof google !== 'undefined' && google.maps) {
+        initializeMap();
+    }
+    
+    // If Google Maps failed to load, still load cities
+    if (mapElement && !mapElement.querySelector('.gm-style')) {
+        loadCities();
     }
 });
 

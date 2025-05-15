@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="css/profile.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script type="module" src="js/language-handler.js"></script>
     <style>
         .dev-info-dialog {
             display: none;
@@ -75,7 +74,6 @@
             color: var(--gray-color);
         }
 
-        /* New styles for developer logo */
         .dev-info-logo {
             text-align: center;
             margin-top: 24px;
@@ -102,7 +100,7 @@
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-            <h1 class="app-title" data-i18n="profile">حسابي</h1>
+            <h1 class="app-title">حسابي</h1>
             <div class="app-header-action">
                 <i class="fas fa-cog" id="settingsBtn"></i>
             </div>
@@ -128,7 +126,7 @@
                     <div class="profile-menu-icon">
                         <i class="fas fa-user"></i>
                     </div>
-                    <div class="profile-menu-text" data-i18n="personalInfo">
+                    <div class="profile-menu-text">
                         المعلومات الشخصية
                     </div>
                     <div class="profile-menu-arrow">
@@ -140,7 +138,7 @@
                     <div class="profile-menu-icon">
                         <i class="fas fa-heart"></i>
                     </div>
-                    <div class="profile-menu-text" data-i18n="favorites">
+                    <div class="profile-menu-text">
                         المفضلة
                     </div>
                     <div class="profile-menu-arrow">
@@ -152,7 +150,7 @@
                     <div class="profile-menu-icon">
                         <i class="fas fa-trash"></i>
                     </div>
-                    <div class="profile-menu-text" data-i18n="clearFavorites">
+                    <div class="profile-menu-text">
                         حذف جميع المفضلات
                     </div>
                     <div class="profile-menu-arrow">
@@ -164,7 +162,7 @@
                     <div class="profile-menu-icon">
                         <i class="fas fa-code"></i>
                     </div>
-                    <div class="profile-menu-text" data-i18n="developerInfo">
+                    <div class="profile-menu-text">
                         معلومات المطور
                     </div>
                     <div class="profile-menu-arrow">
@@ -172,25 +170,11 @@
                     </div>
                 </a>
 
-                <div class="profile-menu-item" id="languageSwitcherItem">
-                    <div class="profile-menu-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <div class="profile-menu-text">
-                        <span id="languageLabel" data-i18n="language">اللغة</span>:
-                        <span id="currentLanguage"
-                            style="margin-right: 6px; color: var(--primary-color);">العربية</span>
-                    </div>
-                    <div class="profile-menu-arrow">
-                        <i class="fas fa-chevron-left"></i>
-                    </div>
-                </div>
-
                 <a href="#" class="profile-menu-item profile-menu-item--danger" id="deleteAccountBtn">
                     <div class="profile-menu-icon profile-menu-icon--danger">
                         <i class="fas fa-user-slash"></i>
                     </div>
-                    <div class="profile-menu-text" data-i18n="deleteAccount">
+                    <div class="profile-menu-text">
                         حذف الحساب
                     </div>
                 </a>
@@ -199,26 +183,26 @@
                     <div class="profile-menu-icon profile-menu-icon--danger">
                         <i class="fas fa-sign-out-alt"></i>
                     </div>
-                    <div class="profile-menu-text" data-i18n="logout">
+                    <div class="profile-menu-text">
                         تسجيل الخروج
                     </div>
                 </a>
             </div>
 
             <div class="text-center mt-4" style="color: var(--gray-color); font-size: 0.875rem;">
-                <p data-i18n="appVersion">نسخة التطبيق: 1.0.0</p>
-                <p class="mt-1" data-i18n="copyright">&copy; 2025 عقار - جميع الحقوق محفوظة</p>
+                <p>نسخة التطبيق: 1.0.0</p>
+                <p class="mt-1">&copy; 2025 عقار - جميع الحقوق محفوظة</p>
             </div>
         </div>
 
         <div class="tab-bar">
             <a href="index.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-home"></i></div>
-                <div class="tab-bar__label" data-i18n="home">الرئيسية</div>
+                <div class="tab-bar__label">الرئيسية</div>
             </a>
             <a href="search.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-search"></i></div>
-                <div class="tab-bar__label" data-i18n="search">بحث</div>
+                <div class="tab-bar__label">بحث</div>
             </a>
             <a href="explore-locations.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-map-marked-alt"></i></div>
@@ -226,11 +210,11 @@
             </a>
             <a href="favorites.html" class="tab-bar__item">
                 <div class="tab-bar__icon"><i class="fas fa-heart"></i></div>
-                <div class="tab-bar__label" data-i18n="favorites">المفضلة</div>
+                <div class="tab-bar__label">المفضلة</div>
             </a>
             <a href="profile.html" class="tab-bar__item tab-bar__item--active">
                 <div class="tab-bar__icon"><i class="fas fa-user"></i></div>
-                <div class="tab-bar__label" data-i18n="profile">حسابي</div>
+                <div class="tab-bar__label">حسابي</div>
             </a>
         </div>
 
@@ -238,75 +222,45 @@
             <div class="auth-overlay__icon">
                 <i class="fas fa-user-lock"></i>
             </div>
-            <h2 class="auth-overlay__title" data-i18n="loginRequired">تسجيل الدخول مطلوب</h2>
-            <p class="auth-overlay__description" data-i18n="loginToViewProfile">
+            <h2 class="auth-overlay__title">تسجيل الدخول مطلوب</h2>
+            <p class="auth-overlay__description">
                 يجب تسجيل الدخول أو إنشاء حساب جديد للوصول إلى صفحة الملف الشخصي
             </p>
             <div class="auth-overlay__buttons">
-                <a href="login.html" class="btn btn--primary" data-i18n="login">تسجيل الدخول</a>
-                <a href="register.html" class="btn btn--outline-primary" data-i18n="createAccount">إنشاء حساب جديد</a>
+                <a href="login.html" class="btn btn--primary">تسجيل الدخول</a>
+                <a href="register.html" class="btn btn--outline-primary">إنشاء حساب جديد</a>
             </div>
         </div>
 
         <div class="dev-info-dialog" id="devInfoDialog">
             <div class="dev-info-content">
                 <div class="dev-info-header">
-                    <div class="dev-info-title" data-i18n="developerInfo">معلومات المطور</div>
+                    <div class="dev-info-title">معلومات المطور</div>
                     <button class="dev-info-close" id="closeDevInfoBtn">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="dev-info-body">
                     <div class="dev-info-item">
-                        <div class="dev-info-label" data-i18n="name">الاسم:</div>
+                        <div class="dev-info-label">الاسم:</div>
                         <div class="dev-info-value">سعد ياسر العلي</div>
                     </div>
                     <div class="dev-info-item">
-                        <div class="dev-info-label" data-i18n="universityId">رقم الجامعي:</div>
+                        <div class="dev-info-label">رقم الجامعي:</div>
                         <div class="dev-info-value">443332004</div>
                     </div>
                     <div class="dev-info-item">
-                        <div class="dev-info-label" data-i18n="major">التخصص:</div>
-                        <div class="dev-info-value" data-i18n="softwareEngineering">هندسة البرمجيات</div>
+                        <div class="dev-info-label">التخصص:</div>
+                        <div class="dev-info-value">هندسة البرمجيات</div>
                     </div>
                     <div class="dev-info-item">
-                        <div class="dev-info-label" data-i18n="creationDate">تاريخ انشاء البرنامج:</div>
+                        <div class="dev-info-label">تاريخ انشاء البرنامج:</div>
                         <div class="dev-info-value">05/11/2025</div>
                     </div>
 
                     <div class="dev-info-logo">
                         <img src="img/TVTC.png" alt="Developer Logo" id="devLogo">
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="languageModal"
-            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
-            <div
-                style="background-color: white; border-radius: 12px; padding: 20px; width: 85%; max-width: 320px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 600;" id="selectLanguageTitle"
-                        data-i18n="selectLanguage">اختر اللغة</h3>
-                    <button id="closeLanguageModal"
-                        style="background: none; border: none; color: var(--gray-color); font-size: 1.25rem; cursor: pointer;"><i
-                            class="fas fa-times"></i></button>
-                </div>
-
-                <div>
-                    <button id="selectArabic" class="btn btn--block"
-                        style="margin-bottom: 10px; text-align: right; padding: 12px; justify-content: space-between; display: flex; align-items: center; border: 1px solid var(--light-gray);">
-                        العربية
-                        <span class="language-check" style="color: var(--primary-color); display: none;"><i
-                                class="fas fa-check"></i></span>
-                    </button>
-
-                    <button id="selectEnglish" class="btn btn--block"
-                        style="text-align: right; padding: 12px; justify-content: space-between; display: flex; align-items: center; border: 1px solid var(--light-gray);">
-                        English
-                        <span class="language-check" style="color: var(--primary-color); display: none;"><i
-                                class="fas fa-check"></i></span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -331,7 +285,6 @@
 
                 updateProfileUI(user);
                 initializeInteractions(user);
-                initializeLanguageSwitcher();
                 initDevInfoModal();
 
             } catch (error) {
@@ -369,9 +322,7 @@
                 logoutBtn.addEventListener('click', async function (e) {
                     e.preventDefault();
 
-                    const confirmMessage = document.documentElement.lang === 'ar' ?
-                        'هل أنت متأكد من تسجيل الخروج؟' :
-                        'Are you sure you want to log out?';
+                    const confirmMessage = 'هل أنت متأكد من تسجيل الخروج؟';
 
                     if (confirm(confirmMessage)) {
                         try {
@@ -379,11 +330,7 @@
                             window.location.href = 'login.html';
                         } catch (error) {
                             console.error("Error logging out:", error);
-
-                            const errorMessage = document.documentElement.lang === 'ar' ?
-                                'حدث خطأ في تسجيل الخروج' :
-                                'Error logging out';
-
+                            const errorMessage = 'حدث خطأ في تسجيل الخروج';
                             showToast(errorMessage, "error");
                         }
                     }
@@ -395,26 +342,16 @@
                 clearFavoritesBtn.addEventListener('click', async function (e) {
                     e.preventDefault();
 
-                    const confirmMessage = document.documentElement.lang === 'ar' ?
-                        'هل أنت متأكد من حذف جميع المفضلات؟' :
-                        'Are you sure you want to delete all favorites?';
+                    const confirmMessage = 'هل أنت متأكد من حذف جميع المفضلات؟';
 
                     if (confirm(confirmMessage)) {
                         try {
                             await clearAllFavorites(user.id);
-
-                            const successMessage = document.documentElement.lang === 'ar' ?
-                                'تم حذف جميع المفضلات بنجاح' :
-                                'All favorites have been deleted successfully';
-
+                            const successMessage = 'تم حذف جميع المفضلات بنجاح';
                             showToast(successMessage, 'success');
                         } catch (error) {
                             console.error("Error clearing favorites:", error);
-
-                            const errorMessage = document.documentElement.lang === 'ar' ?
-                                'فشل حذف المفضلات' :
-                                'Failed to delete favorites';
-
+                            const errorMessage = 'فشل حذف المفضلات';
                             showToast(errorMessage, 'error');
                         }
                     }
@@ -426,18 +363,12 @@
                 deleteAccountBtn.addEventListener('click', async function (e) {
                     e.preventDefault();
 
-                    const confirmMessage = document.documentElement.lang === 'ar' ?
-                        'هل أنت متأكد من حذف الحساب؟ لا يمكن التراجع عن هذه العملية.' :
-                        'Are you sure you want to delete your account? This action cannot be undone.';
+                    const confirmMessage = 'هل أنت متأكد من حذف الحساب؟ لا يمكن التراجع عن هذه العملية.';
 
                     if (confirm(confirmMessage)) {
                         try {
                             await deleteUserAccount(user.id);
-
-                            const successMessage = document.documentElement.lang === 'ar' ?
-                                'تم حذف الحساب بنجاح' :
-                                'Account deleted successfully';
-
+                            const successMessage = 'تم حذف الحساب بنجاح';
                             showToast(successMessage, 'success');
 
                             setTimeout(() => {
@@ -445,11 +376,7 @@
                             }, 1500);
                         } catch (error) {
                             console.error("Error deleting account:", error);
-
-                            const errorMessage = document.documentElement.lang === 'ar' ?
-                                'فشل حذف الحساب' :
-                                'Failed to delete account';
-
+                            const errorMessage = 'فشل حذف الحساب';
                             showToast(errorMessage, 'error');
                         }
                     }
@@ -477,69 +404,6 @@
                         devInfoDialog.style.display = 'none';
                     }
                 });
-            }
-        }
-
-        function initializeLanguageSwitcher() {
-            const languageSwitcherItem = document.getElementById('languageSwitcherItem');
-            const languageModal = document.getElementById('languageModal');
-            const closeLanguageModal = document.getElementById('closeLanguageModal');
-            const selectArabic = document.getElementById('selectArabic');
-            const selectEnglish = document.getElementById('selectEnglish');
-            const currentLanguage = document.getElementById('currentLanguage');
-
-            const savedLang = localStorage.getItem('aqar_language') || 'ar';
-
-            updateLanguageUI(savedLang);
-
-            languageSwitcherItem.addEventListener('click', function () {
-                languageModal.style.display = 'flex';
-            });
-
-            closeLanguageModal.addEventListener('click', function () {
-                languageModal.style.display = 'none';
-            });
-
-            languageModal.addEventListener('click', function (e) {
-                if (e.target === languageModal) {
-                    languageModal.style.display = 'none';
-                }
-            });
-
-            selectArabic.addEventListener('click', function () {
-                updateLanguage('ar');
-            });
-
-            selectEnglish.addEventListener('click', function () {
-                updateLanguage('en');
-            });
-
-            function updateLanguageUI(lang) {
-                const arabicCheck = selectArabic.querySelector('.language-check');
-                const englishCheck = selectEnglish.querySelector('.language-check');
-
-                if (lang === 'ar') {
-                    arabicCheck.style.display = 'block';
-                    englishCheck.style.display = 'none';
-                    currentLanguage.textContent = 'العربية';
-                } else {
-                    arabicCheck.style.display = 'none';
-                    englishCheck.style.display = 'block';
-                    currentLanguage.textContent = 'English';
-                }
-            }
-
-            function updateLanguage(lang) {
-                localStorage.setItem('aqar_language', lang);
-                updateLanguageUI(lang);
-                languageModal.style.display = 'none';
-
-                const message = lang === 'ar' ? 'تم تغيير اللغة إلى العربية' : 'Language changed to English';
-                showToast(message, 'success');
-
-                setTimeout(() => {
-                    window.location.reload();
-                }, 300);
             }
         }
     </script>

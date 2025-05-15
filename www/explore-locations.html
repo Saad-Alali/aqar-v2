@@ -15,7 +15,14 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/explore-locations.css">
-    <script type="module" src="js/language-handler.js"></script>
+    <script>
+        // Define initMap globally before Google Maps API loads
+        window.initMap = function() {
+            console.log('Initial initMap called');
+            // This will be replaced by the actual implementation
+            // from explore-locations.js
+        };
+    </script>
 </head>
 
 <body>
