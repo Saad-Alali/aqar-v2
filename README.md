@@ -11,7 +11,7 @@
   <h2>Project Documentation</h2>
   <br><br>
   <h3>Developer Information</h3>
-  <p><b>Developer Name:</b> Saad Yasser Al-Ali</p>
+  <p><b>Developer Name:</b> Saad Yasir Alali</p>
   <p><b>Academic ID:</b> 443332004</p>
   <p><b>Specialization:</b> Software Engineering</p>
   <p><b>Course Name:</b> Advanced Smart Device Programming 2</p>
