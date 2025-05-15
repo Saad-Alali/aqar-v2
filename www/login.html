@@ -4,8 +4,12 @@
 <head>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: content:;">
+    <meta http-equiv="Content-Security-Policy" 
+    content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; 
+    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; 
+    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
+    script-src 'self' 'unsafe-inline' 'unsafe-eval'; 
+    img-src 'self' data: content:;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#2563eb">
@@ -18,7 +22,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="js/language-handler.js"></script>
+    <script type="module" src="js/language-handler.js"></script>
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
@@ -132,12 +136,21 @@
 
     <script src="cordova.js"></script>
 <script>
-    // Hide Cordova splash screen immediately for login page
+    // Force hide splash screen immediately when login page loads
     document.addEventListener('deviceready', function() {
         if (navigator.splashscreen) {
             navigator.splashscreen.hide();
+            console.log("Explicitly hiding splash screen on login page");
         }
     }, false);
+    
+    // As a fallback, also try to hide after a short delay
+    setTimeout(function() {
+        if (navigator.splashscreen) {
+            navigator.splashscreen.hide();
+            console.log("Hiding splash screen via timeout");
+        }
+    }, 500);
 </script>
     <script type="module">
         import { initializeJsonService } from './js/json-service.js';
