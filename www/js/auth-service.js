@@ -4,9 +4,6 @@ import { dataCache, saveToLocalStorage } from './json-service.js';
 const LOCAL_STORAGE_USER_KEY = 'aqar_current_user';
 let currentUserCache = null;
 
-/**
- * Register a new user
- */
 export async function registerUser(email, password, fullName, phone) {
   try {
     if (dataCache && dataCache.users) {
@@ -41,9 +38,6 @@ export async function registerUser(email, password, fullName, phone) {
   }
 }
 
-/**
- * Log in a user
- */
 export async function loginUser(email, password) {
   try {
     if (dataCache && dataCache.users) {
@@ -67,9 +61,6 @@ export async function loginUser(email, password) {
   }
 }
 
-/**
- * Log out the current user
- */
 export async function logoutUser() {
   try {
     currentUserCache = null;
@@ -81,9 +72,6 @@ export async function logoutUser() {
   }
 }
 
-/**
- * Get the current logged in user
- */
 export async function getCurrentUser() {
   if (currentUserCache) {
     return { ...currentUserCache, password: undefined };
@@ -109,9 +97,6 @@ export async function getCurrentUser() {
   }
 }
 
-/**
- * Update user profile
- */
 export async function updateUserProfile(userId, updatedData) {
   try {
     if (dataCache && dataCache.users) {
@@ -143,9 +128,6 @@ export async function updateUserProfile(userId, updatedData) {
   }
 }
 
-/**
- * Toggle a property as favorite
- */
 export async function toggleFavorite(userId, propertyId) {
   try {
     if (dataCache && dataCache.users) {
@@ -189,9 +171,6 @@ export async function toggleFavorite(userId, propertyId) {
   }
 }
 
-/**
- * Delete a user account
- */
 export async function deleteUserAccount(userId) {
   try {
     if (dataCache && dataCache.users) {
@@ -208,9 +187,6 @@ export async function deleteUserAccount(userId) {
   }
 }
 
-/**
- * Set the current user in localStorage and cache
- */
 function setCurrentUser(user) {
   localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user));
   currentUserCache = user;

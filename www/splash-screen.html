@@ -498,7 +498,28 @@
         </div>
     </div>
 
+    <script src="cordova.js"></script>
     <script>
+        document.addEventListener('deviceready', onDeviceReady, false);
+        
+        function onDeviceReady() {
+            console.log('Device is ready');
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we're being redirected from index.html
+            const fromIndex = localStorage.getItem('from_index');
+            
+            // If we're not redirected from index, go back to index
+            if (!fromIndex) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Clear the flag
+            localStorage.removeItem('from_index');
+        });
+        
         let currentSlide = 1;
         const totalSlides = 4;
 
@@ -533,9 +554,8 @@
         }
 
         function goToLogin() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const redirectUrl = urlParams.get('redirect') || 'login.html';
-            window.location.href = redirectUrl;
+            localStorage.setItem('has_seen_splash', 'true');
+            window.location.href = 'login.html';
         }
     </script>
 </body>

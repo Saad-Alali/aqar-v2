@@ -1,6 +1,8 @@
+// www/js/language-handler.js
+let currentLanguage = localStorage.getItem('aqar_language') || 'ar';
+
 document.addEventListener('DOMContentLoaded', function() {
-    const savedLang = localStorage.getItem('aqar_language') || 'ar';
-    applyLanguage(savedLang);
+    applyLanguage(currentLanguage);
 });
 
 function applyLanguage(lang) {
@@ -16,6 +18,9 @@ function applyLanguage(lang) {
     } else {
         document.body.style.fontFamily = "'Poppins', sans-serif";
     }
+    
+    currentLanguage = lang;
+    localStorage.setItem('aqar_language', lang);
     
     updatePageTitle(lang);
     translateElements(lang);
@@ -36,7 +41,8 @@ function updatePageTitle(lang) {
             'favorites.html': 'المفضلة',
             'search.html': 'بحث',
             'property-details.html': 'تفاصيل العقار',
-            'index.html': 'الرئيسية'
+            'index.html': 'الرئيسية',
+            'explore-locations.html': 'استكشاف المواقع'
         },
         en: {
             'login.html': 'Login',
@@ -46,7 +52,8 @@ function updatePageTitle(lang) {
             'favorites.html': 'Favorites',
             'search.html': 'Search',
             'property-details.html': 'Property Details',
-            'index.html': 'Home'
+            'index.html': 'Home',
+            'explore-locations.html': 'Explore Locations'
         }
     };
     
@@ -115,7 +122,16 @@ function translateElements(lang) {
             'propertySuggestions': 'اقتراحات عقارية',
             'viewAll': 'عرض الكل',
             'propertiesCount': '0 عقار',
-            'sortBy': 'ترتيب حسب'
+            'sortBy': 'ترتيب حسب',
+            'explore': 'استكشاف',
+            'cities': 'المدن',
+            'neighborhoods': 'الأحياء',
+            'weatherInfo': 'معلومات الطقس',
+            'nearbyPlaces': 'المرافق القريبة',
+            'neighborhoodInfo': 'معلومات الحي',
+            'loading': 'جاري التحميل...',
+            'error': 'حدث خطأ',
+            'retry': 'إعادة المحاولة'
         },
         en: {
             'appTitle': 'Aqar',
@@ -175,7 +191,16 @@ function translateElements(lang) {
             'propertySuggestions': 'Property Suggestions',
             'viewAll': 'View All',
             'propertiesCount': '0 properties',
-            'sortBy': 'Sort by'
+            'sortBy': 'Sort by',
+            'explore': 'Explore',
+            'cities': 'Cities',
+            'neighborhoods': 'Neighborhoods',
+            'weatherInfo': 'Weather Information',
+            'nearbyPlaces': 'Nearby Places',
+            'neighborhoodInfo': 'Neighborhood Information',
+            'loading': 'Loading...',
+            'error': 'Error',
+            'retry': 'Retry'
         }
     };
     
@@ -205,4 +230,14 @@ function translatePlaceholders(lang) {
             element.placeholder = translations[lang][key];
         }
     });
+}
+
+// Export the current language and language change function
+export function getCurrentLanguage() {
+    return currentLanguage;
+}
+
+export function changeLanguage(lang) {
+    applyLanguage(lang);
+    return currentLanguage;
 }

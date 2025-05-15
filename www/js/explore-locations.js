@@ -10,14 +10,12 @@ let neighborhoodDetails = null;
 function initializeMap() {
     const saudiArabia = { lat: 24.7136, lng: 46.6753 };
     
-    // Check if the Google Maps API is available
     if (typeof google === 'undefined') {
         console.error('Google Maps API not loaded');
         const mapElement = document.getElementById('map');
         if (mapElement) {
             mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>خريطة غير متاحة حالياً<br>تحقق من اتصالك بالإنترنت</p></div>';
         }
-        // Still load cities even if map is not available
         loadCities();
         return;
     }
@@ -48,7 +46,6 @@ async function loadCities() {
         const cities = await getCities();
         renderCities(cities);
         
-        // Add map markers if map is available
         if (map) {
             addCityMarkers(cities);
         }
@@ -84,7 +81,6 @@ function createCityCard(city) {
     card.className = 'city-card';
     card.dataset.cityId = city.id;
     
-    // Default image if none provided
     const imageUrl = city.imageUrl || 'img/placeholder.jpg';
     
     card.innerHTML = `
@@ -126,7 +122,6 @@ async function loadNeighborhoods(cityId) {
         const neighborhoods = await getNeighborhoods(cityId);
         renderNeighborhoods(neighborhoods);
         
-        // Add map markers if map is available
         if (map) {
             addNeighborhoodMarkers(neighborhoods);
         }
@@ -162,7 +157,6 @@ function createNeighborhoodCard(neighborhood) {
     card.className = 'neighborhood-card';
     card.dataset.neighborhoodId = neighborhood.id;
     
-    // Default image if none provided
     const imageUrl = neighborhood.imageUrl || 'img/placeholder.jpg';
     
     card.innerHTML = `
@@ -199,7 +193,6 @@ async function selectNeighborhood(neighborhood) {
         map.setZoom(15);
     }
     
-    // Load neighborhood details
     await Promise.all([
         loadNeighborhoodDetails(neighborhood),
         loadWeatherData(neighborhood),
@@ -209,7 +202,6 @@ async function selectNeighborhood(neighborhood) {
 
 async function loadNeighborhoodDetails(neighborhood) {
     try {
-        // Create a new section for neighborhood demographics if it doesn't exist
         let demographicsCard = document.querySelector('.demographics-card');
         
         if (!demographicsCard) {
@@ -231,7 +223,6 @@ async function loadNeighborhoodDetails(neighborhood) {
                     </div>
                 `;
                 
-                // Insert it after the weather card
                 const weatherCard = document.querySelector('.weather-card');
                 if (weatherCard) {
                     weatherCard.after(demographicsCard);
@@ -252,11 +243,11 @@ async function loadNeighborhoodDetails(neighborhood) {
             `;
             
             try {
-                neighborhoodDetails = await getNeighborhoodDetails(neighborhood);
+                const details = await getNeighborhoodDetails(neighborhood);
                 
                 let html = `
                     <div class="neighborhood-description mb-3">
-                        ${neighborhoodDetails.description}
+                        ${details.description || 'لا يوجد وصف متاح لهذا الحي'}
                     </div>
                     <div class="neighborhood-stats">
                         <div class="stat-group">
@@ -264,15 +255,15 @@ async function loadNeighborhoodDetails(neighborhood) {
                             <div class="stat-items">
                                 <div class="stat-item">
                                     <div class="stat-label">عدد السكان</div>
-                                    <div class="stat-value">${neighborhoodDetails.demographics.population}</div>
+                                    <div class="stat-value">${details.demographics?.population || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">الكثافة السكانية</div>
-                                    <div class="stat-value">${neighborhoodDetails.demographics.density}</div>
+                                    <div class="stat-value">${details.demographics?.density || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">متوسط العمر</div>
-                                    <div class="stat-value">${neighborhoodDetails.demographics.avgAge} سنة</div>
+                                    <div class="stat-value">${details.demographics?.avgAge ? details.demographics.avgAge + ' سنة' : 'غير متاح'}</div>
                                 </div>
                             </div>
                         </div>
@@ -281,19 +272,19 @@ async function loadNeighborhoodDetails(neighborhood) {
                             <div class="stat-items">
                                 <div class="stat-item">
                                     <div class="stat-label">المدارس</div>
-                                    <div class="stat-value">${neighborhoodDetails.amenities.schools}</div>
+                                    <div class="stat-value">${details.amenities?.schools || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">المستشفيات</div>
-                                    <div class="stat-value">${neighborhoodDetails.amenities.hospitals}</div>
+                                    <div class="stat-value">${details.amenities?.hospitals || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">الحدائق</div>
-                                    <div class="stat-value">${neighborhoodDetails.amenities.parks}</div>
+                                    <div class="stat-value">${details.amenities?.parks || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">مراكز التسوق</div>
-                                    <div class="stat-value">${neighborhoodDetails.amenities.malls}</div>
+                                    <div class="stat-value">${details.amenities?.malls || 'غير متاح'}</div>
                                 </div>
                             </div>
                         </div>
@@ -302,19 +293,19 @@ async function loadNeighborhoodDetails(neighborhood) {
                             <div class="stat-items">
                                 <div class="stat-item">
                                     <div class="stat-label">متوسط الأسعار</div>
-                                    <div class="stat-value">${neighborhoodDetails.realEstate.avgPrice}</div>
+                                    <div class="stat-value">${details.realEstate?.avgPrice || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">التغير السنوي</div>
-                                    <div class="stat-value">${neighborhoodDetails.realEstate.priceChange}</div>
+                                    <div class="stat-value">${details.realEstate?.priceChange || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">عقارات للبيع</div>
-                                    <div class="stat-value">${neighborhoodDetails.realEstate.propertiesForSale}</div>
+                                    <div class="stat-value">${details.realEstate?.propertiesForSale || 'غير متاح'}</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-label">عقارات للإيجار</div>
-                                    <div class="stat-value">${neighborhoodDetails.realEstate.propertiesForRent}</div>
+                                    <div class="stat-value">${details.realEstate?.propertiesForRent || 'غير متاح'}</div>
                                 </div>
                             </div>
                         </div>
@@ -322,8 +313,6 @@ async function loadNeighborhoodDetails(neighborhood) {
                 `;
                 
                 demographicsInfo.innerHTML = html;
-                
-                // Add CSS for the new elements
                 addNeighborhoodDetailStyles();
                 
             } catch (error) {
@@ -601,7 +590,6 @@ function renderErrorState(containerId, message) {
 }
 
 function addNeighborhoodDetailStyles() {
-    // Check if the stylesheet already exists
     if (document.getElementById('neighborhood-details-style')) return;
     
     const style = document.createElement('style');
@@ -667,16 +655,13 @@ function addNeighborhoodDetailStyles() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize the map if Google Maps API is loaded
     if (typeof google !== 'undefined') {
         initializeMap();
     } else {
-        // Handle case where map is not available
         const mapElement = document.getElementById('map');
         if (mapElement) {
             mapElement.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:#666;"><p>خريطة غير متاحة حالياً<br>تحقق من اتصالك بالإنترنت</p></div>';
         }
-        // Still load cities even if map is not available
         loadCities();
     }
     

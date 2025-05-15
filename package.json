@@ -13,6 +13,7 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "devDependencies": {
+    "cordova-browser": "^7.0.0",
     "cordova-plugin-camera": "^8.0.0",
     "cordova-plugin-file": "^8.1.3",
     "cordova-plugin-firebasex": "^18.0.7",
@@ -24,7 +25,9 @@
     "website": "^0.1.1"
   },
   "cordova": {
-    "platforms": [],
+    "platforms": [
+      "browser"
+    ],
     "plugins": {
       "cordova-plugin-statusbar": {},
       "cordova-plugin-splashscreen": {},

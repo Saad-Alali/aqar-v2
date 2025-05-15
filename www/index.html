@@ -97,6 +97,16 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', async function() {
+            // Check if this is the first time loading the index page
+            const hasSeenSplash = localStorage.getItem('has_seen_splash');
+            
+            if (!hasSeenSplash) {
+                // If first time, redirect to splash screen
+                localStorage.setItem('has_seen_splash', 'true');
+                window.location.href = 'splash-screen.html';
+                return;
+            }
+            
             try {
                 const propertiesGrid = document.getElementById('propertiesGrid');
                 if (!propertiesGrid) return;
@@ -261,7 +271,6 @@
         document.addEventListener('deviceready', onDeviceReady, false);
         
         function onDeviceReady() {
-            // Cordova is now initialized
             console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
             
             // Initialize app
