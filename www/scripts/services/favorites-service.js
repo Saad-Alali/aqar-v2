@@ -1,4 +1,4 @@
-// favorites-service.js - Enhanced with better error handling and management functions
+// favorites-service.js
 import { initializeJsonService, dataCache, saveToLocalStorage } from './json-service.js';
 
 /**

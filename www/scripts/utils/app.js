@@ -1,5 +1,5 @@
-import { initializeJsonService } from './json-service.js';
-import { getCurrentUser } from './auth-service.js';
+import { initializeJsonService } from '../services/json-service.js';
+import { getCurrentUser } from '../services/auth-service.js';
 
 let isInitializing = false;
 let isInitialized = false;
@@ -273,7 +273,7 @@ function removeOfflineIndicator() {
   }
 }
 
-function showToast(message, type = 'info', duration = 3000) {
+export function showToast(message, type = 'info', duration = 3000) {
   const existingToast = document.querySelector('.toast');
   if (existingToast) {
     existingToast.remove();
@@ -358,7 +358,7 @@ function checkAuthProtection() {
   }
 }
 
-function showLoginModal(message) {
+export function showLoginModal(message) {
   const modal = document.createElement('div');
   modal.className = 'auth-overlay';
   modal.id = 'loginModal';
@@ -387,15 +387,9 @@ function showLoginModal(message) {
   });
 }
 
-function closeLoginModal() {
+export function closeLoginModal() {
   const modal = document.getElementById('loginModal');
   if (modal) {
     modal.remove();
   }
 }
-
-window.showToast = showToast;
-window.showLoginModal = showLoginModal;
-window.closeLoginModal = closeLoginModal;
-
-export { showToast, showLoginModal, closeLoginModal, updateAuthUI };
