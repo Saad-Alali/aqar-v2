@@ -185,6 +185,7 @@
 
                                 alertsContainer.innerHTML = '<div class="alert alert--success">تم تسجيل الدخول بنجاح! جاري التحويل...</div>';
 
+                                sessionStorage.setItem('show_cordova_splash', 'true');
                                 setTimeout(() => {
                                     window.location.href = 'index.html';
                                 }, 1000);

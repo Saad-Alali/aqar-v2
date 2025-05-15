@@ -1,7 +1,9 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
-    if (navigator.splashscreen) {
+    const keepCordovaSplash = sessionStorage.getItem('keep_cordova_splash');
+    
+    if (!keepCordovaSplash && navigator.splashscreen) {
         navigator.splashscreen.hide();
     }
     
