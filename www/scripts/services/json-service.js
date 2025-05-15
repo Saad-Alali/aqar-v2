@@ -13,6 +13,12 @@ export async function initializeJsonService() {
     const propertiesResponse = await fetch('data/properties.json');
     dataCache.properties = await propertiesResponse.json();
     
+    // Convert prices from $ to ريال
+    dataCache.properties = dataCache.properties.map(property => {
+      property.priceFormatted = property.priceFormatted.replace("$", "").replace(",", ",") + " ريال";
+      return property;
+    });
+    
     const usersResponse = await fetch('data/users.json');
     dataCache.users = await usersResponse.json();
     
@@ -132,7 +138,7 @@ function getSampleProperties() {
       title: "شقة حديثة",
       location: "وسط المدينة",
       price: 350000,
-      priceFormatted: "$350,000",
+      priceFormatted: "350,000 ريال",
       propertyType: "apartment",
       transactionType: "للبيع",
       features: {
@@ -149,7 +155,7 @@ function getSampleProperties() {
       title: "فيلا فاخرة",
       location: "الواجهة البحرية",
       price: 1250000,
-      priceFormatted: "$1,250,000",
+      priceFormatted: "1,250,000 ريال",
       propertyType: "villa",
       transactionType: "للبيع",
       features: {
@@ -166,7 +172,7 @@ function getSampleProperties() {
       title: "منزل عائلي",
       location: "الضواحي",
       price: 580000,
-      priceFormatted: "$580,000",
+      priceFormatted: "580,000 ريال",
       propertyType: "house",
       transactionType: "للبيع",
       features: {

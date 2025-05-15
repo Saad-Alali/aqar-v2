@@ -65,12 +65,12 @@ export async function loginUser(email, password) {
 
 export async function logoutUser() {
   try {
-    currentUserCache = null;
     localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+    currentUserCache = null;
     return true;
   } catch (error) {
     console.error('Error logging out:', error);
-    return false;
+    throw error;
   }
 }
 

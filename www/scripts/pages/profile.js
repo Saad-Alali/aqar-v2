@@ -50,19 +50,20 @@ function updateProfileUI(user) {
 function initializeInteractions(user) {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', async function (e) {
+        logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
-
-            const confirmMessage = 'هل أنت متأكد من تسجيل الخروج؟';
-
-            if (confirm(confirmMessage)) {
+            
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
                 try {
-                    await logoutUser();
-                    window.location.href = 'login.html';
+                    logoutUser().then(() => {
+                        window.location.href = 'login.html';
+                    }).catch(error => {
+                        console.error("Error logging out:", error);
+                        showToast('حدث خطأ في تسجيل الخروج', "error");
+                    });
                 } catch (error) {
                     console.error("Error logging out:", error);
-                    const errorMessage = 'حدث خطأ في تسجيل الخروج';
-                    showToast(errorMessage, "error");
+                    showToast('حدث خطأ في تسجيل الخروج', "error");
                 }
             }
         });

@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         const response = await fetch('data/properties.json');
         let properties = await response.json();
         
+        // Replace $ with ريال
+        properties = properties.map(property => {
+            property.priceFormatted = property.priceFormatted.replace("$", "").replace(",", ",") + " ريال";
+            return property;
+        });
+        
         propertiesGrid.innerHTML = '';
         
         if (properties.length === 0) {

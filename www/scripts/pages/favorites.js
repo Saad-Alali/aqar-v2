@@ -79,6 +79,9 @@ function createFavoriteItem(property) {
     itemElement.dataset.type = property.transactionType || 'للبيع';
     itemElement.dataset.category = property.propertyType || 'apartment';
 
+    // Format price to use riyal instead of dollar
+    const priceFormatted = property.priceFormatted.replace("$", "").replace(",", ",") + " ريال";
+
     itemElement.innerHTML = `
         <div class="favorite-property__content">
             <div class="favorite-property__image">
@@ -89,7 +92,7 @@ function createFavoriteItem(property) {
                 <div class="favorite-property__location">
                     <i class="fas fa-map-marker-alt"></i> ${property.location}
                 </div>
-                <div class="favorite-property__price">${property.priceFormatted}</div>
+                <div class="favorite-property__price">${priceFormatted}</div>
                 <div class="favorite-property__features">
                     <div class="favorite-property__feature">
                         <i class="fas fa-bed"></i> ${property.features.bedrooms}
@@ -106,9 +109,6 @@ function createFavoriteItem(property) {
         <div class="favorite-property__actions">
             <a href="#" class="favorite-property__action favorite-property__action--delete" title="إزالة من المفضلة" data-id="${property.id}">
                 <i class="fas fa-trash-alt"></i>
-            </a>
-            <a href="#" class="favorite-property__action" title="مشاركة">
-                <i class="fas fa-share-alt"></i>
             </a>
         </div>
     `;

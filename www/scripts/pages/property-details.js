@@ -58,7 +58,8 @@ async function loadPropertyData(propertyId, user) {
 
 function updatePropertyUI(property) {
     document.getElementById('propertyTitle').textContent = property.title;
-    document.getElementById('propertyPrice').textContent = property.priceFormatted;
+    const formattedPrice = property.priceFormatted.replace("$", "").replace(",", ",") + " ريال";
+    document.getElementById('propertyPrice').textContent = formattedPrice;
     
     const locationElement = document.getElementById('propertyLocation');
     const locationIcon = locationElement.querySelector('i');
@@ -126,47 +127,6 @@ function initializeInteractions(propertyId, user) {
                 showToast('حدث خطأ، يرجى المحاولة مرة أخرى', 'error');
             }
         });
-    }
-    
-    const shareBtn = document.getElementById('shareBtn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            shareProperty(propertyId);
-        });
-    }
-}
-
-function shareProperty(propertyId) {
-    const shareUrl = `${window.location.origin}/property-details.html?id=${propertyId}`;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: document.title,
-            url: shareUrl
-        }).catch(console.error);
-    } else {
-        navigator.clipboard.writeText(shareUrl)
-            .then(() => {
-                showToast('تم نسخ الرابط إلى الحافظة', 'success');
-            })
-            .catch(() => {
-                const textarea = document.createElement('textarea');
-                textarea.value = shareUrl;
-                textarea.style.position = 'fixed';
-                document.body.appendChild(textarea);
-                textarea.focus();
-                textarea.select();
-                
-                try {
-                    document.execCommand('copy');
-                    showToast('تم نسخ الرابط إلى الحافظة', 'success');
-                } catch (err) {
-                    showToast('فشل نسخ الرابط', 'error');
-                }
-                
-                document.body.removeChild(textarea);
-            });
     }
 }
 
