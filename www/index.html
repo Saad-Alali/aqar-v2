@@ -97,29 +97,6 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', async function() {
-            // Check if this is the first time loading the index page
-            const hasSeenSplash = localStorage.getItem('has_seen_splash');
-            
-            if (!hasSeenSplash) {
-                // If first time, redirect to splash screen
-                localStorage.setItem('has_seen_splash', 'true');
-                window.location.href = 'splash-screen.html';
-                return;
-            }
-            
-            // Check if we should show the Cordova splash screen after login
-            const showCordovaSplash = sessionStorage.getItem('show_cordova_splash');
-            if (showCordovaSplash) {
-                sessionStorage.removeItem('show_cordova_splash');
-                sessionStorage.setItem('keep_cordova_splash', 'true');
-                setTimeout(function() {
-                    if (navigator.splashscreen) {
-                        navigator.splashscreen.hide();
-                    }
-                    sessionStorage.removeItem('keep_cordova_splash');
-                }, 3000);
-            }
-            
             try {
                 const propertiesGrid = document.getElementById('propertiesGrid');
                 if (!propertiesGrid) return;
@@ -276,26 +253,6 @@
                     }
                 });
             });
-        }
-    </script>
-
-    <script src="cordova.js"></script>
-    <script>
-        document.addEventListener('deviceready', onDeviceReady, false);
-        
-        function onDeviceReady() {
-            console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
-            
-            // Initialize app
-            if (window.StatusBar) {
-                StatusBar.styleDefault();
-            }
-            
-            // Handle Cordova splash screen
-            const keepCordovaSplash = sessionStorage.getItem('keep_cordova_splash');
-            if (!keepCordovaSplash && navigator.splashscreen) {
-                navigator.splashscreen.hide();
-            }
         }
     </script>
 </body>

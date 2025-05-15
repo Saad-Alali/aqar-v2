@@ -136,13 +136,6 @@
         import { loginUser } from './js/auth-service.js';
         import { showToast } from './js/app.js';
 
-        document.addEventListener('deviceready', onDeviceReady, false);
-
-        function onDeviceReady() {
-            console.log("Device is ready");
-            initApp();
-        }
-
         async function initApp() {
             try {
                 await initializeJsonService();
@@ -185,7 +178,6 @@
 
                                 alertsContainer.innerHTML = '<div class="alert alert--success">تم تسجيل الدخول بنجاح! جاري التحويل...</div>';
 
-                                sessionStorage.setItem('show_cordova_splash', 'true');
                                 setTimeout(() => {
                                     window.location.href = 'index.html';
                                 }, 1000);

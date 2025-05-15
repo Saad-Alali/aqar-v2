@@ -498,44 +498,26 @@
         </div>
     </div>
 
-    <script src="cordova.js"></script>
     <script>
-        document.addEventListener('deviceready', onDeviceReady, false);
-        
-        function onDeviceReady() {
-            console.log('Device is ready');
-        }
-        
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if we're being redirected from index.html
-            const fromIndex = localStorage.getItem('from_index');
-            
-            // If we're not redirected from index, go back to index
-            if (!fromIndex) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            // Clear the flag
-            localStorage.removeItem('from_index');
+            // Start the splash screen animation immediately without any checks
+            setTimeout(() => {
+                const splashScreen = document.getElementById('splashScreen');
+                const onboardingContainer = document.getElementById('onboardingContainer');
+
+                splashScreen.style.opacity = '0';
+                splashScreen.style.transform = 'scale(1.1)';
+
+                onboardingContainer.style.opacity = '1';
+
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                }, 500);
+            }, 3000);
         });
         
         let currentSlide = 1;
         const totalSlides = 4;
-
-        setTimeout(() => {
-            const splashScreen = document.getElementById('splashScreen');
-            const onboardingContainer = document.getElementById('onboardingContainer');
-
-            splashScreen.style.opacity = '0';
-            splashScreen.style.transform = 'scale(1.1)';
-
-            onboardingContainer.style.opacity = '1';
-
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-            }, 500);
-        }, 3000);
 
         function nextSlide() {
             if (currentSlide < totalSlides) {
