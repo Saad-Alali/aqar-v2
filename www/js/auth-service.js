@@ -49,7 +49,7 @@ export async function loginUser(email, password) {
         throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
       }
       
-      sessionStorage.setItem('show_cordova_splash', 'true');
+      sessionStorage.setItem('keep_cordova_splash', 'true');
       
       setCurrentUser(user);
       

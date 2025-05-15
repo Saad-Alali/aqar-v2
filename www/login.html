@@ -131,6 +131,14 @@
     </div>
 
     <script src="cordova.js"></script>
+<script>
+    // Hide Cordova splash screen immediately for login page
+    document.addEventListener('deviceready', function() {
+        if (navigator.splashscreen) {
+            navigator.splashscreen.hide();
+        }
+    }, false);
+</script>
     <script type="module">
         import { initializeJsonService } from './js/json-service.js';
         import { loginUser } from './js/auth-service.js';
