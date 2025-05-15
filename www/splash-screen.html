@@ -535,10 +535,14 @@
             }
         }
 
-        function goToLogin() {
-            localStorage.setItem('has_seen_splash', 'true');
-            window.location.href = 'login.html';
-        }
+        // Update this function in splash-screen.html
+function goToLogin() {
+    // Mark that user has seen splash/onboarding
+    localStorage.setItem('has_seen_splash', 'true');
+    
+    // Redirect to login page
+    window.location.href = 'login.html';
+}
     </script>
 </body>
 </html>

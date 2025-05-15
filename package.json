@@ -20,7 +20,6 @@
     "cordova-plugin-geolocation": "^5.0.0",
     "cordova-plugin-inappbrowser": "^6.0.0",
     "cordova-plugin-network-information": "^3.0.0",
-    "cordova-plugin-splashscreen": "^6.0.1",
     "cordova-plugin-statusbar": "^4.0.0",
     "website": "^0.1.1"
   },
@@ -30,7 +29,6 @@
     ],
     "plugins": {
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-splashscreen": {},
       "cordova-plugin-geolocation": {},
       "cordova-plugin-camera": {},
       "cordova-plugin-file": {},

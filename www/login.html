@@ -135,23 +135,6 @@
     </div>
 
     <script src="cordova.js"></script>
-<script>
-    // Force hide splash screen immediately when login page loads
-    document.addEventListener('deviceready', function() {
-        if (navigator.splashscreen) {
-            navigator.splashscreen.hide();
-            console.log("Explicitly hiding splash screen on login page");
-        }
-    }, false);
-    
-    // As a fallback, also try to hide after a short delay
-    setTimeout(function() {
-        if (navigator.splashscreen) {
-            navigator.splashscreen.hide();
-            console.log("Hiding splash screen via timeout");
-        }
-    }, 500);
-</script>
     <script type="module">
         import { initializeJsonService } from './js/json-service.js';
         import { loginUser } from './js/auth-service.js';
